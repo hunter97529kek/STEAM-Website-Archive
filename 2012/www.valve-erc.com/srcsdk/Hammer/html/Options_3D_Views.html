@@ -1,0 +1,65 @@
+<html>
+<head>
+	<title>3D View</title>
+	 <link href="../hammer.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+
+<div class="content">
+
+<h1>Options: 3D Views tab </h1>
+
+
+
+<p>The <b>3D views</b> configuration tab contains several options that effect the display and behavior of the 3d view windows.</p>
+<p><img src="../images/interface/Options_3D.png"></p>
+
+<h2>Performance</h2>
+
+<h3>Back clipping plane</h3>
+<p>This setting can drastically improve your performance in the 3D view by not showing (clipping) objects beyond a certain distance from the camera viewpoint. This sets the distance in units at which Hammer will <I>stop</i> drawing in it's 3D view. If you are finding the 3D performance to be too slow, set this to a lower value.  It has no effect on the compiled map running in the Source Engine.</p>
+
+<p class="callout"><strong>Tip: </strong>You can change the Back clipping plane in real-time by pressing the "1" and "2" keys while the 3D View is the active viewport</p>
+
+<h3>Filter textures</h3>
+<p>When this feature is enabled, bilinear filtering is done on textures resulting in a smoother non-pixelated look when viewed closeup. Disabling this may result in a speed increase on older video cards.</p>
+
+<img src="../images/examples/Options_3D_Filtering.png" width="405" height="221" vspace="0" hspace="0" border="0">
+
+<h3>Animate Models</h3>
+<p>Checking this box will enable models with animations to be previewed in Hammer. It has no effect on the compiled map running in the Source Engine.</p>
+
+<h3>Model Render Distance</h3>
+<p>The distance in world units at which models will render as 3D mesh models in Hammer. Models outside this distance will render as simple bounding box shapes. Descrease this distance to improve Hammer rending performance. It has no effect on the compiled map running in the Source Engine.</p>
+
+<h2>Navigation</h2>
+
+<h3>Use mouselook navigation<a name="UseMouselook"></a></h3>
+<p>When this is enabled, &quot;mouselook navigation&quot; will be available. The &quot;z&quot; (lowercase z) hotkey toggles this mode on and off. While on, moving the mouse will change the camera orientation in the 3D View, and the &quot;WASD&quot; keys can be used for forward, left, backward, and right movement.</p>
+
+<h3>Reverse mouse Y axis</h3>
+<p>When you are using the mouse to navigate through the 3D view, if this is enabled pulling the mouse backwards will cause the view to look upward, and moving the mouse forward will cause the view to look downward.</p>
+
+<h3>Forward speed</h3>
+<p>You can set the maximum forward movement speed here when using the &quot;W&quot; key for foward navigation.</p>
+
+<h3>Time to top speed</h3>
+<p>This is the amount of time it takes to go from 0 to the above maximum movement speed (basically this sets the acceleration).</p>
+
+
+<h2>General</h2>
+
+<h3>Reverse selection order</h3>
+<p>User's of some video cards may find that when selecting objects in the 3D view, the furthest object will get selected rather than the one you clicked on. If you experience this problem, enable this to reverse the selection order.</p>
+
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

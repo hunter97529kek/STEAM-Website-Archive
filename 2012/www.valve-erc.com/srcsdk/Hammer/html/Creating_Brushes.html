@@ -1,0 +1,81 @@
+<html>
+<head>
+	<title>Creating Brushes</title>
+	 <link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Creating Brushes</h1>
+
+<h3>Creating Brush Solids from Scratch</h3>
+<p>Creating brushes is quite simple. The process always follows the same four basic steps:</p>
+
+<ol>
+    <li>Select the <a href="Tool_Block.htm">Block Tool</a>.   
+    <li>In the <a href="Toolbar_New_Objects.html">New Objects</a> dialog, select <strong>Primitives</strong> in the Categories box. In the Objects selection box you will have multiple options. Select any one of these objects:<br><br></li>
+		<UL type="disc">
+		    <li>Block</li>
+			<li>Wedge</li>
+			<li>Cylinder</li>
+			<li>Spike</li>
+			<li>Arch</li>
+			<li>Sphere</li>
+			<li>Torus</li>
+		</ul> 
+
+  <p class="callout"><b>Note:</b> The Arch and Torus primitives are special cases. They are not actually a primitive object, but  tools which allows you to quickly and easily make multi-piece geometry. For more information, see <a href="Arch_Properties.html"> Arch Properties </a> and <a href="Torus_Properties.html">Torus Properties</a>.</p> 
+
+    <li>Drag a box in a 2D view, making sure it is the correct size and in the correct position in each of the views.<BR>
+    <li>Press ENTER to create the solid.</li>
+</ol>
+
+<h3>Creating Brushes by Cloning</h3>
+<p>Cloning provides a simple way to quickly duplicate an object or group of objects. This includes both brushes and entities, and groups can contain a mixture of both. Clones are duplicates of the the original objects, but have no other relationship with them.</p>
+
+<p>How to clone an object or set of objects:</p>
+<ol>
+    <li>Go into Selection mode by pressing Shift+S.<BR>
+    <li>Select the object (brush, entity, or group of brushes and/or entities) that you would like to clone.<BR>
+    <li>Hold shift, and click and drag the selected object to its new position with the left mouse button.<BR>
+    <li>While shift is still being held, release the mouse button. The object has now been cloned.</li>
+</ol>
+
+<h3>Inserting Prefabs<a name="InsertingPrefabs"></a></h3>
+<p>Once you have prefab objects created (see <a href="Creating_and_Using_Prefabs.html">Creating and Using Prefabs</a>), it is a simple task to insert a prefab into your level.</p>
+
+<p>There are two ways to put a prefab into your level:</p>
+
+<p>The simple method is, from the <a href="Toolbar_New_Objects.html">New Objects</a> dialog, to select the prefab library from the Categories selection box, and the specific prefab from the Object selection box, and then press the Insert original prefab button. This will insert the selected prefab in the center of the 2D views. You can do this with either the <strong>Entity Tool</strong> or <strong>Block Tool</strong> selected. Simply move it around into place. (Make sure <a href="Toolbar_Map_Operations.html">Texture Locking</a> is turned on!)</p>
+
+<p>To insert a prefab:</p> 
+<ol>
+	<li>Select the <a href="Tool_Entity.htm">Entity Tool</a>.<br>
+	<li>In the <a href="Toolbar_New_Objects.html">New Objects</a> Bar, select a prefab library in the <b>Categories</b> pop-up list.<br>
+	<li>Select a prefab from the library in the <b>Objects</b> pop-up list.<br>
+	<li>Click in the <strong>3D view</strong> where you want the prefab to be placed, or click in the <strong>2D view</strong> and press ENTER.<br>
+</ol>
+	<img src="../images/examples/InsertOriginalPrefab.png">
+
+<p>The second way to insert a prefab is using the <a href="Tool_Block.htm">Block tool</a> to determine the size of the prefab. This will create prefabs at any size you specify, rather than inserting them at original size then requiring you to resize them manually.</p>
+
+<p>To place a prefab object, scaling it to an exact size:</p>
+<ol>
+	<li>Select the <b>Block Tool</b>.<br>
+	<li>In the <a href="Toolbar_New_Objects.html">New Objects</a> Bar, select a prefab library in the <b>Library</b> selection box. Then choose a prefab project from the <b>Object</b> selection box.<br>
+	<li>Drag a selection box in the 2D views, making sure it is the correct size and in the correct position in each of the views.<br>
+	<li>Press ENTER or the <b>Insert Original Prefab</b> button on the <a href="Toolbar_New_Objects.html">New Objects</a> Bar to insert the prefab. The prefab will inserted, and scaled to fit the selection box.<br>
+</ol>
+	<img src="../images/examples/InsertSizedPrefab.png">
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<html>
+<head>
+	<title>Grouping and VisGrouping</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Grouping and VisGrouping</h1>
+
+<p>Even relatively modest Hammer levels can contain hundreds&#8212;even thousands&#8212;of objects. Hammer offers two ways of keeping track of items in your level: normal grouping and visibility grouping (VisGroups).</p>
+
+<p><strong>Note:</strong> <strong>VisGroup</strong> refers to &quot;visibility group&quot; and has nothing at all to do with the VVIS compile tool. Both groups and VisGroups only affect what you see in Hammer and have no in-game effect.</p>
+
+<h2>Groups</h2>
+<p>Normal grouping is used to &quot;glue&quot; object selections together.</p>
+
+<img src="../images/examples/grouping.png" width="543" height="162">
+
+<p>The object shown above is made of eight brushes. If you were to click on a single brush when the object is ungrouped, only that brush would be selected; you'd have to CTRL-click each piece to select the whole thing (or drag a selection box over the whole thing). When the object is grouped, however, you can click on any individual brush to select everything in entire group.</p>
+
+	<ul>
+	  <li>Brushes do not need to touch in order to be grouped together.<BR>
+	  <li>Groups may contain any combination of brushes and entities.<BR>
+	  <li>You can work on an individual piece of a group of objects by enabling the <a href="Toolbar_Map_Operations.html#GroupIgnore">Ignore Groups</a> option.<BR>
+	  <li>Grouped objects can be combined with VisGroups (see below).<br>
+	  <li>Grouped objects have no relation in the Source Engine, grouping is purely for selection purposed in Hammer.<br>
+  </ul>
+
+<p>To group a set of objects:</p>
+<ol>
+	<li>Select the objects you wish to group together.<br>
+	<li>Select <b>Group</b> from the <b>Tools</b> <b>Menu</b>, or press CTRL+G.<br>
+	<li>The objects are grouped together and can be selected, moved and edited as one.<br>
+</ol>
+
+<h2>VisGroups</h2>
+<p>VisGroups stands for visibility groups. VisGroups make managing objects easy by letting you control what you see on your screen. With VisGroups, you can arbitrarily assign objects to a specific group; you can then turn the visibility of that group on and off.</p>
+
+<p>Hiding eight objects:</p>
+<ol>
+	<li>Select the eight objects you wish to hide.<br>
+	<li>Choose <a href="Menu_View.html#HideSelected">Hide selected objects</a> from the <b>View Menu</b>.<br>    
+	<li>The <a href="Visgroup_New.html">New VisGroup</a> dialog will appear. Make sure <strong>Create a New VisGroup</strong> is selected, and click <strong>OK</strong>.<br>
+    <li>A VisGroup is created named &quot;8 objects&quot; and is marked as not visible in the <a href="Filter_Control.html">Filter Control Bar</a>.<br>
+</ol>
+
+<p>Let's say you have the following section in your map:</p>
+
+<p align=center><img src="../images/examples/visgroups1.png" width="231" height="165" vspace="0" hspace="0" border="0"></p>
+
+  <p>Now, you'd like to be able to make the furniture a group, but you still want to move each piece around independently from the others. This is precisely what VisGroups are good for.</p>
+
+<p align=center><img src="../images/examples/visgroups2.png" width="231" height="165" vspace="0" hspace="0" border="0"></p>
+
+  <p>First, select the furniture pieces, then choose <a href="Menu_View.html#HideSelected">Hide selected objects </a>from the <b>View Menu</b>. The <a href="Visgroup_New.html">New VisGroup</a> dialog will appear: </p>
+  
+<p align="center"><img src="../images/interface/Visgroup_New_1.png"></p>
+
+  <p>Click <strong>OK</strong> to make a new VisGroup. This will do two things: hide the objects in the 2D and 3D views, and create a new VisGroup with the selected objects.</p>
+
+<p>The new VisGroup will appear in the <a href="Filter_Control.html">Filter Control</a> toolbar named after the number of objects it contains. To change the name of the VisGroup to something more suitable, select the VisGroup, then click on it again. You will be able to change the name to whatever you like. You can also click to the left of the name and a hand will appear next to the VisGroup. This is how you set which VisGroups are visible and which are not. You must press the Apply button for the changes to take effect.</p>
+
+  <p>Some things you can do with the mouse in the <a href="Filter_Control.html">Filter
+    Control</a> toolbar:</p>
+
+<ul>
+  <li>Drag one VisGroup onto another VisGroup. The first VisGroup will be merged with the second VisGroup, and the resulting VisGroup will keep the name of the second.</li>
+  <li>Drag a VisGroup out of the Filter Control dialog. A dialog box will open asking if you wish the the VisGroup to be deleted.</li>
+  <li>Drag a VisGroup with the Right mouse button on another VisGroup. The first VisGroup will become a parent of the second.</li>
+  <li>Drag a child VisGroup onto the white space at the bottom of the VisGroup list. The parent-child relationship will be removed and the VisGroup will appear back in the top level of the list. </li>
+</ul>
+
+  <p>If you make the furniture group visible, then select it and press the Mark button, the group will be highlighted in the 2D and 3D views.</p>
+
+  <p style="text-align : center;" align=center>
+   <img src="../images/examples/visgroups4.png" width="231" height="165" vspace="0" hspace="0" border="0"></p>
+
+<p>The <strong>Edit</strong> button brings up the Object Groups dialog.</p>
+
+  <p style="text-align : center;" align=center>
+   <img src="../images/interface/Visgroups_Edit.png" width="443" height="379" vspace="0" hspace="0" border="0"></p>
+
+  <p>This dialog allows you to change the name and color of existing VisGroups, or delete them. Deleting the VisGroup does not actually delete the group's objects, it just eliminates the VisGroup, making them individual unlinked objects. You also have the option of creating new (empty) VisGroups with the <strong>New Group</strong> button.</p>
+
+  <p>The last way you can use VisGroups is through an <a href="Object_Properties.html">Object Properties</a>,
+    in the <strong>VisGroup</strong> tab. To assign the object to a VisGroup, just select the appropriate group. To remove the VisGrouping from this object, simply uncheck all of the boxes.</p>
+
+  <p style="text-align : center;" align=center>
+   <img src="../images/interface/Object_Properties_Visgroups.png" width="464" height="493" vspace="0" hspace="0" border="0"></p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

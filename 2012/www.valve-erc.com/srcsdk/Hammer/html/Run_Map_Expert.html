@@ -1,0 +1,124 @@
+<html>
+<head>
+	<title>The File Menu</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Dialogs: Run Map - Expert Mode </h1>
+
+<p><span>This command allows you to run the utilities that are necessary to <span>compile the map into the .BSP format usable in the Source Engine</span>. The <b>Run Map</b> dialog will be in <b>Normal</b> or <b>Expert </b>(<b>Advanced</b>), depending on which mode was last used.</span></p>
+  
+<p><span>Expert compile mode is extremely useful when you want more than the limited options available to you in the <a href="Run_Map.html">Normal</a> compile settings.</span></p>
+<p><img src="../images/interface/Run_Map_Expert.png"></p>
+
+<h3>Configurations</h3>
+
+<p><span>This is a pull down list with all the different compile profiles.</span></p>
+  
+<h3>Edit</h3>
+
+<p><span>Clicking the <b>Edit</b> button brings up the <b>Run Map Configurations</b> dialog. Add a new configuration by pressing the <b>New</b> button. Delete a selected configuration by pressing the <b>Remove </b>button. Change the name of a selected configuration by pressing the <b>Rename </b>button. Pressing the <b>Copy</b> button will create a duplicate of the selected configuration. Press <b>Close</b> to exit the dialog.</span></p>
+<p><img src="../images/interface/Run_Map_Configure.png"></p>
+
+<h3>Compile/run commands</h3>
+
+<p><span>This is the list of commands specific to each Compile profile. The contents of the individual command lines can be edited through the <b>Command Properties</b> section of the dialog. You can add new commands using the <b>New</b> button. Delete a selected command line by clicking the <b>Remove</b> button. <b>Move Up</b> and <b>Move Down</b> allow you to change the order of the commands.</span></p>
+  
+<h3>Run with visible objects only</h3>
+<p>By enabling this option, only the objects and VisGroups that are currently visible will be included in the compile.</p>
+  
+<h3>Normal</h3>
+<p>Switches the compile dialog to <a href="Run_Map.html">Normal</a> compile mode.</p>
+  
+<h3>Go!</h3>
+<p>Starts the compile with the current settings in the dialog box.</p>
+  
+<h3>Cancel</h3>
+<p>Exits the <strong>Run Map</strong> dialog with no changes.</p>
+  
+<h2>Command Properties</h2>
+
+<h3>Command</h3>
+
+<p><span>You can manually enter the command here (which is fine in the case of compile programs like vvis.exe, etc), or choose from a list of commands by pressing the <b>Cmds</b> button.</span></p>
+  
+<h3>Cmds</h3>
+
+<p>This pop-up lists the different commands that you can add to the <b>Command</b> field. The variables <i>$game_exe</i>, <i>$bsp_exe</i>, <i>$vis_exe</i>, and<i> $light_exe</i> are defined in the <a href="Options_Build_Programs.html">Build Programs</a> tab in the <a href="Options.html">Options</a> dialog box.</p>
+
+<h3>Executable</h3>
+<p>Runs an external executable application with the command line parameters chosen in the <b>Parameters</b> field. Choosing this command will open a browse dialog to choose the executable you wish to run.</p>
+  
+<h3>Change Directory</h3>
+<p>Changes the current directory to the directory named in the <b>Parameters</b> field. You may need to use this command so that some executables will find the files they need for operation.</p>
+  
+<h3>Copy File</h3>
+<p>Copies a file. The <b>Parameters</b> field should name the file to copy and the desired destination to copy the file.</p>
+  
+<h3>Delete File</h3>
+<p>This command will delete the file named in the <b>Parameters</b> field.</p>
+  
+<h3>Rename File</h3>
+<p>Renames a file. The <b>Parameters</b> field should name the file to rename and the desired new filename.</p>
+  
+<h3>Game executable (with directory) ($game_exe)</h3>
+<p>Runs the game program named in the <a href="Options_Build_Programs.html">Build Programs</a> tab in the <a href="Options.html">Options</a> dialog box. The <b>Parameters</b> field contains any additional command parameters that the game should be run with (such as <i>+deathmatch</i>, for deathmatch mode).</p>
+  
+<h3>BSP program ($bsp_exe)</h3>
+<p>Runs the BSP program named in the <a href="Options_Build_Programs.html">Build Programs</a> tab in the <a href="Options.html">Options</a> dialog box. The <b>Parameters</b> field should contain any additional compile parameters.</p>
+  
+<h3>VIS program ($vis_exe)</h3>
+<p>Runs the VIS program named in the <a href="Options_Build_Programs.html">Build Programs</a> tab in the <a href="Options.html">Options</a> dialog box. The <b>Parameters</b> field should contain any additional compile parameters.</p>
+  
+<h3>LIGHT program ($light_exe)</h3>
+<p>Runs the LIGHT program named in the <a href="Options_Build_Programs.html">Build Programs</a> tab in the <a href="Options.html">Options</a> dialog box. The <b>Parameters</b> field should contain any additional compile parameters.</p>
+  
+<h3>Parameters</h3>
+<p><span>The parameters field contains additional information that is attached to the end of the command specified in the <b>Command</b> field. You can enter the command parameters here manually, or by pressing the <b>Params</b> button. </span></p>
+  
+<h3>Params</h3>
+<p><span>This pop-up list allows you to insert a number of useful variables into the compile configuration.</span></p>
+  
+<h3>Map Filename (no extension)</h3>
+<p><span>Inserts the parameter <i>$file</i>. Using <i>$file</i> as a parameter is the same as using the current map name. Hammer will substitute the current map filename for <i>$file</i> during the compile process.</span></p>
+  
+<h3>Map Filename (with extension)</h3>
+<p><span>Inserts the parameter <i>$file.$ext</i>. This inserts the filename of the <i>.</i>MAP or .RMF file, without the extension.</span></p>
+  
+<h3>Map Path (no filename)</h3>
+<p><span>Inserts the parameter <i>$path</i>. This inserts the path to the current .MAP or .RMF file, without the filename.</span></p>
+  
+<h3>BSP Path (no filename)</h3>
+<p>Inserts the parameter <i>$bspdir</i>. This inserts the directory where the compiled map (.BSP) files are to be placed. The $<i>bspdir</i> variable is defined in the <a href="Options_Build_Programs.html">Build Programs</a> tab in the <a href="Options.html">Options</a> dialog box.</p>
+  
+<p class=callout><b>Note:</b> When using the regular compile mode, .BSP files (compiled game maps) will be copied to what you specify in the <b>Place compiled maps in this directory before running the game </b>field. When you use expert compile mode, you must make sure the maps get copied there yourself using the <i>$bspdir</i> variable.</p>
+  
+<h3>Game Directory</h3>
+<p><span>Inserts the parameter <i>$gamedir</i>. This is the directory where the Half-Life executable is stored. The $<i>gamedir</i> variable is defined in the <a href="Options_Game_Config.html">Game Configurations</a> tab in the <a href="Options.html">Options</a> dialog box.</span></p>
+
+<h3>Use Long filenames</h3>
+<p><span>This will allow a map to be output with its full name, in the case of a map with a name over 8 characters. Some compile utilities may not support long filenames.</span></p>
+  
+<h3>Ensure file post-exists</h3>
+<p>Enabling this option and entering a filename will cause you to be notified if the certain file does not exist after the compile process.</p>
+  
+<h3>Use Process window</h3>
+<p><span>This will force the command to display its output in the Process window.</span></p>
+
+
+<h3>Related Topics</h3>
+<p><a href="Options_Build_Programs.html">Build Programs Options</a> </p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<html>
+<head>
+	<title>The Map Menu</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>The Map Menu</h1>
+
+<p>The Map menu contains a number of functions related to the display of the map, as well as global viewing and manipulation of map contents and properties.</p>
+
+<img src="../images/interface/Menu_Map.png" width="345" height="263" vspace="0" hspace="0" border="0">
+
+<h3>Snap to grid<a name="SnapToGrid"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: SHIFT+W</h3>
+
+<p><span>Will cause objects and selection boxes to snap to the current grid.</span></p>
+  
+<h3>Show grid<a name="ShowGrid"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: SHIFT+R</h3>
+
+<p><span>You can use this to toggle the grid display on and off. Objects will still snap to the grid if the <b>Snap to grid</b> option is enabled, regardless if the grid is visible.</span></p>
+  
+<h3>Grid settings<a name="GridSettings"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: [ and ]</h3>
+
+<p><span>This allows you to increase or decrease the current <b>Snap to Grid</b> size. The current grid size is show in the status bar at the bottom of the Hammer window.</span></p>
+<p><img src="../images/interface/Menu_Map_Gridsize.png"></p>
+
+<h3>Units</h3>
+
+<p>This allows you to changes the units of measurement from standard world units to physical units of feet or inches. Picking <strong>None</strong> will use Source Engine world units.</p>
+<p><img src="../images/interface/Menu_Map_Units.png"></p>
+
+<h3>Show Selected Brush Number</h3>
+<p>This displays the brush number of the selected brush. You must select a single non-entity brush for this command.</p>
+
+<h3>Entity Gallery</h3>
+<p>Pastes a copy of every type of entity in the game data file into the current map. Mainly used for debugging purposes.</p>
+
+<h3>Entity report<a name="EntityReport"></a></h3>
+<p>Opens the <a href="Entity_Report.html">Entity Report</a> dialog, which can be used to manage your entities and do quick searches for specific entities, providing an easy alternative to searching through your map manually.</p>
+
+<h3>Check for problems&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: ALT+P</h3>
+<p>Opens the <a href="Check_For_Problems.html">Check for Problems</a> dialog that will analyze the map and notify you of any errors it finds.</p>
+
+<h3>Load Pointfile<a name="LoadPointfile"></a></h3>
+
+<p>If your map is not totally sealed, the compile tools (vbsp.exe, specifically) will report a “leak” and generate a <i>pointfile</i>. A pointfile contains information Hammer can use to trace a line from one of the map's entities to the source of the leak. This is represented in the 2D and 3D views by a thick red line. The <strong>Load Pointfile</strong> command will open the pointfile data associated with the current map, if it can locate the file. If not, it will display an Open dialog that allows you to load the pointfile. The pointfile will have a <i>.lin</i> or <i>.pts</i> filename extension, depending on the game compilation tools you are using.</p>
+
+<table class="tableCaption" cellpadding="0">
+    <tr>
+        <td ><img src="../images/examples/leak_pointfile.jpg"></td>
+    </tr>
+    <tr>
+        <td class="tdCaption">The <strong>Load Pointfile</strong> command shows the path to the leak in the Hammer viewports.</td>
+    </tr>
+</table>
+
+<h3>Unload Pointfile</h3>
+<p>Use this command to remove the display of pointfile data from the 2D and 3D views of the current map file.</p>
+
+<h3>Show Information</h3>
+<p>This brings up the <a href="Map_Information.html">Map Information</a> dialog, which gives you some statistics on the currently selected map file.</p>
+  
+<h3>Map properties...<a name="MapProperties"></a></h3>
+
+<p>This will open an <a href="Object_Properties.html">Object Properties</a> dialog box, containing different editable parameters for the current map file. This is also known as the <i>worldspawn</i> entity. The <em>worldspawn</em> is an entity that defines some characteristics of the world, including the map title and skybox. See <em>worldspawn</em> in the <a href="Entity_Guide.html">Entity Guide</a> for more information. </p>
+
+  
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

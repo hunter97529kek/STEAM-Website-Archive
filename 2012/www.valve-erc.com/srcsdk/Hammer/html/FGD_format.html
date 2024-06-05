@@ -1,0 +1,308 @@
+<html>
+<head>
+	<title>FGD format changes</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1 class="Section"><span>FGD Format </span></h1>
+  
+<h2><span>Working with .FGD files.</span></h2>
+
+<p><span>The .FGD file is what Hammer uses to define its entities. It is a scripting language that sets up what entities will be available to you, what flags and keyvalues (variables) will be present in each entity, and what default values the flags and keyvalues will have. </span></p>
+
+<p class=callout><span><b>Note:</b> Most Hammer Editor users will never need the information presented in this section. It is included here for those advanced users who are either customizing their .FGD file or are creating a new .FGD to add support for a new game or modification.</span></p>
+  
+<h2><span>.FGD Format</span></h2>
+
+<p><span>The .FGD file follows a fairly basic format. Everything between the brackets &quot;[ <b>...</b> ]&quot; is optional</span></p>
+<pre class="code">
+//
+// descriptive comments
+//
+// The worldspawn entity is present in every FGD.
+// Normally it is the first thing defined.
+@SolidClass = worldspawn <b>:</b> &quot;World entity&quot;
+[
+    variable1(variable_type) <b>:</b> &quot;Description&quot; [<b>:</b> default_value]
+    variable2(variable_type) <b>:</b> &quot;Description&quot; [<b>:</b> default_value]
+       <b>...</b>
+]
+// comments
+@BaseClass [base( )] [color( )] [size( )] = base_name
+[
+    variable1(variable_type) <b>:</b> &quot;Description&quot; [<b>:</b> default_value]
+    variable2(variable_type) <b>:</b> &quot;Description&quot; [<b>:</b> default_value]
+       <b>...</b>
+]
+// comments
+@PointClass [base( )] [color( )] [size( )] = entity_name <b>:</b> &quot;Description&quot;
+[
+    variable1(variable_type) <b>:</b> &quot;Description&quot; [<b>:</b> default_value]
+    variable2(variable_type) <b>:</b> &quot;Description&quot; [<b>:</b> default_value]
+    <b>...</b>
+]
+// comments
+@SolidClass [base( )] [color( )] = entity_name <b>:</b> &quot;Description&quot;
+[
+    variable1(variable_type) <b>:</b> &quot;Description&quot; [<b>:</b> default_value]
+    variable2(variable_type) <b>:</b> &quot;Description&quot; [<b>:</b> default_value]
+    <b>...</b>
+]
+<b>...</b>
+<b>...</b>
+<b>...</b>
+</pre>
+  
+<h2><span>Base Inheritance, Color, Size</span></h2>
+
+<p><span>These determine how entities will appear in Hammer. This is called a <b>BaseClass</b>.</span></p>
+  
+  <p class=Code><span>base ( ) = base(base_1[, base_2 ... base_n])</span></p>
+ 
+<p><span>This allows you to use <b>inheritance</b> when you define your entities. For example, if you define the following BaseClass…</span></p>
+  
+<pre class="code">
+@BaseClass color(128 255 128) = Door
+[
+    targetname(target_source) : &quot;Name&quot;
+    target(target_destination) : &quot;Target&quot;
+    wait(integer) : &quot;Wait&quot; : 0
+    delay(integer) : &quot;Delay&quot; : 0
+]
+</pre>
+
+<p><span>…and define the following entity:</span></p>
+
+<pre class="code">
+@SolidClass base(Door) = func_door : &quot;normal door&quot;
+[
+    message(string) : &quot;Message&quot;
+]
+</pre>
+
+<p><span>This will be equivalent to defining the following:</span></p>
+
+<pre class="code">
+@SolidClass color(128 255 128) = func_door : &quot;normal door&quot;
+[
+    targetname(target_source) <b>:</b> &quot;Name&quot;
+    target(target_destination) <b>:</b> &quot;Target&quot;
+    wait(integer) <b>:</b> &quot;Wait&quot; <b>:</b> 0
+    delay(integer) <b>:</b> &quot;Delay&quot; <b>:</b> 0
+    message(string) : &quot;Message&quot;
+]
+</pre>
+
+<p><span>The advantage of using inheritance is that you can now use the BaseClass reference to define a number of entities with the same basic characteristics. Changing the BaseClass will change all entities that use it as a base for its properties.</span></p>
+<p><span>Any part of the BaseClass can be overridden in the new entity simply by redefining the specific part. In the above example, if you wanted to use the <i>Door </i>BaseClass for <i>func_slowdoor</i>, but the <i>func_slowdoor</i> is supposed to have a default delay of &quot;4&quot;, you would define it like this... </span></p>
+
+<pre class="code">
+@SolidClass base(Door) = func_slowdoor : &quot;slow door&quot;
+[
+    delay(string) : &quot;Delay&quot; : 4
+]
+</pre>
+
+<p><span>...the same can be done for color( ) and size( ) as well.</span></p>
+
+<p class=Code><span>color( ) = color(r{0 .. 255} g{0 .. 255} b{0 .. 255})</span></p>
+
+<p><span>This sets the color of the entity as it appears in Hammer’s 2D views. This has no effect in the game.</span></p>
+
+<p class=Code><span>size( ) = size(x y z[, x y z])</span></p>
+
+<p><span>This sets the size of the entity as it appears in Hammer’s 3D and 2D views. The size is based on the actual model size of the entity (in cases where the entity is associated with a model).</span><span> If this value is incorrect, it is difficult to accurately place the entity in the level.</span><span> If you only specify the first set of values, it will be assumed that the entity origin is in the center. For example, &quot;</span><span>(-8 -8 -8, 8 8 8)&quot; is equal to &quot;</span><span>(16 16 16)&quot;.</span><span> In the case of non-model entities, a size of </span><span>(-8 -8 -8, 8 8 8) is fine. </span></p>
+  
+<h2><span>Variable Types</span></h2>
+
+<p><span>Following is a list of entity variable types.</span></p>
+  
+<h3><span>Flags </span></h3>
+
+<p><span>Flags let you enable or disable a certain feature of an entity. Flags always follow a fairly strict setup, they are always defined like this...</span></p>
+
+<pre class="code">
+spawnflags(flags) =
+[
+    flag_value : &quot;description&quot; : on_off_value
+    ...
+]
+</pre>
+
+<p><span>The only variation from the above will be in the <i>flag_value</i>, <i>description</i>, and <i>on_off_value</i>.</span></p>
+<p><span><i>flag_value</i> must be one in the range of </span><span>{1,2,4,8,16,32,64,128,256,512,1024,2048}.</span></p>
+<p><span>{256,512,1024,2056} are usually reserved for the <i>Appearflag</i> flags, which determine whether or not an entity will appear at a given skill level. <i>on_off_value</i> is either 1 or 0.</span></p>
+  
+<h3><span>target_source</span></h3>
+
+<h3><span>target_destination</span></h3>
+
+<p><span>These two variable types denote a relationship between one entity and another. This type is most often associated with the <i>target</i> and <i>targetname</i> variables...</span></p>
+
+<pre class="code">
+targetname(target_source) <b>:</b> &quot;Name&quot;
+target(target_destination) <b>:</b> &quot;Target&quot;
+</pre>
+
+<p><span>...where typically there will be an entity with a <i>target</i> value, and an entity that has a matching <i>targetname</i> value.</span></p>
+  
+<h3><span>integer</span></h3>
+
+<p><span>The integer type is used for variables that hold a number...</span></p>
+  <p class=Code><span>delay(integer) : &quot;Delay before activation&quot; : 0</span></p>
+<p><span>The value is not limited to integers only, any number can be used. For example, &quot;4&quot; and &quot;4.5&quot; are both valid values for an integer type variable.</span></p>
+  
+<h3><span>string</span></h3>
+
+<p><span>The string can be used where an alphanumeric value is needed, or where a compound value is needed.</span></p>
+
+<pre class="code">
+message(string) : &quot;Message when triggered&quot;
+mangle(string) : &quot;mAngle (x y z)&quot; : &quot;0 0 0&quot;
+</pre>
+
+<p><span>The string type is fairly multipurpose...it can be used as a substitute for target_source, target_destination, and integer.</span></p>
+  
+<h3><span>choices</span></h3>
+
+<p><span>The <i>choices</i> type allows you to setup a list of integer choices for a variable that can have a number of different values. Like flags, the <i>choices</i> type follows a fairly standard formula, but its nowhere near as strict.</span></p>
+
+<pre class="code">
+variable_name(choices) : &quot;Description&quot; : default_value =
+[
+    choice_value : &quot;Description&quot;
+    ...
+]
+</pre>
+
+<p><span>The variations from the above will be <i>variable_name</i>, <i>default_value</i>, <i>choice_value</i>, and the descriptions. The <i>default_value</i> is typically the same as one of the <i>choice_values</i>, the <i>default </i><i>choice_value</i>. it must be an integer value.</span><span> The <i>choice_value</i>is an integer value, and should be accompanied by a description.</span></p>
+
+<pre class="code">
+gravity(choices) : &quot;Gravity Level&quot; : 800 = 
+[
+    400 : &quot;Low&quot;
+    800 : &quot;Normal&quot;
+    1000 : &quot;High&quot;
+]
+</pre>
+  
+<h3><span>color1</span></h3>
+
+<p><span>This variable type is mostly a time saving utility. When a color value is needed in the format of...</span></p>
+  <p class=Code><span>&quot;{0.000 .. 0.100} {0.000 .. 0.100} {0.000 .. 0.100}&quot;</span></p>
+<p><span>...like </span><span>&quot;0.000 0.500 1.000&quot; (which results in<b> </b>cyan), it is much easier to calculate the color value when using this type, as it brings up a color dialog which allows you to pick the actual color.</span></p>
+  
+<h3><span>color255</span></h3>
+
+<p><span>This is technically the same as the <i>color1</i> variable type, except that the RGB values are in the range of {0 .. 255}. For example, the above RGB value of </span><span>&quot;0.000 0.500 1.000&quot; would be represented as </span><span>&quot;0 128 255&quot;. A fourth number can be appended to this set of numbers, and the color picker will not modify this last value. This is used for when the value of a variable holds both the RGB values, and a brightness value, in the case of lights.</span></p>
+<p><span><b>Comments<br>
+</b>You can place comments anywhere throughout the FGD file. They are useful for keeping track of where you've made changes to the FGD, and for things like contact and support information. Comments have no effect on how the FGD is used within Hammer. I like to follow the following format with comments...</span></p>
+<p><span>At the top of the file...</span></p>
+
+<pre class="code">
+//
+// game / mod identification
+// for what version of Hammer?
+// date last updated?
+//
+// contact info for author 
+// support information (email, web sites, etc)
+//
+// credits
+//
+</pre>
+
+<p><span>...and throughout the file...</span></p>
+
+<pre class="code">
+// comments on entity usage
+//
+// mmdd (month / day) - revision information - this is useful for 
+// keeping track of what changes you've made and when you've 
+// made them.
+// 0421 - i did something today.
+// 0422 - i changed something again.
+</pre>
+ 
+<p><span>This is most useful when you are developing for a mod or porting another game's information into an FGD where you may have to make many changes before it is finished.</span></p>
+  
+<h3><span>Related Topics:</span></h3>
+
+<p><span><a href="Entity_Guide.html">Entity Guide</a></span></p>
+
+
+
+<hr>
+
+<h1>Version 3.3 FGD Format Changes</h1>
+
+  <p>A number of changes have been made to the FGD format to allow for enhanced entity properties and to facilitate the display of sprites in the 3D view.</p>
+
+  <p><b>Iconic Entities</b><BR>
+   Iconic Entities are those entities that have a sprite associated with them. Icon sprites should be stored in Worldcraft\sprites and are referenced with the <b>iconsprite()</b> helper. The format is like this:</p>
+
+  <p><span style="font-size : 8.0pt;">@PointClass </span><span style="font-weight : bold;font-size : 8.0pt;">iconsprite(&quot;sprites/lightbulb.spr&quot;)</span><span style="font-size : 8.0pt;"> base(Light) = light : &quot;Light Entity&quot;</span><BR>
+   <span style="font-size : 8.0pt;">[</span><BR>
+   <span style="font-size : 8.0pt;">&nbsp; &ldots;</span><BR>
+   <span style="font-size : 8.0pt;">]</span></p>
+
+  <p>Icon sprites should be of alphatest type.</p>
+
+  <p><b>Sprite-based Entities</b><BR>
+   Sprite-based entities are those entities that have some connection to a sprite. For Half-Life, this includes the env_glow, env_sprite, and cycler_sprite. These entities use the <b>sprite()</b> helper. Below is the modified version of the env_sprite.</p>
+
+  <p><span style="font-size : 8.0pt;">@PointClass </span><span style="font-weight : bold;font-size : 8.0pt;">sprite()</span><span style="font-size : 8.0pt;"> base(Targetname, RenderFields) size(-4 -4 -4, 4 4 4) = env_sprite : &quot;Sprite&quot;</span><BR>
+   <span style="font-size : 8.0pt;">[</span><BR>
+   <span style="font-size : 8.0pt;">&nbsp; framerate(string) : &quot;Framerate&quot; : &quot;10.0&quot;</span><BR>
+   <span style="font-size : 8.0pt;">&nbsp; model(</span><span style="font-weight : bold;font-size : 8.0pt;">sprite</span><span style="font-size : 8.0pt;">)
+    : &quot;Sprite Name&quot; : &quot;sprites/glow01.spr&quot;</span><BR>
+   <span style="font-size : 8.0pt;">&nbsp; scale(string) : &quot;Scale&quot; : &quot;&quot;</span><BR>
+   <span style="font-size : 8.0pt;">&nbsp; spawnflags(flags) =</span><BR>
+   <span style="font-size : 8.0pt;">&nbsp; [</span><BR>
+   <span style="font-size : 8.0pt;">&nbsp; &nbsp; 1: &quot;Start on&quot;
+    : 0</span><BR>
+   <span style="font-size : 8.0pt;">&nbsp; &nbsp; 2: &quot;Play Once&quot; : 0</span><BR>
+   <span style="font-size : 8.0pt;">&nbsp; ]</span><BR>
+   <span style="font-size : 8.0pt;">]</span></p>
+
+  <p>The first difference is the addition of the <b>sprite()</b> helper in the definition line. The other is that the model key is now a <b>sprite</b> type, rather than a generic string. The sprite listed in this key will be displayed in the 3D view.</p>
+
+  <p>The sprite() helper is looking specifically for the model key. It will also look at the value of the framerate, scale, and rendermode keys, so the sprite will be displayed as it is meant to (ie: animated sprites animate at the specified framerate).</p>
+
+  <p><b>File Browsing</b><BR>
+   Any entity property that accepts the path/filename of a sprite, sound, or model should now be of the sprite, sound, or studio type, rather than just a simple string.</p>
+
+  <p><span style="font-size : 9.0pt;">&nbsp; model(</span><span style="font-weight : bold;font-size : 9.0pt;">sprite</span><span style="font-size : 9.0pt;">)
+    : &quot;Sprite Name&quot; : &quot;sprites/glow01.spr&quot;</span><BR>
+   <span style="font-size : 9.0pt;">&nbsp; model(</span><span style="font-weight : bold;font-size : 9.0pt;">studio</span><span style="font-size : 9.0pt;">)
+    : &quot;Model Name&quot; : &quot;models/can.mdl&quot;</span><BR>
+   <span style="font-size : 9.0pt;">&nbsp; message(</span><span style="font-weight : bold;font-size : 9.0pt;">sound</span><span style="font-size : 9.0pt;">)
+    : &quot;WAV Name&quot;</span></p>
+
+  <p>The result of using these key types rather than the generic string type is the entity properties will have a button beside them allowing you to browse through the appropriate game directories for the files. This does not provide any preview capabilities.</p>
+
+  <p>For this to work correctly, you must have the sprite, model, and sound folders unpacked from the PAK files to the appropriate directories.</p>
+
+  <p><b>Decals</b><BR>
+   The decal entity definition now requires the addition of the <b>decal()</b> helper to make it work properly in Hammer.</p>
+
+  <p><span style="font-size : 9.0pt;">@PointClass </span><span style="font-weight : bold;font-size : 9.0pt;">decal()</span><span style="font-size : 9.0pt;"> base(Targetname, Appearflags) = infodecal : &quot;Decal&quot;</span><BR>
+   <span style="font-size : 9.0pt;">[</span><BR>
+   <span style="font-size : 9.0pt;">&nbsp; texture(decal)</span><BR>
+   <span style="font-size : 9.0pt;">]</span></p>
+
+  <p>Without the <b>decal()</b> helper, decals will appear as small square blocks in the Hammer 3D view.</p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

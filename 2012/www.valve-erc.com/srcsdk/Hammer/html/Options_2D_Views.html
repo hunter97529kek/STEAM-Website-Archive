@@ -1,0 +1,119 @@
+<html>
+<head>
+	<title>2D Views</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Options: 2D Views tab </h1>
+
+<p>The <b>2D views</b> configuration tab contains various options that effect the display and behavior of the 2D view windows.</p>
+<p><img src="../images/interface/Options_2D.png"></p>
+
+<h2>Options</h2>
+
+<h3>Crosshair cursor</h3>
+
+<p>When this is enabled, the pointer will turn into a crosshair when it is over a brush.</p>
+  
+<h3>Default to 15 degree rotations</h3>
+
+<p>When rotating a brush, the rotations will automatically be in 15 degree increments. </p>
+
+<p class=callout><b>Tip:</b> You can reverse the behavior of this option temporarily by holding down the SHIFT key during a rotate operation.</p>
+
+<h3>Display scrollbars</h3>
+
+<p><span>If this is disabled, scrollbars will not appear in the 2D views. You will be able to scroll the views by using the arrow keys if the option for nudging objects via the arrow keys is disabled (see </span><b><span>Arrow keys nudge selected object/vertex </span></b><span>option, below).</span></p>
+
+<p class=callout><b>Tip:</b> You can also hold down the SPACE BAR to pan in any of the 2D views. The cursor will change to a hand icon to show you are in pan mode. Using this function allows you to turn off the scroll bars and save valuable work space. </p>
+  
+<h3>Draw Vertices</h3>
+
+<p><span>If this is enabled, brush vertices will be shown in the 2D views.</span></p>
+  
+<h3>White-on-black color scheme</h3>
+
+<p><span>With this option enabled, brushes and grid lines will appear as white lines drawn on a black background. When this is not enabled, the reverse is in effect.</span></p>
+
+<p class=callout><b>Tip:</b> The <b>White on black color scheme</b> is the most flexible color mode. It allows you to change the brightness of the grid lines using the <b>Intensity:</b> slider, see below.</p>
+
+<h3>Keep grouping when clone dragging</h3>
+
+<p><span>When clone dragging (select an object, hold down SHIFT, and drag the object), this will option will enable the clone objects to retain the <b>VisGroup</b> properties of the original objects.</span></p>
+  
+<h3>Center on camera after movement in 3D</h3>
+
+<p>While in <b>Camera</b> mode, if you use the mouse to move around the 3D view, the 2D views will automatically center on the new camera position if this option is enabled.</p>
+
+<p class=callout><b>Tip:</b> This only affects the 2D views when in Camera mode. Using the SPACE shortcut to move in the 3d view will not trigger the 2D views to follow the camera position. </p>
+
+<h3>Use VisGroup colors for object lines</h3>
+
+<p><span>When this is enabled, the object lines for any non-entity brush will be the color specified in their VisGroup properties when viewed in the 2D views. All objects will appear white if this option is disabled (or black if the <b>White on black color scheme</b> option is disabled). See <a href="Visgroup_Edit.html">Edit Visgroup</a> dialog for details on how to set colors for VisGroups.</span></p>
+  
+<h3>Arrow keys nudge selected object/vertex</h3>
+
+<p><span>When this is enabled, you can move a selected object or vertex by using the arrow keys. Note that the direction of movement is relative to the current active 2D view, so the mouse cursor's position in the 2D views will dictate which direction the object will move. When no objects are selected, or with this option disabled, the arrow keys will scroll the 2D views in the direction of the arrow key pressed.</span></p>
+  
+<h3>Reorient primitives on creation in the active 2D view<a name="ReorientPrimitives"></a></h3>
+
+<p>When this is enabled, primitives created with the <b>Block Tool</b> will be oriented with their “top” shown in whichever 2D view it was created in. This is most easily shown when creating a cylinder. With this option disabled, the cylinder will be oriented so that the circular part shows up in the XY 2D view, regardless of which view you created it in. This is intended to save you some time and give you predictable results when creating new objects.</p>
+  
+<h3>Automatic infinite selection in 2D windows (no ENTER)</h3>
+
+<p><span>When this is enabled, using the <b>Selection tool</b> to drag a selection box over an object or objects will immediately cause them to be selected. Without this option, you would need to press ENTER to perform the selection.</span></p>
+
+<p class=callout><b>Tip:</b> This option can also be turned on and off from the toolbar (see <b>Toggle auto-selection</b> in the <b>MapOperations toolbar</b> section). It is very effective to leave this option enabled for most editing work, then temporarily turn it off when you need to do some finely-tuned selections.</p>
+<br>
+
+<p class=callout><b>Tip:</b> You can use this option with the <b>Selection box selects by center handles only</b> option (see below) to rapidly select a specific set of objects within your map. </p>
+
+<h3>Selection box selects by center handles only</h3>
+
+<p><span>When using the <b>Selection</b> <b>tool</b> to select a number of objects, it defaults to selecting any part of the object the cursor or selection box touches. With this option enabled, it will only select those objects whose &quot;handles&quot; (the small &quot;x&quot; at the center of each object) are within the selection box. Also, in this mode, you can only select individual objects by clicking directly on their handles. This option also effects the selection of objects in the 3d view in wireframe mode. It has no effect on the selection of objects in the filled or textured 3d modes.</span></p>
+
+<p class=callout><b>Tip:</b> This option can be turned on and off from the <a href="Toolbar_Map_Operations.html">Map Operations </a>Toolbar as well.</p>
+
+<h2>Grid</h2>
+
+<h3>Size:</h3>
+
+<p><span>This will be the initial grid size when you start a new map or load an existing one.</span></p>
+
+<p class=callout><b>Tip:</b> You can change the grid size while editing by pressing &quot;[&quot; and &quot;]&quot; or by buttons on the <a href="Toolbar_Map_View.html">Map View</a> Toolbar.</p>
+
+<h3>Intensity:</h3>
+
+<p><span>This is a slide bar with values from 0 to 100, and sets the intensity (brightness) of the grid lines when the <b>White on black color scheme</b> is enabled. The slider has no effect if the <b>White on black color scheme</b> is disabled.</span></p>
+
+<p class=callout><b>Tip:</b> Generally, a low <b>Intensity</b> setting works best, so that you are able to differentiate the grid from the objects. Try different settings to see what works best for you.</p>
+
+<h3>Highlight every 64 units</h3>
+<p>This will highlight the grid every 64 units with a slightly brighter line.</p>
+  
+<h3>Highlight every [x] grid lines</h3>
+<p>This will highlight a grid line once every [x] lines with a slightly brighter line.</p>
+  
+<h3>Hide grid smaller than 4 pixels</h3>
+<p>If the grid size is smaller than 4 pixels, it will generally appear as a gray background instead of a grid, unless you are zoomed in extremely close. When enabled, this option turns off the grid when it gets that small.</p>
+  
+<h3>Highlight every 1024 units</h3>
+<p>This will highlight the grid every 1024 units with a red line. The 1024 unit line is significant because the Source Engine compile tools create automatic BSP splits every 1024 units.</p>
+  
+<h3>Dotted Grid</h3>
+<p>Enabling this option causes the grid to be displayed as a series of dots, rather than lines. This may help if you find that the grid lines blend into your map lines.</p>
+
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

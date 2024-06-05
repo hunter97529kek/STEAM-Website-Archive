@@ -1,0 +1,52 @@
+<html>
+<head>
+	<title>Using Cordon Tools</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Using Cordon Tools</h1>
+
+<h3><img src="../images/interface/mo-togglecordon.png"> Toggle Cordon State<a name="CordonState"></a></h3>
+
+<p><span>This function will toggle the visibility and effect of a cordon area you have created with the </span><b>Edit Cordon Bounds </b>tool<span>. When the <b>Toggle Cordon State</b> is activated, a thick red line will appear around that area. When you compile, only the inside of that red area will be compiled, and a box will be placed around the area to seal leaks. With the button deactivated, the cordon area will not be visible, and the compile will be unaffected by the cordon. See </span><b>Edit Cordon Bounds </b>for information on how to create and edit cordon areas.</p>
+  
+<h3><img src="../images/interface/mo-editcordon.png"> Edit Cordon Bounds<a name="EditCordonBounds"></a></h3>
+
+<p><span>This function allows you to &quotcordon off&quot an area in order to test compile a section of the map file. When the <b>Toggle Cordon State</b> is activated, a thick red line will appear around that area. When you compile, only the objects inside of that red area will be compiled, and a black box will be placed around the area to seal leaks.</span></p>
+<p><span>This is extremely useful when you are working on a large level and want to look at changes made in only a small area. Rather than wait a considerable amount of time for the entire map to compile, you can selectively compile only a small area by using the cordon functions.</span></p>
+<p>This function allows you to create new cordon boundaries, or edit existing ones. After enabling <b>Edit Cordon Bounds</b>, the editing handles of a cordon area will become active. Drag the boundary handles to a new area to change the size of the area. Select an different editing tool to deactivate <b>Edit Cordon Bounds</b> and make the changes to the cordon area.</p>
+
+<p>To create a new cordon area:</p>
+<ol>
+	<li>Select the <b>Edit Cordon Bounds</b> button on the <b>MapOperations Toolbar</b>. The <b>Toggle Cordon State</b> button will also automatically activate.<br>
+	<li>Drag a selection box in one of the 2D views.<br>
+	<li>Resize the selection box as necessary, in any of the 2D views.<br>
+	<li>Select any other editing tool from the <b>MapTools Toolbar </b>to finish creating the cordon area. The <b>Toggle Cordon State</b> button will remain active.<br>
+	
+	<p class=callout><b>Tip:</b> Make sure a player start point lies within the bounds of the cordoned area before you run a test compile, otherwise the game will place the player at the world origin when you load the map in the game engine.</p>
+</ol>
+
+
+<p><img width=822 height=323 src="../images/examples/cordon1.png"></p>
+
+<p>To edit an existing cordon area:</p>
+<ol>
+<li>Select the <b>Edit Cordon Bounds </b>button<b> </b><span>on the <b>MapOperations Toolbar</b>. The <b>Toggle Cordon State</b> button will also automatically activate.</span><br>
+<li>Drag the handles of the selection box in any of the 2D views to change the size of the cordon area.<br>
+<li>Click-drag in the center of the selection box to move the entire box at once.<br>
+<li>Select any other editing tool from the <b>MapTools Toolbar </b>to finish editing the cordon area. The <b>Toggle Cordon State</b> button will remain active.<br>
+</ol>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

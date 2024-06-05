@@ -1,0 +1,127 @@
+<html>
+<head>
+	<title>The Tools Menu</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>The Tools Menu</h1>
+
+<img src="../images/interface/Menu_Tools.png" width="414" height="392" vspace="0" hspace="0" border="0">
+
+
+<h3>Carve&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+SHIFT+C</h3>
+<p>This will take the selected object and carve its shape out of any surrounding objects that intersect it. You can have more than one carve object selected at once, and they will each carve the surrounding solids. For more information, see <a href="Reshaping_Solids.html">Reshaping Solids</a>.</p>
+
+
+<h3>Make Hollow&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+H</h3>
+<p>Opens the <a href="Hollow.html">Make Hollow</a> dlalog, which takes a selected object and generates walls out the shape, making it a hollow room.</p>
+
+<h3>Group and Ungroup<a name="GroupAndUngroup"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+G, CTRL+U</h3>
+<p>Using <b>Group</b> on selected objects will bind them together so they may be acted upon simultaneously. For purposes of selecting and transforming, the grouped objects will act as one single object. You can edit the objects separately if you <b>Ungroup</b> them, or use the <b>Toggle group ignore </b>button on the <b>MapOperations</b> toolbar. Note that using <b>Group</b> is not the same as VisGrouping, which controls object visibility.</p>
+
+<p>For more information on grouping, see <a href="Grouping_and_VisGrouping.html">Grouping and Visgrouping</a>.</p>
+
+<h3>Tie to entity<a name="TieToEntity"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+T</h3>
+<p>This command converts a solid (world) object into an entity type object so it can be given parameters that affect gameplay. When you tie an object to an entity, the <a href="Object_Properties.html">Object Properties</a> dialog will pop up with a list of all available brush entities. The entity can be made up of several objects at once – simply select multiple objects before you perform the command, and all the selected objects will be a part of the entity. Objects can also be added to an existing entity by selecting the entity and the objects you will to add, and performing another <b>Tie to entity</b> command. You can also join two entities together in a similar way. See <a href="Creating_Entities.html">Creating Entities</a> for more information. </p>
+
+  
+<h3>Move to world<a name="MoveToWorld"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+W</h3>
+<p>The <b>Move to world</b> command converts an entity object into a non-entity world object, and strips all entity properties from it. The command can be used to convert multiple selected entity objects at once.</p>
+
+<h3>Texture application<a name="TextureApplication"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: SHIFT+A</h3>
+
+<p>This will switch the current tool to the <a href="Toolbar_Map_Tools.html">Texture Application Tool</a>, and bring up the <a href="Face_Edit_Mats.html">Face Edit</a> dialog box. These tools are used to edit texture properties of objects on a per face level. The <strong>Face Edit</strong> dialog also provides access to the displacement geometry tools. </p>
+
+
+  
+<h3>Replace textures</h3>
+
+<p>This will bring up the <a href="Replace_Textures.html">Replace Textures</a> dialog which allows you to search, mark or replace all textures of a certain type.</p>
+
+  
+<h3>Texture lock&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: SHIFT+L</h3>
+
+<p>This option toggles <b>Texture lock</b> mode on and off. <b>Texture lock</b> allows you to move a brush without disturbing the alignment of the texture on the object. With <b>Texture lock</b> disabled, if you move an object, the texture stays aligned with the original position of the object.</p>
+
+<p class=callout><b>Tip:</b> There are times when it is easier to resize or move an object to fit the current texture alignment instead of the other way around. In this case, disable <b>Texture lock</b>, move the object to fit the texture, then enable <b>Texture lock</b> to move the object with the texture aligned.</p>
+
+<h3>Sound Browser</h3>
+<p>Opens the <a href="Sound_Browser.html">Sound Browser</a> dialog, which provides a listing of the available sounds in the game.</p>
+    
+<h3>Transform&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+M</h3>
+<p>This brings up the <a href="Transform.html">Transform</a> dialog, allowing you to rotate, scale, and move an object with precise values in any of the X, Y, or Z planes.</p>
+
+<h3>Snap Selected to Grid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+B</h3>
+<p>Not all objects will align perfectly to the grid, due to moving or resizing of the objects or changes in the grid size. This command will snap the bottom and left sides of the object to the grid. If more than one object is selected, the command will use the lowest to the bottom and leftmost objects to align all the objects as a single group.</p>
+
+<h3>Snap Selected to Grid Individually&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+SHIFT+B</h3>
+<p>Identical to <strong>Snap Selected to Grid</strong>, except that each object in the selection is snapped to the grid on its own, instead of using the bottom and left edges of the group bounding box.</p>
+  
+<h3>Center Origins</h3>
+<p>For entities with origin helpers, this command moves the origin helper back to the center of the object bounding box. Multiple objects can be selected. </p>
+  
+<h3>Align objects</h3>
+<p>The <b>Align objects</b> sub-menu allows you to align objects to one another, similar to the <b>Snap selected to grid</b> command, but with additional options as to how the objects are aligned.</p>
+<p><img src="../images/interface/Menu_Tools_Align.png"></p>
+
+<p>Objects can be aligned on their left, right, top, or bottom edges. The object that is farthest in the direction you wish to align stays stationary, and all the other objects are moved to align with that object’s edge. Also, the direction the objects are aligned is relative to the active 2D view.</p>
+
+<p>To align a set of objects:</p>
+<ol>
+	<li>Select the objects you wish to align in the 2D view you wish to align them.<br>
+	<li>Select the direction you want the objects to align from the <b>Align objects</b> sub-menu in the <b>Tools</b> <b>Menu</b>. Remember the direction is relative to the current active 2D view.<br>
+	<li>The objects will be aligned in the direction you chose.<br>
+</ol>
+
+<p><img src="../images/examples/align_objects.png"></p>
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="../images/examples/align_objects.png"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Using the Align Objects command to align a set of object along their left edges.</td>
+	</tr>
+</table>
+
+<h3>Flip Objects&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+L, CTRL+I</h3>
+
+<p>The <b>Flip objects</b> sub-menu allows you to flip objects horizontally or vertically (or both, to mirror the object).</p>
+<p><img src="../images/interface/Menu_Tools_Flip.png"></p>
+
+<p>You can mirror multiple objects at once. A single object is mirrored about its center point, and a group of selected objects are mirrored about their common center point. Also, the direction the objects are mirrored is relative to the active 2D view.</p>
+
+<p>To mirror an object or set objects:</p>
+<ol>
+	<li>Select the objects you wish to mirror in the 2D view you wish to align them.<br>
+	<li>Select the direction you want to flip the objects from the <b>Flip objects</b> sub-menu in the <b>Tools</b> <b>Menu</b>. Remember the direction is relative to the current active 2D view.<br>
+	<li>The objects are flipped in the direction you chose.<br>
+</ol>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="../images/examples/flip_horiz.png"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Using the Flip Objects command to Flip an object horizontally. </td>
+	</tr>
+</table>
+
+<h3><b>Create Prefab<a name="CreatePrefab"></a></b></h3>
+<p>Creates a Hammer prefab object out of the selected objects. Hammer opens a <strong>Save As...</strong> dialog open in the Hammer prefabs directory. Type in a name and click the <strong>Save</strong> button to add the prefab to the library. See <a href="Creating_and_Using_Prefabs.html">Creating and Using Prefabs</a> for more information.</p>
+   
+<h3>Options...</h3>
+<p><span>This will bring up the <a href="Options.html">Options</a> dialog box which allows you to modify a number of Hammer Editor behaviors. </span></p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

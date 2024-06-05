@@ -1,0 +1,78 @@
+<html>
+<head>
+	<title>Game Configuration</title>
+	 <link href="../hammer.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+
+<div class="content">
+
+
+<h1>Options: Game Configurations</h1>
+
+
+<p>The <b>Game Configurations </b>options allow you to set up game profiles, each of which contain a number of modifiable elements, including texture format, map format, game entity definition file, defaults, and file and directory path location information.</p>
+<p><img src="../images/interface/Options_Game_Config.png"></p>
+
+<p class=callout><span style='text-transform:uppercase'></span><b><span style='text-transform: uppercase'>Warning</span>:</b> It is important that the information you enter here is correct. Incorrect information may cause Hammer to behave quite unpredictably.</p>
+<br>
+  
+<h3>Configuration:</h3>
+
+<p>This is a list of the preset game configuration profiles (Half-Life, Counter-Strike, Day of Deafeat, etc.), or custom profiles you’ve created, for which you can edit the properties. The information in the <b>Game Configurations tab</b> reflects the currently selected configuration profile.</p>
+  
+<h3>Edit</h3>
+
+<p><span>Click the <b>Edit</b> button to modify the list of game profiles. The <b>Edit Game Configurations</b> dialog will appear. Click <b>Add</b> to create a new, blank game configuration. Click <b>Remove</b> to delete the selected game configuration. Click <b>Copy</b> to make a duplicate of the selected game configuration. Click <b>Close</b> to close the dialog and return to the <b>Game Configurations tab</b>.</span></p>
+  
+<h3>Game Data files:</h3>
+
+<p>You can specify here which .FGD data file Hammer will use for entity support for this game profile. You have the options of adding, removing, or editing the game file. Click <b><span>Add </span></b>to add an .FGD data file to the current configuration. Click the <b>Edit</b> button to launch the default Windows text editor and open the selected .FGD data file for editing. Click <b>Remove</b> to remove the selected .FGD from the list. See the Section <a href="FGD_Guide.html">FGD Guide</a> for more information on the contents of .FGD files.</p>
+
+<p class=callout><b><span style='text-transform: uppercase'>Warning</span>:</b> Be careful when editing .FGD files if you are unfamiliar with their structure and content. Incorrectly changing or deleting entries from the .FGD can make it impossible to properly compile your edited game levels.</p>
+  
+<h3>Texture Format:</h3>
+
+<p>You can specify here what texture format will be used with the current game profile.</p>
+  
+<h3>Map Type:</h3>
+
+<p>You can choose the current profile's format for saved maps here.</p>
+  
+<h3>Default Texture Scale:</h3>
+<p>Sets the defaults scale when applying textures. The default of .25 is the Source Engine default scale for 1 pixel = 1 unit = 1 inch.</p>
+  
+<h3>Default Lightmap Scale:</h3>
+<p>Sets the defaults lightmap scale for when creating a new brush. Lightmap scale is measured in units per luxel.</p>
+  
+<h3>Cordon Texture:</h3>
+<p>Defines what material is used for the cordon volume when using the <a href="Toolbar_Map_Operations.html#EditCordonBounds">Cordon</a> tool. You can either type in a material to use, or click the Browse button to display the <a href="Texture_Browser.html">Texture Browser</a>.</p>
+  
+<h3>Default PointEntity class:</h3>
+<p>This allows you to specify which point style entity is the default when you first start up Hammer. If unchanged, it will be set to the first point entity found in the game data file.</p>
+  
+<h3>Default SolidEntity class:</h3>
+
+<p><span>This allows you to specify which solid style entity is the default when you first start up Hammer. <span>If unchanged, it will be set to the first solid entity found in the game data file.</span></span></p>
+  
+<h3>Game executable directory</h3>
+<p>This should be set to the folder that the Half-Life executable is in (ie: c:\Half-Life). The value entered here links to the $exedir variable in the <a href="Run_Map_Expert.html">Expert Compile</a> mode.</p>
+
+<h3>Game Directory:</h3>
+
+<p>You specify the game directory here. You can either type a directory path, or use the <b>Browse</b> button to interactively select a directory. The value entered here links to the $gamedir variable in the <a href="Run_Map_Expert.html">Expert Compile</a> mode.</p>
+  
+<h3>VMF Directory:</h3>
+
+<p>You can specify the default directory for Hammer to save its map data files. The selected directory will be the default directory for the <b>Open,</b> <b>Save As…</b>, and <b>Export</b> dialogs. You can either type a directory path, or use the <b>Browse</b> button to interactively select a directory. The value entered here links to the $path variable in the <a href="Run_Map_Expert.html">Expert Compile</a> mode.</p>
+  
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

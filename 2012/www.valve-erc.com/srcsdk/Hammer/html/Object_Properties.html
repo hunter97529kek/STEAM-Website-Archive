@@ -1,0 +1,95 @@
+<html>
+<head>
+	<title>Object Properties</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Dialogs: Object Properties</h1>
+
+
+<p><span>The <b>Object Properties</b> dialog box is the primary method of modifying entity properties. It also allows you to adjust VisGroup properties for one or many brushes. For non-entity objects, only the <b>VisGroup</b> tab will appear in the <b>Object Properties</b> dialog box. Information about individual entities can be found in the <a href="Entity_Guide.html">Entity Guide</a>. </span></p>
+  
+<h2>Class Info Tab </h2>
+
+<p> <img src="../images/interface/Object_Properties_Class.png"></p>
+
+<h3>Class</h3>
+<p>This drop-down list contains all the entities available on the selected object.</p>
+
+<h3>Help</h3>
+<p>Clicking this button will open the help dialog for the selected entity class. The help dialog gives a description of the entity, it's keyvalues, as well as all of its Inputs and Outputs.</p>
+
+<h3>Keyvalues</h3>
+<p>This is a list of the different parameters that can be changed on the entity. Click on an category (or <em>Key</em>) on the left, and the data (<em>value</em>) for that key is displayed in the box to the right. You can change values for the entity by typing in the field. </p>
+
+<h3>Angles</h3>
+<p>The angle control is comprised of two parts - the Angle text box and the angle compass. These two allow you to accomplish the same thing - setting an angle between 0 and 359. The Angle text box also allows you to choose &quot;up&quot; and &quot;down&quot; which correspond to angles -1 and -2.</p>
+
+<h3>Browse</h3>
+<p>Some entity properties - those that require a path/filename of a sprite, sound, or model - will have a <strong>Browse</strong> button beside their property when you click on them. Clicking on this button will allow you to browse through the appropriate game directory for the sprite, sound, or model. This behavior is controlled by the game data file. For more information on that, see <a href="FGD_Guide.html">FGD Guide</a>.</p>
+
+<h3>Mark</h3>
+<p>Some entity properties - those that point to another named entity, have a Mark button. When pressed, the selection switches from the current entity to the entity named in the value field.</p>
+
+<h3>Mark + Add </h3>
+<p>Works identical to <strong>Mark</strong>, except that it <em>adds</em> the marked item to the selection instead of switching the selection to it.</p>
+
+<h3>Eyedropper</h3>
+<p>Clicking this button will turn the mouse cursor into the eyedropper icon. Clicking on any named entity in the 3D view will paste the clicked entity's name into the value field. Note that the entity clicked must have a name, or the eyedropper will have no data to paste. </p>
+
+<h3>Copy</h3>
+<p>This will copy all the keyvalues and parameters from the currently selected entity to the clipboard. This is independent of the standard <b>Copy </b>command.</p>
+  
+<h3>Paste</h3>
+<p>This will paste the keyvalues in the clipboard onto the currently selected entities. This is independent of the standard <b>Paste </b>command.</p>
+  
+<h3>Comments</h3>
+<p>Allows you to enter comments for the entity. This information is saved with the map. Useful for documenting the purpose of the entity in your map. For example, &quot;This entity triggers the gate to open when the player walks into the room.&quot;</p>
+  
+<h3>SmartEdit</h3>
+<p>Class Info has two modes, a regular editing mode and <strong>SmartEdit</strong> (toggled  by the <strong>SmartEdit</strong> button). When you use the <strong>SmartEdit</strong> mode, all of the entity's <em>keyvalue</em> (entity variable) descriptions are shown to you. This button turns off the &quot;friendly&quot; interface to the keyvalue data and let's you edit keys and values directly, for advanced users.</p>
+
+<p><img src="../images/interface/Object_Properties_SmartEdit.png" width="464" height="493" vspace="0" hspace="0" border="0"></p>
+
+<h2>Outputs Tab</h2>
+<p>List all of the Outputs for the current entity, and lets you add additional Outputs that the selected entity fires. See <a href="Outputs_and_Inputs.html">Using Outputs and Inputs</a> for more information on working with Outputs.</p>
+
+<p><img src="../images/interface/Object_Properties_Outputs.png" width="464" height="493" vspace="0" hspace="0" border="0"></p>
+
+<h2>Inputs Tab</h2>
+<p>Shows all of the Inputs to the current entity. Double-click an Input to go to the Outputs tab of the entity that originated the Input. See <a href="Outputs_and_Inputs.html">Using Outputs and Inputs</a> for more information  on working with Outputs.</p>
+
+<p><img src="../images/interface/Object_Properties_Inputs.png" width="464" height="493" vspace="0" hspace="0" border="0"></p>
+
+<h2>Flags Tab </h2>
+<p>You will find listed here all the available flags for an entity. This section is only available when editing an the properties of entities. A flag allows you to toggle on or off specific features of an entity. If more than one entity is selected, some of the flag checkmarks may appear gray. This signifies that the flag is enabled on only some of the selected entities. More information on flag usage for specific entities can be found in the <a href="Entity_Guide.html">Entity Guide</a>.</p>
+
+<p><img src="../images/interface/Object_Properties_Flags.png"></p>
+
+<h2>VisGroup Tab</h2>
+<p>This section allows you to assign the selected object to a VisGroup or remove it from one. To assign the objects to a VisGroup, simply select the VisGroups from the list. All selected objects will be assigned to the VisGroups you select. An object can be in any number of VisGroups. Pressing <b>Edit groups </b>opens the <a href="Visgroup_Edit.html">Edit VisGroups</a> dialog. For more information on VisGroups, see <a href="Grouping_and_VisGrouping.html">Grouping and Visgrouping </a>.</p>
+
+<p><img src="../images/interface/Object_Properties_Visgroups.png"></p>
+
+
+  
+<h3>Related Topics</h3>
+
+<p><span>Tie to Entity</span></p>
+<p><span><a href="Grouping_and_VisGrouping.html">Grouping and VisGrouping</a></span></p>
+<p><a href="Outputs_and_Inputs.html">Using Outputs and Inputs </a></p>
+<p><span><a href="Entity_Guide.html">Entity Guide</a> for entity specific information</span></p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

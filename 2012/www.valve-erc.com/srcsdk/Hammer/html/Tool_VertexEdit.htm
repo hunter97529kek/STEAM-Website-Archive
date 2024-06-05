@@ -1,0 +1,77 @@
+<html>
+<head>
+	<title>Vertex Tool</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</HEAD>
+
+<body>
+
+<div class="content">
+
+<h1>Tools: Vertex  Tool</h1>
+
+<h3><img src="../images/interface/mt-vertex.png"></h3>
+
+<p>Vertex manipulation gives you complete control over the shape of a solid object. Using the <b>Vertex Tool</b>, you can reshape the object by manipulating individual vertices and brush edges, easily creating odd (and sometimes invalid) shapes. This is useful for modifying specific pieces of a group of objects, where resizing would interfere with other objects in the group. Also, it allows you to make shapes that are impossible with Plane Clipping, and extremely difficult to do with carving.</p>
+
+<h2>Vertices and Edges</h2>
+
+<p>A vertex (or plural, vertices) is a corner of a solid. Moving one vertex will not effect any other vertex, but it will change the position of any edges associated with it. An edge is a point between two vertices which, when moved, will change the position of its two associated vertices, as well as their associated edges (no other vertices are effected besides the first two).</p>
+
+<p>While in vertex edit mode, you can select and move vertices, much like using the <a href="Tool_Selection.htm">Selection Tool</a>. Drag a selection box around vertices, and press ENTER to select them. Hold down the CTRL key and click individual vertices to add or remove them from the selection. You can select different objects to vertex edit by clicking the “x” handle in the center of the object. You can also select multiple objects at once to perform vertex editing upon by holding the CTRL key.</p>
+
+<p class=callout><b>Tip:</b> To Undo operations done with the <b>Vertex Tool</b>, you will have to first exit vertex edit mode.</p>
+
+<p>To edit the vertices of an object:</p>
+<ol>
+	<li>Select the object(s) you would like to use vertex manipulation on.<br>
+	<li>Select the <b>Vertex Tool </b>from the <a href="Toolbar_Map_Tools.html">Map Tools</a> Toolbar. The selected solid will turn into a wireframe image with partial shading. Vertices will be marked as white dots, and edges as yellow dots.<br>
+	<li>Click on the vertices/edges you want to move. They will be highlighted in red. Note that you can move both vertices and edges.<br>
+	<li>You can either drag the selected vertices or edges with the mouse, or move them in the selected 2D view using the arrow keys.<br>
+</ol>
+
+<p class=callout><b>Note:</b> You can keep selecting the <b>Vertex Tool</b>, or press SHIFT+V, to cycle through the three vertex edit modes: vertices and edges (default), vertices only, and edges only.</p>
+
+
+<br>
+
+<img src="../images/examples/VertexEdit1.png" width="440" height="440">
+
+<h2><a name="face_splitting"></a>Face Splitting</h2>
+
+<p>The <b>Vertex Tool</b> also allows you to split the faces on an object, adding additional faces to the brush. Simply select two opposing edges and press CTRL+F. This will turn the two edges into vertices, and place a new edge between them. Here is an example of face splitting:</p>
+
+<img src="../images/examples/vert1.png" width="304" height="186">
+
+<p>Simply select two opposing edges (fig. 3) and press Ctrl+F. This will turn the two edges into vertices, and place a new edge between them (fig.4).</p>
+
+<h2><a name="vertex_scaling"></a>Vertex Scaling</h2>
+
+<p>You can also perform vertex scaling with the <b>Vertex Tool</b>. Select the vertices you wish to scale and press ALT+E. The <b>Scale</b> dialog will open, and a circle with a dot in the center will appear in the center of the selected vertices.</p>
+<p><img src="../images/interface/Vertex_Scale.png"></p>
+
+<p>The circle is used as the center of the scale operation. Drag the circle in any of the 2D views to reposition it. Pressing the arrows in the <b>Scale </b>dialog box will increase or decrease the amount of scaling done on the selected vertices. Hit ENTER when you are done to close the <b>Scale </b>dialog box and return to normal vertex edit mode.</p>
+
+<p>To scale a set a vertices on an object:</p>
+<ol>
+	<li>Select the object(s) you would like to scale verticies on.<br>
+	<li>Select the <b>Vertex Tool </b>from the <b>MapTools Toolbar</b>. The selected solid will turn into a wireframe image with partial shading. Vertices will be marked as white dots, and edges as yellow dots.<br>
+	<li>Click on the vertices/edges you want to scale. They will be highlighted in red.<br>
+	<li>Press ALT+E to enter to bring up the <b>Scale </b>dialog box.<br>
+	<li>Alter the center of the scale operation my clicking and dragging the white circle in the center of the vertex selection.<br>
+	<li>Change the <strong>Scale</strong> value to alter the selected points.  You can press the up or down arrows to move in 0.1 increments, or enter a scale value directly in the text area. The scale changes will automatically be reflected on the selected object.<br>
+	<li>Press the ENTER or ESC key when you are done scaling to close the <b>Scale </b>dialog box.<br>
+</ol>
+
+<img src="../images/examples/vertex-scale2.png" width="780" height="323">
+
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

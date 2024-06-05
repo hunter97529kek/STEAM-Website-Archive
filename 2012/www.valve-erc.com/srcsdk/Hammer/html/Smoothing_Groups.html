@@ -1,0 +1,47 @@
+<html>
+<head>
+	<title>Smoothing Groups</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Dialogs: Smoothing Groups </h1>
+
+<p>The <b>Smoothing Groups </b> dialog allows you to match sets of faces that will be lit as one smooth surface when compiled.</p>
+<p><img src="../images/interface/Face_Edit_Smoothing.png"></p>
+
+<h3>About Smoothing Groups </h3>
+
+<p>The Source Engine can add smoother lighting to faces so the surfaces appear as one continous surface. <strong>Smoothing Groups</strong> are sets of these faces that are defined  to render smooth with one another.</p>
+
+<p>To be smoothed correctly, faces must meet these restrictions:</p>
+<ol>
+	<li>Must share a common edge.</li>
+	<li>Lightmaps of the faces must be aligned to one another.</li>
+	<li>The <a href="Face_Edit_Mats.html#LightmapScale">lightmap scale</a> must be small enough that  at least one lightmap luxel is small enough to fit on each face.</li>
+	<li>Must be in the same Smoothing Group. </li>
+</ol>
+
+<h3>Smooth</h3>
+
+<p>These are the <strong>Smooth Group</strong>s that the current face(s) are a member of. To add a face to a <strong>Smoothing Group</strong>, select the face, then depress the numbered button of a Smoothing Group. A face can be in multiple <strong>Smoothing Groups</strong>. </p>
+  
+<h3>Hard</h3>
+
+<p>Use these to pick a group of faces that will never be smoothed. <strong>Hard Groups</strong> are selected just like <strong>Smoothing Groups</strong>. For example, this can be used to make sure the ends of a cylinderical brush does not get smoothed with the side faces. </p>
+  
+<h3>Related Topics</h3>
+<p> <span><a href="Face_Edit_Mats.html">Face Edit, Materials </a></span></p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

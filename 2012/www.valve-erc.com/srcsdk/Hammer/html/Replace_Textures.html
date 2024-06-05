@@ -1,0 +1,73 @@
+<html>
+<head>
+	<title>Replace Textures</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Dialogs: Replace Textures</h1>
+
+<p><span>This will bring up the <b>Replace Textures</b> dialog which allows you to search, mark or replace all textures of a certain type.</span></p>
+<p><img src="../images/interface/Replace_Textures.png"></p>
+
+<h3>Find</h3>
+
+<p><span>This field contains the texture name to search for when replacing textures. Click the </span><strong>Browse</strong><span> button to pick a texture from the <span><a href="Texture_Browser.html">Texture Browser</a></span>. How the texture name is used to replace textures are controlled by the </span>Action<span> options.</span></p>
+  
+<h3>Replace</h3>
+
+<p><span>When replacing textures, they will be switched to the texture named in the </span>Replace <span>field. Click the </span><strong>Browse</strong><span> button to pick a texture from the <a href="Texture_Browser.html">Texture Browser</a>. How the texture name is used to replace textures are controlled by the </span>Action<span> options.</span></p>
+  
+<h2>Replace In</h2>
+
+<p><span>The <b>Replace In</b> section lets you specify what objects in the map should be affected by the replace operation. You can choose to the operation to affect <b>Everything</b> or only <b>Marked objects</b>. You can also choose to have hidden objects be affected by marking the <b>Hidden objects too</b> option.</span></p>
+  
+<h2>Action</h2>
+
+<p><span>This lets you choose which search-and-replace method you would like to use.</span></p>
+  
+<h3>Replace exact matches</h3>
+
+<p>This option is used for the most basic search and replace. It will replace any textures with a name that exactly matches the text specified in the <b>Find</b> field. The matching textures will then be switched to the texture named in the <b>Replace </b>field.</p>
+  
+<h3>Replace partial matches</h3>
+
+<p>This option will replace or mark any textures with a name that contains a partial match the text specified in the <b>Find</b> field. For example, entering “grate” in the <b>Find</b> field will find the textures named “grate”, “grate02”, and “grate_large”, but not “grat1” or “green”. All matching textures will then be replaced by the texture named in the <b>Replace </b>field.</p>
+  
+<h3>Substitute partial matches</h3>
+
+<p><span>With this option enabled, you can search for a specific part of a texture name, and substitute that part with something else. For example, if you have a group of textures with “slime” as part of their name (&quot;slimedoor&quot;, &quot;slimefloor&quot;, etc), and you want to change them to “rust” (&quot;rustdoor&quot;, &quot;rustfloor&quot;, etc), use this option. Enter “slime” in the <b>Find </b>field and “rust” in the <b>Replace</b> field, and the textures will be changed appropriately.</span></p>
+  
+<h3>Do not replace textures (mark solids found)</h3>
+<p>Use this feature to simply mark (select) faces containing the same texture, instead of replacing them with another texture. This is extremely useful if you would like to modify the texture attributes of every texture of a certain type, but don't want to select each one manually (while you are in the <b>Texture Application</b> mode).</p>
+
+<h3>Rescale texture coordinates for new size</h3>
+<p>When replacing materials of different sizes, checking this option will cause Hammer to alter the texture scaling on the brushes so that the replacement material becomes the same size as the material it is replacing. For example, if you have a wall with a 256x256 material applied to it at .5 scaling, replacing it with a 512x512 material will cause the texture scaling to be changed to .25 on the brush.</p>
+
+<p>To find and replace a specific texture in a map:</p>
+<ol>
+	<li>Choose <b>Replace Textures</b> from the <b>Tools Menu</b>.</li>
+	<li>In the <b>Find</b> section, click <b>Browse</b>.</li>
+	<li>Find a texture you wish to have replaced in the <b>Textures </b>window and Double-click it.</li>
+	<li>In the <b>Replace </b>section, click <b>Browse</b>.</li>
+	<li>Find the texture that you wish the replaced textures to be switched to in the <b>Textures </b>window and Double-click it.</li>
+	<li>Choose the options in the <b>Replace In</b> section that best match the objects you want to affect.</li>
+	<li>In the <b>Action</b> section, make sure <b>Replace exact matches</b> selected.</li>
+	<li>Click OK. A dialog box informs you of how many textures were replaced.</li>
+</ol>
+  
+<h3>Related Topics</h3>
+<p> <span><a href="Applying_Materials.html">Applying Materials to Solids</a></span></p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

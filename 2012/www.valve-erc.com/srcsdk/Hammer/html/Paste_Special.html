@@ -1,0 +1,60 @@
+<html>
+<head>
+	<title>Paste Special</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Dialogs: Paste Special </h1>
+
+<p><span>Pastes a copy of any objects in the clipboard into the current file, using special placement information entered into the dialog box.</span></p>
+<p><img src="../images/interface/Paste_Special.png"></p>
+
+<p><span>This dialog allows multiple pasting of the clipboard contents with offsets and rotations. This relieves the work in creating an object that contains many identical elements. For instance, to create a picket fence you can make one rail, then copy it multiple times with on offset for each new rail.</span></p>
+  
+<h3>Number of copies to paste</h3>
+
+<p><span>This value controls the number of new copies that will be created by the operation.</span></p>
+  
+<h3>Start at center of original</h3>
+
+<p><span>In the default On position, offsets and rotations are relative to the location and rotation of the original item in the clipboard. With it off, the new objects will be created relative to the center of the two previously selected windows.</span></p>
+  
+<h3>Group copies</h3>
+
+<p><span>Turning this on will group all resulting objects together. The default for <b>Group copies</b> is off.</span></p>
+  
+<h3>Offset (accumulative)</h3>
+
+<p><span>The three boxes here allow offset values for X, Y and Z. With each additional paste, the next object will be offset from the previous one by these values which are given in map units. The '&lt;' buttons beside each box will automatically insert the current grid settings.</span></p>
+  
+<h3>Rotation (accumulative)</h3>
+
+<p><span>These settings work in the same fashion as the Offset values, except that they apply rotation with each successive paste.</span></p>
+  
+<p>To create a staircase using Paste Special…</p>
+
+<ol>
+	<li>Create a solid shape to be used as a single stair.<br>
+	<li>Position the stair where you would like the staircase to begin.<br>
+	<li>Select <b>Copy</b> from the <b>Edit Menu</b>.<br>
+	<li>Select <b>Paste Special</b>… from the <b>Edit Menu </b>to bring up the dialog.<br>
+	<li>Enter the number of additional stairs you wish to create in the <b>Number of copies to paste</b> field. The total does not include the original ­­– if you want thirty total stairs, enter twenty-nine in this field.<br>
+	<li>Under the <b>Offset </b>section, click the arrow next to <b>Z</b> to read in the height of the stair. Increase this value for a steeper staircase<br>
+	<li>Click the arrow next to <b>X</b> <i>or</i> <b>Y</b>, depending on which direction your original stair faces.<br>
+	<li>Make sure <b>Start at center of original</b> is selected, so that the copies are aligned to the originals stair. Select <b>Group copies</b> if you wish the duplicates to be grouped together.<br>
+	<li>Press <b>OK</b> to create the stairs.<br>
+</ol>
+  
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

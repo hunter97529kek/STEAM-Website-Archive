@@ -1,0 +1,106 @@
+<html>
+<head>
+	<title>Face Properties</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+ <h1>Dialogs: Face Edit, Materials</h1>
+
+ <p><span>Selecting the <a href="Toolbar_Map_Tools.html#FaceEditTool">Texture Application</a><b> Tool</b> brings up the <b>Face Edit Sheet </b> dialog box. The <strong>Materials</strong> tab contains tools that are used to edit texture properties of objects on a per face level. The <strong>Displacement</strong> tab is contains tools to create and edit displacement geometry. See <a href="Face_Edit_Disps.html">Face Edit, Displacements</a>. </span></p>
+ <p><img src="../images/interface/Face_Edit_Material.png"></p>
+
+<p>The Face Edit dialog allows you to manipulate the texture properties of selected brush faces. To select a brush face, click on it in the 3D view with the left mouse button. To select multiple faces, hold down the Ctrl key while you do this. You can also select multiple brushes <I>before</i> selecting the Texture Application tool.</p>
+
+<p><b>&quot;Right-Click&quot; Texture Application</b><BR>
+A special feature of the Face Edit dialog is that of being able to apply the current texture to a brush face by right-clicking on that face.</p>
+
+<p>While in <b>Texture Application</b> mode, you can select multiple faces of a brush by CTRL+clicking them, or you can select the <i>entire</i> brush by SHIFT+clicking one of the brush faces. Combine the two shortcuts by pressing CTRL+SHIFT+LMB to add an entire brush to an existing selection.</p>
+
+<p class=callout><b>Tip:</b> In order to make the textures match up from one face to the next, first align the texture on one of the faces, lift the texture from that face (left-click by default), then Alt-right-click on the other faces one by one. The texture should flow continuously across all the faces.</p>
+
+<p><span>There are a number of texture attributes available in the <span><b>Face Edit</b> dialog</span>:</span></p>
+
+<h3>Texture Scale (X/Y) </h3>
+<p><span>You can modify the scale of a texture to shrink or enlarge it. Numbers less than 1 shrink, and numbers greater than 1 enlarge. You can use negative values to mirror the texture in one or both planes. The mouse wheel can be used to alter the value quickly. </span></p>
+  
+<h3>Texture Shift (X/Y)</h3>
+<p><span>This simply allows you to shift the texture around in the X and/or Y planes. <span>The mouse wheel can be used to alter the value quickly.</span></span></p>
+
+<p class=callout><b>Note:</b> The shift values are in relation to the grid settings. It can be extremely helpful to align a brush first to the grid, then move the brush to its intended location with Texture Lock enabled.</p>
+  
+<h3><a name="LightmapScale"></a>Lightmap Scale</h3>
+<p><span>Sets the scale of the lightmaps, measured in world units per luxel. Lower numbers are smaller luxel sizes, therefore higher resolution. The default is 16. A value of 8 would give higher quality but more expensive lighting on the surface, and a value of 32 would give lower quality for less expensive lighting. </span></p>
+
+<h3>Rotation</h3>
+<p><span>Rotation allows you to rotate the texture on a brush face. <span>The mouse wheel can be used to alter the value quickly.</span></span></p>
+  
+<h3>Justify</h3>
+<p>There are six buttons you can press here: L (left), R (right), Fit (fit to face), T (top), B (bottom), and C (center on face). These allow you to quickly and easily align a texture on a brush.</p>
+
+<h3>Treat as one</h3>
+<p>If you have multiple faces selected, you can check this option to treat all the faces as one single face.</p>
+
+<h3>Align: World and Face</h3>
+<p> These checkboxes allow you to set the texture alignment style for the selected faces. World alignment causes textures to be aligned according to world coordinates. Face alignment uses the coordinates of the face as a basis for alignment.</p>
+
+<h3>Texture Group</h3>
+<p>You can select which group of textures you want to use - either all of them, or individual texture WADs or Material folders.</p>
+
+<h3>Current Texture</h3>
+<p>The name of the current texture is displayed here, along with a thumbnail picture of the texture.</p>
+
+<h3>Hide Mask</h3>
+<p>If this button is toggled on, the selected brush face(s) will not appear as selected (with a reddish hue). This may make it easier to perform some texture manipulations.</p>
+
+<h3>Browse</h3>
+<p>Opens the <a href="Texture_Browser.html">Texture Browser</a> window</p>
+
+<h3>Replace</h3>
+<p><span>This will bring up the <a href="Replace_Textures.html">Replace Textures</a> dialog which allows you to search, mark or replace all textures of a certain type.</span></p>
+
+<h3>Apply</h3>
+<p>Applies the current settings to the selected faces</p>
+
+<h3>Mode</h3>
+<p>This lets you select what will happen when you click on a brush face with the left mouse button. The available options are Lift+Select, Lift, Select, Apply (texture only), Apply (texture + values), and Align to View.</p>
+
+<ul>
+  <li><b>Lift+Select</b> - Clicking on a brush face in the 3D view will select that face and make it's texture the current texture.<BR>
+  <li><b>Lift</b> - Clicking on a brush face will make it's texture the current texture without selecting the face.<BR>
+  <li><b>Select</b> - Clicking on a brush face will select that face without changing the current texture.<BR>
+  <li><b>Apply (texture only)</b> - Clicking on a brush face will apply the current texture to that face without changing any of it's other properties.<BR>
+  <li><b>Apply (texture + values)</b> - Clicking on a brush face will apply the current texture <I>and</i>&nbsp;texture properties.<BR>
+  <li><b>Align to View</b> - This is like projecting a texture from the camera face, as if you were a slide projector and the texture is a slide. It's useful for painting a texture onto a cliff or other irregular things.</li>
+</ul>
+
+<h3>Smoothing Groups</h3>
+<p><span>Opens up the <a href="Smoothing_Groups.html">Smoothing Groups</a> dialog to let you set the smoothing groups for the selected faces. </span></p>
+
+
+ <p>To apply textures to individual faces of a brush:</p>
+<ol>
+<li>Click the <b>Texture Application Tool</b> to bring up the <b>Face Edit </b>dialog.</li>
+<li>In the 3D view, left-click on a face to select it. CTRL-click to add or remove faces from the current selection.</li>
+<li>Choose a texture from the <b>Current Texture</b> pop-up list, or click <b>Browse</b> to open the texture browser.</li>
+<li>Click <b>Apply</b>. The texture will be applied to the objects.</li>
+<li>Use the <b>Scale</b>, <b>Shift</b>, or <b>Rotate</b> buttons to modify how the texture is positioned on the objects.</li>
+<li>When you are finished, click on the <b>Texture Application Tool</b> to close the <b>Face Edit </b>dialog.</li>
+</ol>
+  
+<h3>Related Topics</h3>
+<p><a href="Texture_Browser.html">Texture Browser</a></p>
+<p><a href="Applying_Materials.html">Applying Materials to Solids</a></p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

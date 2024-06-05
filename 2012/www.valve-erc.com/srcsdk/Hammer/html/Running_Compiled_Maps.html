@@ -1,0 +1,87 @@
+<html>
+<head>
+	<title>Running Compiled Maps</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Running Compiled Maps</h1>
+
+
+<p>There is a known issue on some user's systems of Hammer not being able to run the game properly after compiling a map. If you're experiencing this problem, check the <strong>don't run the game after compiling</strong> flag in the <a href="Run_Map.html">Run Map</a> dialog.</p>
+
+<p>Follow these steps to run your compiled map after you've compiled it in Hammer:</p>
+
+<ol>
+<li>Compile your map with the <a href="Run_Map.html">Run Map</a> feature in Hammer. Make sure <strong>don't run the game after compiling</strong> is checked.<br><br></li>
+
+<li>Using Windows, copy your map from the <span class="code2">\sourcesdk</span> directory to <span class="code2">\maps</span> directory of the game you're making the map for. Here are example locations for each of the core Steam games. Substitute &quot;<span class="code2">C:\Program Files\Valve\Steam</span>&quot; for the directory where you installed Steam:
+<blockquote>
+<hr noshade size="1">
+
+<p>For example, for <strong>Counter-Strike: Source</strong>, if your map is located here:</p>
+<blockquote>
+<p class="code2">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\sourcesdk\cstrike_sample_content\maps</p>
+</blockquote>
+
+<p>Copy it to here:</p>
+
+<blockquote>
+<p class="code2">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\counter-strike source\cstrike\maps</p>
+</blockquote>
+
+<p>Where <em>username</em> is your Steam login name. </p>
+
+<hr noshade size="1">
+
+<p>For <strong>Half-Life 2 </strong>, if your map is located here:</p>
+<blockquote>
+	<p class="code2">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\sourcesdk\sdkcontent\maps</p>
+</blockquote>
+
+<p>Copy it to here:</p>
+
+<blockquote>
+	<p class="code2">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\half-life 2\hl2\maps</p>
+</blockquote>
+
+<hr noshade size="1">
+
+<p>For <strong>Half-Life 2: Deathmatch</strong>, if your map is located here:</p>
+<blockquote>
+	<p class="code2">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\sourcesdk\hl2mp_sample_content\maps</p>
+</blockquote>
+
+<p>Copy it to here:</p>
+
+<blockquote>
+	<p class="code2">C:\Program Files\Valve\Steam\SteamApps\username\half-life 2 deathmatch\hl2mp\maps</p>
+</blockquote>
+
+<hr noshade size="1">
+
+</blockquote>
+</li>
+
+<li>Run <strong>Counter-Strike: Source</strong>, <strong>Half-Life 2</strong>, or <strong>Half-Life 2 Deathmatch</strong> via the Steam menu, depending upon which game the map has been created for.<br>
+    <br></li>
+<li>Open the <a href="../../console/developer_console.html">Developer Console</a> and type:<br>
+    <br>
+		
+		<span class="code"> map &lt;mapname&gt;</span><br><br></li>
+
+<li>Your map should load in the game.<br></li>
+</ol>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

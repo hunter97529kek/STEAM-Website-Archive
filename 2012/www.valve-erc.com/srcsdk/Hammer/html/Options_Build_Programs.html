@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>Build Programs</title>
+	 <link href="../hammer.css" rel="stylesheet" type="text/css">
+ </head>
+
+<body>
+
+<div class="content">
+
+<h1>Options: Build Programs tab </h1>
+
+
+<p><span>The <b>Build Programs tab</b> lets you specify all the executables for each game configuration to compile maps. These directories are used when running the <a href="Run_Map.html">Run Map</a> command. </span></p>
+<p><img src="../images/interface/Options_Build_Config.png"></p>
+
+<p class=callout><span style='text-transform:uppercase'></span><b><span style='text-transform: uppercase'>Warning</span>:</b> If you plan to do your compiling from within Hammer, it is important that these settings are correct. You may not be able to perform a compile of the map if this information is incorrect.</p>
+  
+<h3>Configuration:</h3>
+<p>Allows you to pick one of the preset game configuration profiles (Half-Life, Counter-Strike, Day of Deafeat, etc.), or custom profiles you’ve created, for which you wish to edit the properties. Game configurations are created in the <a href="Options_Game_Config.html">Game Configurations</a> tab. The information in the <b>Build Programs tab</b> reflects the currently selected configuration profile.</p>
+  
+<p>The Build Programs options allow you to setup configuration specific compile programs.</p>
+
+<ul>
+  <li><b>Game executable</b>&nbsp;- This should be the Half-Life executable file (hl.exe). Simply browse to your Half-Life folder, select hl.exe, and press the Open button. The value entered here links to the $game_exe variable in the <a href="Run_Map_Expert.html">Advanced Compile</a> mode.<BR>
+  <li><b>CSG executable</b> - The CSG program should be specified here, if one is needed for the current game configuration. The standard version is qcsg.exe. The value entered here links to the $csg_exe variable in the <a href="Run_Map_Expert.html">Advanced Compile</a> mode.<BR>
+  <li><b>BSP executable</b> - As above, for the BSP program. The value entered here links to the $bsp_exe variable in the <a href="Run_Map_Expert.html">Advanced Compile</a> mode.<BR>
+  <li><b>VIS executable</b>&nbsp;- As above, for the VIS program. The value entered here links to the $vis_exe variable in the <a href="Run_Map_Expert.html">Advanced Compile</a> mode.<BR>
+  <li><b>RAD executable</b> - As above, for the RAD (lighting) program. The value entered here links to the $light_exe variable in the <a href="Run_Map_Expert.html">Advanced Compile</a> mode.<BR>
+ </ul>
+
+  
+<h3>Place compiled maps in this directory before running the game:</h3>
+<p>This is the directory Hammer will copy the compiled map to once the it is complete. This is also sometimes called the .BSP directory. You can either type a the directory path, or use the Browse button to interactively select the directory. The value entered here links to the $bspdir variable in the <a href="Run_Map_Expert.html">Advanced Compile</a> mode. In the normal compile mode, this indicates where the compiled map will be placed.</p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

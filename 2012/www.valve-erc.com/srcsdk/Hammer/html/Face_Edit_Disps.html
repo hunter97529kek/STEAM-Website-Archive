@@ -1,0 +1,238 @@
+<html>
+<head>
+	<title>Face Edit, Displacements</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+ <h1>Dialogs: Face Edit, Displacements</h1>
+
+ <p><span><span>Selecting the <b>Texture Application Tool</b> brings up the <b>Face Edit Sheet </b> dialog box</span>. The <strong>Displacement</strong> tab is contains tools to create and edit displacement geometry. <span>The <strong>Materials</strong> tab contains tools that are used to edit texture properties of objects on a per face level. </span>See <a href="Face_Edit_Mats.html">Face Edit, Materials</a>.</span></p>
+
+<p>Displacement geometry are brush surfaces that have been converted to a triangle mesh of faces that can be freely distorted and sculpted into various shapes. The primary function for displacement surfaces is to create terrain -- hills, valleys, trenches, slopes, etc.</p>
+
+<table class="tableCaption" cellpadding="0">
+    <tr>
+        <td><img src="../images/examples/displacement_01.jpg"></td>
+    </tr>
+    <tr>
+        <td class="tdCaption"><strong>A displacement surface.</strong></td>
+    </tr>
+</table>
+
+<p>The <strong>Displacement tab </strong>in the <strong>Face Edit</strong> dialog allows you to create and manipulate the displacement surfaces on the selected brush faces. To select a brush face, click on it in the 3D view with the left mouse button. To select multiple faces, hold down the CTRL key while you do this. You can also select multiple brushes <I>before</i> selecting the <strong>Texture Application</strong> tool.</p>
+
+<p><img src="../images/interface/Face_Edit_Disp.png"></p>
+
+<p><span>There are a number of Tools available in <strong>Face Edit Displacements </strong>tab: </span></p>
+<h2>Select</h2>
+<p>The tool used to select brush and displacement faces for editing. CTRL-click to add faces to the selection, and SHIFT-click a brush to invert the selection of all faces on the brush.</p>
+  
+<h2>Create</h2>
+<p>Create a new displacement surface on the selected brush faces. Displacements come in three levels of resolution: 2, 3, or 4. The following image shows the levels of displacement resolution:</p>
+
+<table class="tableCaption" cellpadding="0">
+    <tr>
+        <td><img src="../images/examples/displacement_02.jpg"></td>
+    </tr>
+    <tr>
+        <td class="tdCaption"><strong>The options for Power - the displacement resolution.</strong></td>
+    </tr>
+</table>
+
+<h2>Destroy</h2>
+<p>Delete the selected displacement surfaces, reverting them back to non-displacement faces on the base brush. </p>
+
+<h2>Paint Geometry<a name="PaintGeometry"></a></h2>
+<p>Opens the <strong>Displacement Paint Geometry</strong> panel, which allows you to modify the geometry of the selected displacements using the painting tools.</p>
+
+<img src="../images/interface/Face_Edit_Paint_Disp.png">
+
+<h3>Effect</h3>
+<p>Determines what type of geometry painting you wish to do:</p>
+<ul>
+	<li><strong>Raise/Lower</strong> - Increase or decrease the height of the geometry effected. Left-clicking raises the geometry along the current axis, Right-clicking lowers it. The Distance slider determines how far the geometry moves with each mouse click.</li>
+	<li><strong>Raise to</strong> - Sets the height of the geometry to the  height specified in the <strong>Distance</strong> slider, in world units relative the displacement's  base brush face.</li>
+	<li><strong>Smooth</strong> - Averages the position of the geometry, effectively smoothing out variations.</li>
+</ul>
+
+<h3>Spatial</h3>
+<p>Enables spatial painting mode. Turning this flag off puts the tools into brush painting mode. Spatial painting uses a three-dimensional sphere to determine the geometry that is effected by the painting. Brush painting uses a fixed-vertex brush that effects a set number of vertices surrounding the vertex the brush is centered on.</p>
+
+<h3>Axis</h3>
+<p>Determines the axis that what direction faces will move when painted:</p>
+<ul>
+<li><strong>X, Y, Z</strong> - Painted geometry will move along the world axis X, Y, or Z only, regardless of the direction of the displacement direction.</li>
+<li><strong>Face Normal</strong> - Painted geometry will move along an axis determined by the normal of one specific face. Change the direction by using ALT+Right-click on any face in the 3D view. The normal of the clicked face will become the direction of subsequent painting.</li>
+<li><strong>Subdiv Normal</strong> - Painted geometry will move along an axis determined by the curve generated after using the Subdivide command on a set of faces.</li>
+</ul>
+
+<h3>Brush</h3>
+<p>When in brush painting mode, selecting a brush here will use that brush size to determine what geometry is altered when painting. The number next to each brush icon represents how many vertices wide the brush is. For example, a &quot;3&quot; brush will affect all vertices within a 3 vertex radius of where you clicked on a displacement. Brush selection is disabled while in <strong>Spatial</strong> painting mode. </p>
+
+<h3>Soft-Edge/Hard-Edge</h3>
+<p>Switches the falloff of painting when in spatial editing mode. In <strong>Soft-Edge</strong> mode, geometry near the center of the painting sphere will be most affected by painting operations, with the effect diminishing towards the edges of the sphere. In <strong>Hard-Edge</strong> mode, all geometry will be identically affected by painting operations, regardless of their position in the sphere.</p>
+<p>These controls only affect <strong>Spatial</strong> painting mode, and are disable when <strong>Spatial</strong> painting is not active. </p>
+
+<h3>Distance</h3>
+<p>When in <strong>Raise/Lower</strong> mode, this slider sets the amount that geometry will move with each click while painting geometry, as a distance of world units. For example, if the <strong>Distance</strong> slider is set to "5", each click with the left mouse button while in <strong>Raise/Lower</strong> painting mode will move the geometry 5 world units.</p>
+
+<p>While in <strong>Raise To</strong> mode, this slider sets the height that geometry will move to, in world units. For example, if the <strong>Distance</strong> slider is set to "128", each click with the left mouse button while in <strong>Raise/Lower</strong> painting mode will move the geometry to exactly 128 world units from the base brush face.</p>
+
+<p>The <strong>Distance</strong> slider has no effect while in <strong>Smooth</strong> painting mode. </p>
+
+<h3>Radius</h3>
+<p>Sets the size of the painting sphere while in <strong>Spatial</strong> painting mode. The slider value can also be set by holding down ALT and clicking and dragging with the left mouse button in the 3D View, while <strong>Spatial</strong> painting mode is active. The Radius slide only affects <strong>Spatial</strong> painting mode, and is disabled when <strong>Spatial</strong> painting is turned off. </p>
+
+<h3><a name="Autosew"></a>Autosew</h3>
+<p>Enabling this option will force Hammer to automatically do a <strong>Sew</strong> command after every paint operation on the selected geometry. <strong>Note:</strong> enabling <strong>Autosew</strong> while a large number of displacement surfaces are selected can drastically affect performance. See the <a href="#sew">Sew</a> command for more information.</p>
+<h2>Basic Displacement Creation</h2>
+
+<p>How to create and paint a displacement surface:</p>
+<ol>
+	<li>Create a brush with the <a href="Tool_Block.htm">Block Tool</a> that will be used a the base for the created displacement surface.</li>
+	<li>Click the <a href="Toolbar_Map_Tools.html#FaceEditTool">Texture Application</a> tool to bring up the <b>Face Edit </b>dialog, and select the <strong>Displacement</strong> tab.</li>
+	<li>In the 3D view, left-click on a brush face to select it. CTRL-click to add or remove faces from the current selection.</li>
+	<li>Click <strong>Create</strong> in the Displacement tab. Enter a value from 2 to 4 for the displacement density and click <strong>OK</strong>. </li>
+	<li>Select the <strong>Paint Geometry</strong> tool on the <strong>Displacement</strong> tab. The <strong>Paint Geometry</strong> panel will open. </li>
+	<li>In the 3D View, Left-click on a displacement to raise a section, and right-click to lower it. Use the <strong>Radius</strong> slider in the <strong>Paint Geometry </strong>panel to control the size of the painting sphere.</li>
+</ol>
+
+<h2><a name="PaintAlpha"></a>Paint Alpha </h2>
+<p>Opens the <strong>Displacement Paint Alpha</strong>    panel, which allows you to paint the alpha channel for the selected displacements. The alpha channel controls the visibility of two separate textures on the displacement surface. <strong>Note:</strong> Alpha channel values only affect displacements with materials containing the proper blended material shader.</p>
+
+<img src="../images/interface/Face_Edit_Paint_Data.png">
+
+<h3>Effect</h3>
+<p>Determines what type of alpha painting you wish to do:</p>
+<ul>
+	<li><strong>Raise/Lower</strong> - Increase or decrease the alpha value of the vertices affected. Left-clicking raises the alpha value, Right-clicking lowers it. The <strong>Value</strong> slider determines have quickly the value will change as you paint. </li>
+	<li><strong>Raise to</strong> - Sets the alpha value of the affected vertices to the  value specified in the <strong>Value</strong> slider, from 0 to 255. </li>
+	<li><strong>Smooth</strong> - Averages the alpha value of the affected vertices, effectively smoothing out any variations.</li>
+</ul>
+
+<h3>Brush</h3>
+<p>When in alpha painting mode, selecting a brush here will use that brush size to determine which vertices are altered when painting. The number next to each brush icon represents how many vertices wide the brush is. For example, a &quot;3&quot; brush will affect all vertices within a 3 vertex radius of where you clicked on a displacement.</p>
+
+<h3>Value</h3>
+<p>When in <strong>Raise/Lower</strong> mode, this slider sets the how quickly the alpha values will change with each click while painting geometry.</p>
+
+<p>While in <strong>Raise To</strong> mode, this slider sets the exact alpha value that each vertex will be set to, from 0 to 255. </p>
+
+<p>The <strong>Value</strong> slider has no effect while in <strong>Smooth</strong> painting mode. </p>
+
+<h2><a name="Subdivide"></a>Subdivide</h2>
+<p>Create a smooth subdivision surface out of two or more selected displacement surfaces. <strong>Note:</strong> Subdividing a large number of displacement surfaces simultaneously requires a lot of computation, and can take a significant amount of time to complete. </p>
+
+<h2><a name="Noise"></a>Noise</h2>
+<p>Add random noise to the selected displacement surface. The <strong>Min</strong> value sets the greatest distance in units that a point on the displacement will move downward along the face normal. <strong>Max</strong> sets the greatest distance upward along the face normal. Clicking <strong>OK</strong> will randomize the position of the points on the displacement somewhere between these two values.</p>
+
+<img src="../images/interface/Face_Edit_Disp_Noise.png">
+
+<h2><a name="Sew"></a>Sew</h2>
+
+<p>Connect the edges of two or more selected displacement surfaces. You can sew displacement surfaces in any of the following circumstances:</p>
+<ul>
+	<li>Any two displacements whose base brushes surfaces share a common edge when coincident endpoints.</li>
+	<li>Displacements with different resolution settings. </li>
+	<li>A displacement surface to a non-displacement brush face, as long as the base face of the displacement shares a common edge.</li>
+	<li>A displacement surface to another displacement surface where a shared edge is <em>exactly</em> half the width of the other (called a T-junction).</li>
+</ul>
+<p>Examples of circumstances where the Sew command can be used:</p>
+
+<table width="100%">
+    <tr>
+    <td height="316">
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="../images/examples/disp_sew_01.png"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Adjacent Displacements with base faces that share an edge.</strong></td>
+		</tr>
+		</table>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="../images/examples/disp_sew_02.png"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Displacements with different resolutions.</strong></td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+	<tr>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="../images/examples/disp_sew_03.png"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Displacement with a base face that shares an edge with a brush.</strong></td>
+		</tr>
+		</table>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="../images/examples/disp_sew_04.png"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Displacements that share an edge at the exact midpoint.</strong></td>
+		</tr>
+		</table>
+	</td>
+    </tr>
+</table>
+
+<p>Surfaces cannot be sewn together if the base faces of the displacements do not share a common edge:</p>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="../images/examples/disp_sew_05.png"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption"><strong>Surfaces that don't share a common edge cannot be connected.</strong></td>
+	</tr>
+</table>
+
+
+<h2>Attributes</h2>
+<p>Different attributes that can be changed for displacement surfaces.</p>
+
+<ul>
+<li><strong>Power</strong> - Sets the resolution of the displacement. Possible values are 2, 3, and 4.</li>
+<li><strong>Apply</strong> - Commits any changes to the <strong>Power</strong> value.</li>
+<li><strong>Elev</strong> - Changes the distance of the displacement from the base face.</li>
+<li><strong>Scale</strong> - Scales the displacement &quot;height&quot; -- the distance from the base face .</li>
+<li><strong>Invert Alpha</strong> - Inverts all alpha data on the selected displacements.</li>
+</ul>
+
+<h2>Masks</h2>
+<p>These options change the way displacement surfaces are displayed when selected in the 3D Views. Enabling the <strong>Grid </strong>mask disables the drawing of the wireframe displacement grids when selecting displacements. Choosing <strong>Select</strong> disables the red shading of selected displacements. </p>
+
+<h2>Auto-Subdivide</h2>
+<p>Enabling this option will continually re-subdivide displacement surfaces while they're being painted, on any displacement surfaces that have had subdivisions applied previously. Choosing this option requires additional processing power, so Hammer may be less responsive to painting functions while this is enabled. </p>
+
+<h2>Related Topics</h2>
+<p><a href="Face_Edit_Mats.html">Face Edit, Materials</a></p>
+<p><a href="Toolbar_Map_Operations.html#DispMask">Displacement Mask</a> and <a href="Toolbar_Map_Operations.html#DispEdgeCollapse">Displacement Edge Collapse</a> icons from the <strong>Map Operations</strong> toolbar.</p>
+<p><a href="Hotkey_Reference.html">Hotkey Reference</a> for Displacement Editing keyboard shortcuts. </p>
+<p><span></span></p>
+
+
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

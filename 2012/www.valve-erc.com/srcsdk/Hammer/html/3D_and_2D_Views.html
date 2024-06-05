@@ -1,0 +1,75 @@
+<html>
+<HEAD>
+        <title>3D and 2D Views</title>
+        <link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>The 3D and 2D Views</h1>
+
+  <p>Before you can begin creating and placing solids and entities, you need to familiarize yourself with the Hammer interface. By default, your working area is divided into four sections. The first (upper left) window viewport is the 3D View, and the rest are the 2D views.</p>
+
+  <h3>The 3D View</h3>
+<p>The 3D window is a dynamic 3D space where you can view your level from any angle. This is critical for checking textures and texture alignment, spotting leaks and just getting a sense of what your finished level will look like.</p>
+<p>There are different rendering modes the 3D View can be switched between. See the <a href="Menu_View.html">View Menu</a> for more information. </p>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td width="439" valign="top">
+		<h3>Using Cameras</h3>
+		<p>To take advantage of the 3D view, you need to be able to place cameras. Cameras determine your vantage point in the 3D view. Hammer provides you with precise control over the camera movements in your map.</p>
+		
+		<p>A camera in Hammer (as displayed in the 2D views) consists of three parts: the eye, the target, and the viewing angle, which is represented by a line extending out from the eye. The length of the line that represents the viewing angle is not important, though it can help you aim the camera exactly at an object.</p>
+		
+		<p>While it is possible to move a single camera all over the map each time you need to look at something new in the 3D window, it is more convenient to have easy access to multiple cameras placed throughout the map. Hammer allows you to easily cycle through multiple cameras by pressing the PageUp and PageDown keys.</p>
+		</td>
+		
+		<td  valign="top" width="339">
+			<table class="tableCaption" cellpadding="0" align="right">
+				<tr>
+					<td><img src="../images/examples/camera_angle.png"></td>
+				</tr>
+				<tr>
+					<td class="tdCaption">The Camera components shown in the 2D Views. </td>
+				</tr>
+			</table>
+		
+		</td>
+	</tr>
+</table>
+
+<h3>Camera Placement</h3>
+<p>Placing cameras in Hammer is extremely simple. First, switch to <strong>Camera mode</strong> by pressing Shift+C, then hold Shift and with the left mouse button, click-drag a line in one of the 2D views. This will create a thin red line with a large dot at one end. The dot is the camera's position, and this is where the 3D camera view will originate. The red line is the camera's viewing angle. The end of the red line is the camera's target. You can adjust either end of the line by dragging it with the left mouse button to change the view. Follow the above steps to create as many cameras in your level as you need. While in Camera mode, you can adjust the camera position by moving the eye or viewing angle in any of the 2d windows.</p>
+<p>See the <a href="Tool_Camera.htm">Camera Tool</a> for more information on how to create and adjust 3D cameras. </p>
+<h3>Mouselook/NoClip Style Movement</h3>
+<p>The Mouselook movement style is designed to be the similar to the movement in the game and walking around with both the +mlook (mouselook) and NoClip cheats turned on. It can be enabled or disabled by pressing (lowercase) z.</p>
+
+  <p>Moving your mouse around will change the camera direction, while W and S control forward and backward movement, and A and D control sided to side (left and right strafing) movement.</p>
+
+  <p>You can disable this movement style by deselecting the <a href="Options_3D_Views.html#UseMouselook">Use Mouselook</a> setting in the 3D View options dialog.</p>
+
+  <h3><b>Keyboard Shortcuts</b></h3>
+<p>There are a number of keyboard shortcuts that you can use to quickly maneuver through the 3D view without switching to the Camera tool.</p>
+
+  <p>While holding the Spacebar:</p>
+
+<ol>
+    <li>Holding down the Spacebar and the Left Mouse Button allows you to rotate your angle of view in any direction, while the viewing point remains stationary.<BR>
+    <li>Holding down the Spacebar and the Right Mouse Button will allow you to move left, right, up, and down while keeping the viewing angle constant.<BR>
+    <li>Holding down the Spacebar with both the  Left <I>and</i> Right Mouse Buttons and moving the mouse causes the view to strafe forward, backward, right, and left.<br>
+    <li>Holding down the SHIFT key with the Right mouse button allows you to move forward and backward, as well as from side to side. Note that this is the same result as number 4 . Use whichever you are more comfortable with. <BR>
+    <li>Use the Mouse Wheel to move forward and backwards.
+</ol>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

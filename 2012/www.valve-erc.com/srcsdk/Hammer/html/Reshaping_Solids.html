@@ -1,0 +1,119 @@
+<html>
+<head>
+	<title>Reshaping Solids</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Reshaping Solids</h1>
+
+<p>Once you've created a simple, textured solid, you can use Hammer's tools for refining your work. These tools include vertex manipulation, face splitting, clip planes and carving. Each of these tools lets you customize your solids by modifying the basic shapes you started with. You will find that you can achieve the same or similar effect using different tools; some are just faster and easier than others when it comes to making the precise change you are trying to make.</p>
+
+<ul>
+    <li><a href="#vertex_manipulation">Vertex Manipulation</a></li>
+    <li><a href="#face_splitting">Face Splitting</a></li>
+    <li><a href="#vertex_scaling">Vertex Scaling</a></li>
+    <li><a href="#clip_planes">Clip Planes</a></li>
+    <li><a href="#carving">Carving</a></li>
+</ul>
+	
+<h2><a name="vertex_manipulation"></a>Vertex Manipulation</h2>
+<p>Vertex manipulation allows you to move individual vertices and edges of a solid, easily creating irregular shapes. This lets you make shapes that are impossible with plane clipping, and extremely difficult to do with carving. Vertex manipulation is also is useful for modifying specific pieces of a group of objects, where resizing would interfere with other objects in the group.</p>
+
+<p class="callout"><b>Note: </b>While Vertex Manipulation makes the creation of new complex shapes easy, it also make the creation of invalid shapes easy. Remember that concave shapes are not valid within Hammer.</p>
+
+  <h3>Vertices and Edges</h3>
+<p>A vertex (or plural, vertices) is a corner of a solid. Moving one vertex will not effect any other vertex, but it will change the position of any edges associated with it. An edge is a point between two vertices which, when moved, will change the position of its two associated vertices, as well as their associated edges (no other vertices are effected besides the first two).</p>
+
+  <p align=center>
+   <img src="../images/examples/VertexEdit1.png" width="440" height="440" vspace="0" hspace="0" border="0"></p>
+
+<p>To edit the vertices of an object:</p>
+<ol>
+	<li>Select the object(s) you would like to use vertex manipulation on.</li>
+	<li>Select the <a href="Tool_VertexEdit.htm">Vertex Tool</a> from the <a href="Toolbar_Map_Tools.html">Map Tools</a> Toolbar. The selected solid will turn into a wireframe image with partial shading. Vertices will be marked as white dots, and edges as yellow dots.</li>
+	<li>Click on the vertices/edges you want to move. They will be highlighted in red. Note that you can move both vertices and edges.</li>
+	<li>You can either drag the selected vertices or edges with the mouse, or move them in the selected 2D view using the arrow keys.</li>
+</ol>
+
+<p class=callout><b>Note:</b> You can keep selecting the <b>Vertex Tool</b>, or press SHIFT+V, to cycle through the three vertex edit modes: vertices and edges (default), vertices only, and edges only.</p>
+
+<h3><a name="face_splitting"></a>Face Splitting</h3>
+<p>Face splitting allows you to add additional faces to a brush. This is a useful tool when you want to add complexity to an object in your level. Simply select two opposing edges (fig. 3) and press Ctrl+F. This will turn the two edges into vertices, and place a new edge between them (fig.4).</p>
+
+<p align="center"><img src="../images/examples/vert1.png" width="304" height="186" vspace="0" hspace="0" border="0"></p>
+
+<h3><a name="vertex_scaling"></a>Vertex Scaling</h3>
+<p>Vertex scaling allows you to select a number of vertices and change their scale in relation to each other.</p>
+
+<p><span>To scale a set a vertices on an object:</span></p>
+<ol>
+	<li>Select the object(s) you would like to scale vertices on.</li>
+	<li>Select the <a href="Tool_VertexEdit.htm">Vertex Tool </a>from the <a href="Toolbar_Map_Tools.html">Map Tools</a> Toolbar. The selected solid will turn into a wireframe image with partial shading. Vertices will be marked as white dots, and edges as yellow dots.</li>
+	<li>Click on the vertices/edges you want to scale. They will be highlighted in red.</li>
+	<li>Press ALT+E to enter to bring up the <b>Scale </b>dialog box.</li>
+	<li>Alter the center of the scale operation my clicking and dragging the white circle in the center of the vertex selection.</li>
+	<li>Change the <strong>Scale</strong> value to alter the selected points.  You can press the up or down arrows to move in 0.1 increments, or enter a scale value directly in the text area. The scale changes will automatically be reflected on the selected object.</li>
+	<li>Press the ENTER or ESC key when you are done scaling to close the <b>Scale </b>dialog box.</li>
+</ol>
+
+  <p style=align=center>
+   <img src="../images/examples/vertex-scale2.png" width="780" height="323" vspace="0" hspace="0" border="0"></p>
+
+<h2><a name="clip_planes"></a>Clip Planes</h2>
+<p>Clip planes let you make a precise cut in a solid, dividing it into two pieces. You then have the option of keeping one or both of the resulting two solids. You may find using Clip Planes quicker and more efficient than carving or vertex manipulation.</p>
+
+  <p align=center>
+   <img src="../images/examples/clip.png" width="263" height="174" vspace="0" hspace="0" border="0"></p>
+
+<ol>
+    <li>Select the object to be clipped. (fig. 1)</li>
+    <li>Select the Clip Plane button on the <a href="Toolbar_Map_Tools.html">Map Tools</a> toolbar.</li> 
+
+    <p><b>Note</b>: You can cycle through the clip modes by clicking on the clip plane button, or by pressing Shift-X (fig.2, 3, 4). You can move both points of the clip line by holding CTRL and dragging one point of it.</p> 
+
+  <li>Drag a line across the selected object. (fig. 2) This is the clip line. The part of the object to be kept will be highlighted in thick white lines.</li>
+  <li>When you are satisfied with the resulting object, press Enter to perform the clip. (fig. 5, 6)</li>
+</ol>
+
+  <p>Hammer has a feature to display the size of the solid area of the clipped brush. This is useful if you're trying to clip a brush to an exact size.</p>
+
+  <p style="text-align : center;" align=center>
+   <img src="../images/examples/clipping_measure.png" width="191" height="143" vspace="0" hspace="0" border="0"></p>
+
+  <p>To toggle this on and off, have a 2D view in focus and press the &quot;o&quot; (lowercase) hotkey.</p>
+
+<h2><a name="carving"></a>Carving</h2>
+<p>In Hammer, any solid can be used to carve a volume out of other solids. For example, you can place a solid within the room's wall and tell Hammer to subtract the solid from the wall -- effectively punching a hole right through the wall! This feature is not limited to using cubic shapes as a carving tool: any solid -- cylinders, cubes and wedges -- can be used to carve other solids.</p>
+
+<p>To carve objects from surrounding solids:</p>
+<ol>
+  <li>In this step, you have the object you want to carve into (in blue), and the object you will be carving with (in red). The red object should be selected.</li>
+  <li>Position the carving object so that it is where you want the hole to be.</li>
+  <li>Select <strong>Carve </strong>from the <a href="Menu_Tools.html">Tools Menu</a>. You can also press CTRL+SHIFT+C or the <strong>Carve</strong> button on the <a href="Toolbar_Map_Operations.html">Map Operations</a> toolbar.</li>
+  <li>Either delete the object you used to make the carve, or use it to fill the hole. (For example, use the piece carved out of a doorway as the door.)</li>
+</ol>
+
+<p align=center><img src="../images/examples/carve0.png" width="506" height="474" vspace="0" hspace="0" border="0"></p>
+
+<p>In the picture above, you can see that the cube (which was previously one object) is now broken into four separate objects. This is because the game engine cannot handle concave objects, and Hammer has broken it into convex pieces.</p>
+  
+<p class=callout><b>Note:</b> The <b>Carve</b> operation will carve <strong>all</strong> objects that touch the selected carving object. Make sure that only objects that you wish to be effected touch the carving object.</p>
+
+<p>While using <strong>Carve</strong>, especially with a cylinder object, it is best to carve the smallest areas possible. What tends to happen is you have an area you want to punch a hole in, so you make an object with the same shape you want the hole, say for example a cylinder. If you take that cylinder and carve a circle out of a large wall, the entire wall will be broken up. Instead, a more efficient way to carve would be to first carve a square hole (the same size as the circle) and leave the square in place. Then you can take the cylinder and carve a hole in the small square. This will eliminate the splintering effect for the wall.</p>
+
+<p align="center"><img src="../images/examples/carve_splinter.png" width="400" height="324"></p>
+  
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

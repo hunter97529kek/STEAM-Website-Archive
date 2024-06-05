@@ -1,0 +1,72 @@
+<html>
+<head>
+		<title>Creating Entities</title>
+		<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Creating Entities </h1>
+
+  <p>Entities give life to your level. They are the monsters, doors, switches and lights that turn your static architecture into an interactive environment. Careful use of entities is critical to creating an interesting, unique and fun level for others to play.</p>
+
+  <p>Unlike solids, entities are not created within Hammer. Most users will simply choose from a pre-existing set of entities provided. Once you have selected the appropriate entity, Hammer gives you control over its placement and other properties.</p>
+
+  <p>There are two types of entities: point-based and brush-based.</p>
+
+  <p>Point-based entities exist only at a certain exact point. Examples include lights, monsters, and player start points. (Monsters <I>do</i> have an area, but it is defined by the game code and is not modifiable from within the map.) Some point type entities are just that: points. For example, the env_beam entity, which controls Half-Life's beam effects, uses two info_target entities as targets and the beam of light runs between these two points.</p>
+
+  <p>Brush-based entities are entities that depend on either a brush for their physical presence (like doors, trains, and other moving entities) or an &quot;area&quot; (like triggers, which require an activation field).</p>
+
+<h3><b>Point-based entity placement</b></h3>
+
+<p>Placement of point entities is simple:</p>
+<ol>
+    <li>Select the <a href="Tool_Entity.htm">Entity Tool</a>.<BR>
+    <li>From the <a href="Toolbar_New_Objects.html">New Objects</a> toolbar, select the entity you want from the <strong>Objects</strong> selection box.<br>
+
+		<p class="callout"><b>Note</b>: the entity list in the <strong>New Objects</strong> dialog is for point-based entities only. For information on brush-based entities, please refer to the next section.</p> 
+
+    <li>Click in a 2D window, then position the entity cursor with the mouse. You can also click on a brush surface in the 3D view, and the point entity will be created there. <BR>
+    <li>Pressing Enter will create the entity.<br>
+    <li>Fine tune the entity position in the 2D and 3D views.<br>
+    <li>Choose <a href="Menu_Edit.html#Properties">Properties</a> under the <b>Edit</b> menu if you wish to edit the entity parameters.<br>
+
+<p class="callout"><b>Tip</b>: You can also use the shortcut ALT+ENTER to open the <a href="Object_Properties.html">Object Properties</a> dialog box for the current selection.</p>
+
+</ol>
+
+<h3><b>Brush-based entity creation</b></h3>
+<p>Brush-based entities are a bit more complicated than point-based entities, but should not pose any difficulties once you know their basics.</p>
+  <ol>
+    <li><a href="Creating_Brushes.html">Create a brush</a> where you would like it. You can use as many brushes as you'd like when building a brush-based entity.<BR>
+    <li>Select the entire object.<BR>
+    <li>Select <a href="Menu_Tools.html#TieToEntity">Tie to Entity</a> from the <strong>Tools</strong> menu, or Press the Ctrl+T hotkey. This will turn the selected objects into a brush based entity.<BR>
+    <li>In the <a href="Object_Properties.html">Object Properties</a> dialog, select the appropriate entity from the <strong>Class</strong> list box. Once the entity type is selected, you can modify the entity properties as needed.<br> 
+
+		<p><b>Tip</b>: You can bring up the <strong>Object Properties</strong> for a brush-based entity the same way you do for a point-based entity: select it and press ALT+ENTER.</p> 
+</ol>
+
+<p>You will notice that brush-based entities appear as a different color in the 2D windows, typically purple.</p>
+
+
+<h3>Combining Solid Entities</h3>
+<p>Multiple solid entities can be also combined into a single entity:</p>
+<ol>
+	<li>Select the entities or brushes you wish to combine.<br>
+	<li>Select <a href="Menu_Tools.html#TieToEntity">Tie to Entity</a> from the <b>Tools</b> <b>Menu</b>, or press CTRL+T.<br>
+	<li>A dialog will open with a list of entities in the current selection. Choose which of the entities you wish to keep for the final, combined entity. Select one of the entities, and that entity will also be highlighted in the 2D and 3D Views. Click <b>OK</b> to confirm your choice.<br>
+	<li>The <b>Object Properties</b> dialog will appear, allowing you to change the parameters for the combined entity.<br>
+</ol>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<html>
+<head>
+	<title>Replace Textures</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Dialogs: Texture Browser</h1>
+
+<p>The <b>Texture Browser </b> allows you to find and select materials to apply to objects.</p>
+
+<img src="../images/interface/Texture_Browser.jpg">
+
+<h3>Texture List</h3>
+<p>This window contains a list of the materials currently available. Double-clicking a material in the list selects it as the current material and close the <strong>Texture Browser</strong>.</p>
+  
+<h3>Size</h3>
+<p>This scroll box allows you to set the displayed size of the textures. You can choose from 32x32, 64x64, 128x128, or 1:1 (full size).</p>
+  
+<h3>Filter</h3>
+<p>This field allows you to type in a search string. Any texture that includes that string as part of its name will be displayed. You can specify more than one filter string. For example, if you specify the search string &quot;sign 7,&quot; any texture with &quot;sign&quot; and &quot;7&quot; in its name will be displayed. Previous search strings can be accessed by clicking on the down arrow.</p>
+  
+<h3>Only used textures</h3>
+<p>When selected, this sets the browser to display only those textures that have been used in your level. This helps you limit your use of different textures, and avoid using different textures for the same purpose. For games such as Half-Life, textures are stored in the compiled maps. Reducing the number of textures will decrease the compiled map size. Fewer textures to load also means memory savings while playing the map in the game.</p>
+  
+<h3>Mark</h3>
+<p>This button allows you to Mark (select) all objects or faces that contain the selected material. You can then adjust those faces as required (textures, scaling, lightmap resolution, etc).</p>
+<p>If the texture Browser was envoked in <a href="Face_Edit_Mats.html">Face Edit</a> mode, <strong>Mark</strong> will highlight individual faces that contain the selected material, as if you selected each face by hand. Outside of Face <strong>Edit mode</strong>, entire objects that contain the material will be selected. </p>
+
+<h3>Replace</h3>
+<p>Opens the <a href="Replace_Textures.html">Replace Textures</a> dialog with the currently selected material already in the <strong>Find:</strong> field.</p>
+
+<h3>Open Source</h3>
+<p>Opens the .VMT file that was used to generate the material currently selected. The files is opened with the Windows application associated with text files.</p>
+  
+<h3>Opaque, Translucent, SelfIllum, Envmask</h3>
+<p>Shows materials that contain these properties in their material definitions. Unchecking any other these options will hide any materials that have those properties.</p>
+
+<h3>Show Errors</h3>
+<p>Shows materials that contain errors in their material definitions.</p>
+
+<h3>Related Topics</h3>
+<p><a href="Toolbar_Textures.html">Textures Toolbar</a> </p>
+<p><a href="Face_Edit_Mats.html">Face Edit mode</a></p>
+<p><a href="Applying_Materials.html">Applying Materials to Solids </a></p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

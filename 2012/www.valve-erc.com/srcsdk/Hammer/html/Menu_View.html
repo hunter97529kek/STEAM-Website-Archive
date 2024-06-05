@@ -1,0 +1,92 @@
+<html>
+<head>
+	<title>The View Menu</title>
+	<link href="../hammer.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>The View Menu</h1>
+
+<p>The purpose of the functions in this menu is to control what does and doesn't appear in the Hammer Editor's 3D and 2D views. For more ways to customize the appearance of Hammer, refer to the sections on the <a href="Options_General.html">General Options</a>, <a href="Options_3D_Views.html">3D View Options</a>, and <a href="Options_2D_Views.html">2D Views Options</a>.</p>
+
+<img src="../images/interface/Menu_View.png" width="382" height="395" vspace="0" hspace="0" border="0">
+
+<h3><a name="ScreenElements"></a>Screen Elements</h3>
+
+<p><span>This sub-menu gives you control over which <a href="Toolbars.html">toolbars</a> and other elements are displayed on your Hammer desktop. Select and item to remove it from the display. Selecting it again will display the item again.</span></p>
+<p><img src="../images/interface/Menu_View_Elements.png"></p>
+
+<h3><a name="2DOptions"></a>2D Window Options</h3>
+
+<p><span>The Hammer working area is divided into four separate panes. Three of these are used to show the 2D views. The forth window contains a single 3D view.</span></p>
+<p><span>The items <b>2D XY</b>, <b>2D YZ</b>, and <b>2D XZ</b> are three commands to select which 2D view is displayed in which window. Click in a 2D window pane to select it, then choose one of the three options to choose which 2D direction is displayed in that window. The default window settings have one window from each direction.</span></p>
+
+<p class=callout><b>Tip:</b> XY is the top-down view. YZ views from the side. XZ is the front.</p>
+
+<h3><a name="3DOptions"></a>3D Window Options</h3>
+
+<p>There are three 3D view options available – <b>Wireframe</b>, <b>Filled Polygons</b>, and <b>Textured Polygons</b>. These options control which 3D mode is used when the 3d preview window is shown. </p>
+
+<p>Here is a cube drawn in each of the 3d modes:</p>
+
+<p><img width=507 height=200 src="../images/examples/3dtypes.png"></p>
+
+<h3><a name="AutosizeViews"></a>Autosize 4 views&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+A</h3>
+<p><span>This will divide the available desktop space into four equal portions for the 3D view and three 2D windows.</span></p>
+  
+<h3><a name="Center2D"></a>Center Views on Selection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+E</h3>
+<p>Choosing this function will center all of the 2D views on the center of the currently selected object(s).</p>
+  
+<h3><a name="Center3D"></a>Center 3D Views on Selection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shortcut: CTRL+SHIFT+E</h3>
+<p>Choosing this function will center the 3D view on the center of the currently selected object(s).</p>
+  
+<h3><a name="GotoCoord"></a>Go to Coordinates...</h3>
+<p>Centers the viewports on the coordinates typed into the <a href="Go_To_Coord.html">Go to Coordinates</a> dialog box after pressing <strong>OK</strong>.</p>
+  
+<h3><a name="GotoBrush"></a>Go to Brush Number...</h3>
+<p>Centers the viewports on the brush number typed into the <a href="Go_To_Brush.html">Go to Brush Number </a> dialog box after pressing <strong>OK</strong>.</p>
+  
+<h3>Show Connections</h3>
+<p>Selecting this option will toggle on and off visible connection between entities that are linked by <i>target</i> and <i>targetname</i> values.</p>
+
+<p><img width=512 height=408 src="../images/examples/ShowConnections.png"></p>
+
+<h3>Show Connections</h3>
+<p><span>Selecting this option will toggle on and off visible connection between entities that are linked by <i>target</i> and <i>targetname</i> values.</span></p>
+
+<h3><a name="ShowHelpers"></a>Show Helpers </h3>
+<p>Turns on and off the display of entity helpers for entities that have them. Example include the light cones on <span class="code2">point_spotlight</span>, or the fade distances on <span class="code2">prop_static</span>. See the <a href="Entity_Guide.html">Entity Guide</a> for more information about specific entities. </p>
+  
+<h3><a name="HideItems"></a>Hide Items</h3>
+<p><span>Selecting <b>Hide Items</b> hides all point entities from view and, when selected again, returns the entities to view.</span></p>
+  
+<h3>Hide Paths</h3>
+<p>This will toggle on and off the visibility of paths lines between path entities such as <span class="code2">path_corner</span> and <span class="code2">path_track</span>.</p>
+  
+<h3><a name="HideNames"></a>Hide Entity Names </h3>
+<p>Turns on and off the display of entity names for all entities in the 2D Views. </p>
+  
+<h3><a name="HideSelected"></a>Hide selected objects</h3>
+
+<p><span>This command hides the selected objects invisible by placing the objects into a new VisGroup. Upon activating the command, it will bring up the <a href="Visgroup_New.html">New VisGroup</a> dialog to define the new VisGroup containing the selected objects. After creating the VisGroup, it will be immediately hidden. </span></p>
+<p>For more information on using <strong>VisGroups</strong>, see <a href="Grouping_and_VisGrouping.html">Grouping and Visgrouping</a>, <a href="Visgroup_New.html">New VisGroup</a>, and <a href="Filter_Control.html">Filter Control Bar</a>.</p>
+  
+<h3><a name="ShowHidden"></a>Show hidden objects</h3>
+<p>This function makes all hidden VisGroups visible.</p>
+
+<h3><a name="DrawOpaque"></a>Draw Materials Opaque</h3>
+<p>Disables transparent rendering of all materials in the 3D Views. Can be useful to select and sort objects in the scene, and improve rendering speed of complex scenes on lower-end systems.</p>
+
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>
