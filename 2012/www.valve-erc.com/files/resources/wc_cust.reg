@@ -1,0 +1,10 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Valve\Worldcraft\Custom2DColors]
+"UseCustom"=dword:00000001
+"Background"="215 189 151"
+"Grid0"="255 0 0"
+
+[HKEY_CURRENT_USER\Software\Valve\Worldcraft\2D Views]
+"GridDots"=dword:00000001
+
