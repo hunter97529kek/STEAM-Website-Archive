@@ -1,0 +1,81 @@
+<html>
+<head>
+	<title>Compiling Models</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Compiling Models Basics</h1>
+
+
+<h2>Exporting and Compiling Models</h2>
+
+<p>Follow these steps to export a model from XSI and compile it with the Source SDK tools:</p>
+
+<ol class="numberedlist">
+<li>Export the SMD files somewhere under the SDK's <span class="code2">modelsrc</span> directory for the game you're compiling for.<br><br>
+For example, for a Counter-Strike Source model:<br><br>
+	<span class="code2">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\</span><span class="code2">sourcesdk_content\cstrike\modelsrc</span><br><br>
+	Where <em>username</em> is your Steam Login name.</li><br><br>
+
+<li>Create a .QC file in the same place as your .SMD files. You can refer
+	to the QC files that are already in the <span class="code2">sourcesdk_content\cstrike\modelsrc</span> directory for examples. See <a href="modeling_qc_commands.htm">QC Commands</a> for a detailed list of commands you can use in .QC files.<br><br></li>
+
+
+<li>Make sure you have the proper <strong>Current Game</strong> selected on the <strong>SDK Launcher</strong> panel (eg. Counter-Strike: Source). </li>
+<br><br>
+	
+<li>Run <span class="code2">studiomdl.exe</span> on your .QC file. To do this, open a Windows command prompt, and type:
+	
+	
+	<br><br><div class="code">
+	cd "%sourcesdk%"<br>
+	bin\studiomdl <span class="code2">..\sourcesdk_content\cstrike\modelsrc</span>\<em>mymodel.qc</em>
+	</div>	
+
+	<br>
+	<strong>Note</strong>: This makes use of an environment variable called "sourcesdk" to simplify things. This environment variable
+	is created upon installation of the Source SDK.<br>
+	<br></li>
+
+<li>If there are no errors with the .QC file or your .SMD files, then you will have a .MDL file in the location specified
+by the <em>$modelname</em> key in the .QC file.<br><br></li>
+
+<li>You can now run <strong>Model Viewer</strong> in the <strong>SDK launcher</strong> and open your model file.</li>
+</ol>
+
+<h2>Placing models</h2> 
+
+<p>You can place a model with the Hammer level editor to see it inside the game.</p>
+<p><strong>Note:</strong> This copying step will not be required in the full SDK release.</p>
+<p>To place a compiled model in Hammer:</p>
+	
+	<ol class="numberedlist">
+		
+	    <li>Open the <strong>Hammer Editor</strong> from the <strong>SDK Launcher</strong>.</li><br><br>
+		
+	    <li>Add a prop entity with the <strong>Entity Tool </strong>(<span class="code2">prop_static, prop_dynamic</span> or <span class="code2">prop_physics_multiplayer</span>, depending on your model type). In the <strong>Object Properties</strong> for the entity, browse the model tree to view and place the model. See the <a href="http://collective.valve-erc.com/index.php?go=hammer_docs">Hammer documentation</a> for information on how to use the <strong>Entity Tool</strong>. </li>
+	</ol>
+
+
+<h2>Sample Models</h2>
+
+<p>There are a number of Counter-Strike: Source and Half-Life 2 sample models in the <span class="code2">sourcesdk_content</span>  directory that you can refer to for examples. They are
+compiled in the same way as models you create yourself. For example, you can type these commands at a command prompt to compile the lamp holder sample:<br><br> 
+
+<div class="code">
+	cd "%sourcesdk%"<br>
+	bin\studiomdl <span class="code2">..\sourcesdk_content\cstrike\modelsrc</span>\lamp\it_lampholder1.qc
+</div>	
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

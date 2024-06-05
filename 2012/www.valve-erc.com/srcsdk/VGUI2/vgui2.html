@@ -1,0 +1,347 @@
+<html>
+
+<head>
+	<title>VGUI 2</title>
+	<link rel="stylesheet" type="text/css" href="../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>VGUI 2</h1>
+
+<h2>Overview</h2>
+
+<p>The VGUI2 library (vgui2.dll) is a proprietary graphic user interface (GUI) provided by the Source Engine. All Source & Steam applications use VGUI for displaying windows, dialogs or menus. The object architecture is hierarchical and all implemented elements drive from VGUI base classes. The keyboard & mouse input system is event driven and quite similar to other GUI libraries (like Java Swing or .Net forms). Implementations for the most common GUI elements like buttons, text fields or images are provided by the VGUI controls library (vgui_controls.lib). Besides drawing GUI elements and processing input, VGUI also handles localization for displaying text in the preferred user language. All VGUI base interface headers are located in \public\vgui\, control elements are defined in \public\vgui_controls\.</p>
+
+<p>As a mod author you will most likely use VGUI in the client.dll project to show menus, HUD elements or for in-game displays (on weapons or computer terminals etc). The base class all VGUI elements derive from is vgui::Panel, which defines an area on your screen that has a specific size and position, can draw itself and process input events. Dialog windows, text fields and buttons are all VGUI panels in a hierarchical parent-child relationship. The very first panel is the root panel and is provided by the Source engine. The client root panel covers the whole screen, but doesn't show anything. Even you could use the client root panel, most client panels use the shared BaseViewport panel as parent ( <span class="code2">g_pClientMode->GetViewport()</span> ).</p>
+
+<p>This diagram shows a part of the client panel hierarchy. An arrow between two panels means "is parent of" :</p>
+
+<img src="vgui2_1.gif" alt="" width="437" height="313" hspace="10" vspace="20" border="0" align="middle">
+
+<p>To browser through the VGUI panel hierarchy during runtime you can open the VGUI Hierarchy tool by executing in developer console <span class="code2">vgui_drawtree 1</span>. All panels are listed in an expandable tree view. Panels name are colored :</p>
+
+<img src="vgui2_3.jpg" alt="" width="299" height="418" border="0" align="right">
+
+<table width="400" border="0" cellspacing="2" cellpadding="2" align="center">
+<tr>
+	<td><p>white :</p></td>
+	<td><p>Panel is visible</p></td>
+</tr>
+<tr>
+	<td><p>grey :</p></td>
+	<td><p>Panel is hidden</p></td>
+</tr>
+<tr>
+	<td><p>yellow :</p></td>
+	<td><p>Popup panel (Frame)</p></td>
+</tr>
+<tr>
+	<td><p>green :</p></td>
+	<td><p>Panel has focus</p></td>
+</tr>
+</table>
+
+<p>The following options are available:</p>
+
+<table width="400" border="0" cellspacing="2" cellpadding="2" align="center">
+<tr>
+	<td><p>Show Visible :</p></td>
+	<td><p>list all visible panels</p></td>
+</tr>
+<tr>
+	<td><p>Show Hidden :</p></td>
+	<td><p>list all hidden panels</p></td>
+</tr>
+<tr>
+	<td><p>Popups only :</p></td>
+	<td><p>list only Popup panels (Frames)</p></td>
+</tr>
+<tr>
+	<td><p>Highlight Mouse Over :</p></td>
+	<td><p>Panels are highlighted with a colored border when you move the mouse cursor over. The panel tree will be expanded to show the current panel.</p></td>
+</tr>
+<tr>
+	<td><p>Freeze :</p></td>
+	<td><p>Locks current tree view</p></td>
+</tr>
+<tr>
+	<td><p>Show Addresses :</p></td>
+	<td><p>shows panel memory address</p></td>
+</tr>
+<tr>
+	<td><p>Show Alpha :</p></td>
+	<td><p>show panel alpha value, 0 = translucent, 255 = opaque</p></td>
+</tr>
+<tr>
+	<td><p>In render Order :</p></td>
+	<td><p>sort panels in tree by rendering order</p></td>
+</tr>
+</table>
+
+<h2>The Panel Class</h2>
+
+
+<p>The VGUI class Panel is the base class for over 50 different control elements, which are defined in \public\vgui_controls\. The header files usually provide a good documentation about the control features and behaviors. The following diagram shows the class hierarchy for some common used elements:</p>
+
+<img src="vgui2_2.gif" alt="" width="611" height="193" border="0" align="middle">
+
+<p>Since all VGUI classes derive from class Panel, we should take a closer look at the essential member functions and properties.</p>
+
+<p>The most commonly used constructor to create a panel is <span class="code2">Panel(Panel *parent, const char *panelName)</span>, since each panel needs a parent panel it belongs to and a unique name in it's hierarchy level. Once a panel is created you can make it visible or hide it again with <span class="code2">SetVisible(bool state)</span>.</p>
+
+<p>VGUI keeps a handle for each new panel, which is used to globally address a panel without passing pointers. Lots of event messaging functions use these <span class="code2">VPANEL</span> handles to identify source and target panels. To get the unique <span class="code2">VPANEL</span> handle of a panel call <span class="code2">GetVPanel()</span>.</p>
+
+<p>To set a panel's position and size use the <span class="code2">SetPos(int x,int y)</span> and <span class="code2">SetSize(int wide,int tall)</span> member functions. The size is always in pixels and doesn't scale automatically with increasing screen resolutions. The position is always relative to the given parent panel, where (0,0) is the upper left corner.</p>
+
+<p>To iterate through the panel hierarchy using a certain panel as starting point, you get the parent panel by calling <span class="code2">GetParent()</span> or <span class="code2">GetVParent()</span> to get the corresponding <span class="code2">VPANEL</span> handle. Of course a panel can have only one parent panel, but multiple child panels (sub panels, buttons, list elements etc). <span class="code2">GetChildCount()</span> will return the total number of children, were each child can be queried with <span class="code2">GetChild(int index)</span>.</p>
+
+<p>If a panel should react to input events like key pressed or mouse click, the virtual <span class="code2">OnEvent()</span> functions like <span class="code2">OnMousePressed(MouseCode code)</span> or <span class="code2">OnKeyCodePressed(KeyCode code)</span> must be overwritten.  Mouse and keyboard input events can be enabled/disabled for a panel using <span class="code2">SetMouseInputEnabled(bool state)</span> or <span class="code2">SetKeyBoardInputEnabled(bool state)</span>.</p>
+
+<p>Another useful virtual function to overwrite is <span class="code2">OnThink()</span> which is called every time the panel is redrawn. Sometimes this is too much and you want update or check the panel state less often. Then you can hook into <span class="code2">OnTick()</span> which is called frequently in an adjustable time interval. But VGUI must be told that it should call <span class="code2">OnTick()</span> for a given panel and how often, this is done with <span class="code2">ivgui()->AddTickSignal(VPANEL panel, int intervalMilliseconds)</span>.</p> 
+
+<h2>Windows & Popups</h2>
+
+<p>A Panel a described as above is always a 100% sub area of its parent panel, its position is always a fixed relative offset and can only be changed by code. Also it draws itself only inside the parent region, if you move a VGUI element outside the parent panel, it will be clipped. This is fine for adding control elements, images or text fields to a panel, but wouldn't allow independent pop-up windows or dialog boxes the user can move around, resize and minimize. Therefore VGUI panels have the <span class="code2">MakePopup()</span> function which decouples a panel from is parent rendering and makes it a new, independent window. Still it belongs to a parent panel and becomes invisible if the parent does. </p>
+
+<p>In most cases you won't call <span class="code2">MakePopup(</span>) by yourself but use the Frame class instead. The Frame class encapsulates all common GUI windows features like title bar, system menu (close, minimize, maximize), dragging, resizing, focus and layout management.</p>
+
+<p>Here a short example how to open a frame and activate it. Note that the frame will delete itself once the user closes the frame or the <span class="code2">Close()</span> function is called (just make sure that your stuff is cleanup up in the destructor).</p>
+
+<pre class="code">
+Frame *pFrame = new Frame( g_pClientMode->GetViewport(), "MyFrame" );
+pFrame->SetScheme("ClientScheme");
+pFrame->SetSize( 100, 100 );
+pFrame->SetTitle("My First Frame", true );
+pFrame->Activate();	// set visible, move to front, request focus
+</pre>
+
+<p>If a Frame is resized, the virtual function <span class="code2">PerformLayout()</span> is called so the frame can rearrange its elements to fit best for the new size. The current Frame position and size can also be locked with <span class="code2">SetMoveable(bool state)</span> and <span class="code2">SetSizeable(bool state)</span>.</p>
+
+<h2>Event Messaging</h2>
+
+<p>VGUI panels communicate via a message system to signal state changes or events to parents or children (or any other panel). Messages are not sent directly (e.g. by calling a panel listener function), rather they are handed over to VGUI which delivers them to the target panel. Thus beside the message content, a sender and a receiver panel must be specified as VPANEL handles. VGUI sends event messages to inform panels about changes or events (mouse moved, input focus changed etc).</p>
+
+<p>The message name and content is specified using a KeyValues object (\public\KeyValues.h). The KeyValues class is a very generic and flexible structure to store data records containing strings, integer or float numbers. A KeyValues object has a name and a set of data entries. Each entry has a unique key name and corresponding value. KeyValues also allow creating hierarchical structures using sub keys, though most VGUI messages are flat data records. KeyValues don't have data/type definitions or similar, so you can add or remove entries of any type as you like. Thus sender and receiver must both know the internal structure (e.g. key names, types and their meaning) of a KeyValues message object to communicate successfully. Here some sample code how to use KeyValues in general:</p>
+
+<pre class="code">
+// create a new KeyValues Object named "MyName"
+KeyValues *data = new KeyValues("MyName"); 
+
+// add data entries
+data->SetInt( "aInteger", 42 );
+data->SetString( "aString", "Marvin" );
+
+// read data entries
+int x = data->GetInt("aInteger");
+Con_Printf( data->GetString("aString") );
+
+// destroy KeyValues object again, free data records
+data->deleteThis();
+</pre>
+
+<p>To send a message you can call the Panel member function <span class="code2">PostMessage(…)</span> or directly <span class="code2">ivgui()-> PostMessage(…)</span>. The name of the KeyValues object is also the message name used for later dispatching. VGUI will call the target panel's <span class="code2">OnMessage(…)</span> function, which will dispatch the message to a previous defined message handler. A panel can register new message handlers with one of the <span class="code2">MESSAGE_FUNC_*</span> macros, which adds a handler function to the message map. Never overwrite <span class="code2">OnMessage(…)</span> to handle new messages, always use a macro. </p>
+
+<p>First declare a message handler for the receiving panel:</p>
+<pre class="code">
+class MyParentPanel  : public vgui::Panel
+{
+	...
+private:
+	MESSAGE_FUNC_PARAMS( OnMyMessage, "MyMessage", data );
+}
+
+void MyParentPanel::OnMyMessage (KeyValues *data)
+{
+	const char *text = data->GetString("text");
+}</pre>
+
+<p>The sending panel creates a KeyValues object, adds message parameters and sends the message (to it's parent in this case). The KeyValues object is destroyed by VGUI after it has been processed.</p>
+<pre class="code">
+void MyChildPanel::SomethingHappend()
+{
+	if ( GetVParent() )
+	{
+		KeyValues *msg = new KeyValues("MyMessage");
+		msg->SetString("text", "Something happend");
+		PostMessage(GetVParent(), msg);
+	}
+}</pre>
+
+
+<p>Using <span class="code2">PostMessage()</span>the sending panel must address a single, specific target, which means that all other panels interested in a state change must be known and addressed individually. To avoid hard coding these dependencies, panels have a public event system called action signals.  A panel fires generic events with <span class="code2">PostActionSignal(KeyValues *message)</span> and interested panels can register as listeners for these signals with <span class="code2">AddActionSignalTarget(Panel *target)</span>. These action signals are widely used but VGUI controls, for example messages like <span class="code2">"TextChanged"</span> fired by class TextEntry or <span class="code2">"ItemSelected"</span> used by class ListPanel. All action signal messages contain a pointer entry "	panel" that points to the sending panel.</p>	
+
+
+<p>The example from above using action signals would need the parent panel to register as a listener, preferably in the constructor after the child panel has been created. The child panel just uses <span class="code2">PostActionSignal()</span> instead of <span class="code2">PostMessage()</span>:</p>
+<pre class="code">
+MyParentPanel::MyParentPanel()
+{
+	...
+	m_pChildPanel->AddActionSignalTarget( this );
+}
+
+void MyParentPanel::OnMyMessage (KeyValues *data)
+{
+	const char *text = data->GetString("text");
+	Panel *pSender = (Panel *) kv->GetPtr("panel", NULL);
+}
+
+void MyChildPanel::SomethingHappend()
+{
+	KeyValues *msg = new KeyValues("MyMessage");
+	msg->SetString("text", "Something happend");
+	PostActionSignal ( msg );
+}</pre>
+
+
+<p>A common used action signal is the "Command" message, since no message handler needs to be installed. Panels just need to derive the virtual Panel function <span class="code2">OnCommand(const char *command)</span> and check for the correct command string. The "Command" message is used by all Button classes and is fired whenever the button is pressed. Here the example from above using the Command message:</p>
+<pre class="code">
+class MyParentPanel  : public vgui::Panel
+{
+	...
+protected:
+	virtual void OnCommand(const char *command);
+}
+
+MyParentPanel::MyParentPanel()
+{
+	...
+	m_pChildPanel->AddActionSignalTarget( this );
+}
+
+
+void MyParentPanel::OnCommand(const char *command)
+{
+	if (!stricmp(command, "SomethingHappend "))
+	{
+		DoSomething ();
+	}
+	else
+	{
+		BaseClass::OnCommand(command);
+	}
+}
+
+void MyChildPanel::SomethingHappend()
+{
+	KeyValues *msg = new KeyValues("Command");
+	msg->SetString("command", "SomethingHappend");
+	PostActionSignal ( msg );
+}</pre>
+
+
+<h2>Schemes & BuildMode</h2>
+
+<p>A VGUI scheme defines the general "Look&Feel" of your panels by specifying used colors, fonts & icons of control elements. Schemes are defined in resource files, for example hl2\resource\clientscheme.res. A new panel inherits by default the scheme settings used by its parent. The VGUI scheme manager can load a new scheme with <span class="code2">LoadSchemeFromFile(char *fileName, char *tag)</span> which returns <span class="code2">HScheme</span> handle. To make a panel using a loaded VGUI scheme call the panel member function <span class="code2">SetScheme(HScheme scheme)</span>.</p>
+
+<p>Schemes set the general look of panel elements, but they don't arrange specific control elements of your panel. One way of adding elements to your panel is by doing that in source code. You can create them (usually in the constructor of the parent panel) and set properties like size and position manually using the panel member functions. This will become quite complex and time-consuming for larger dialogs with lots of control elements.</p>
+
+<p>The most common way to define the layout of your panel elements is to describe all elements in an external resource file like "hl2\resource\UI \classmenu.res" (a KeyValues text file). When the parent panel is created, this file is loaded and executed with <span class="code2">LoadControlSettings(char *dialogResourceName</span>). In this resource file each control element is defined in a separate section.  A typical control definition looks like this:</p>
+
+<pre class="code">
+"MyControlName"
+{
+	"ControlName"	"Label"		// control class 
+	"fieldName"	"MyControlName"	// name of the control element
+	"xpos"		"8"		// x position
+	"ypos"		"72"		// y position
+	"wide"		"160"		// width in pixels
+	"tall"		"24"		// height in pixels
+	"visible"		"1"		// it's visible
+	"enabled"		"1"		// and enabled
+	"labelText"	"Hello world"	// show this text
+	"textAlignment"	"west"		// right text alignment
+}</pre>
+
+
+<br>
+<br>
+
+<img src="vgui2_4.jpg" alt="" width="312" height="411" border="0" align="right">
+
+<p>Each control property has a key name and a value. Properties defined by the base class Panel are available for all controls (like xpos, ypos, wide, tall etc). A list of all available key names is returned by the panel member function <span class="code2">GetDescription()</span>. Derived panel classes may add new fields for their specific properties. Processing these new fields must be handled by overwriting the virtual function <span class="code2">ApplySettings(KeyValues *inResourceData)</span>. Here you can also lookup how values for an existing control property are interpreted.</p>
+
+<p>Even simpler to use is the VGUI Build-Mode that allows you to modify and save the layout of a panel resource file while the application is running. To edit a panel, just start the game and open this panel, so it gets the input focus. Then press <strong>SHIFT+CTRL+ALT+B</strong> to open the VGUI Build-Mode editor. In Build-Mode you can easily rearrange existing elements and change their control properties (press 'Apply' to update changes). To add a new control element, just choose the desired class from the combo-box on the lower right side and an empty control object of that class will be place in your panel for further editing. To save the current layout in the associated resource file press the 'Save' button (make sure the resource file is not write-protected).</p>
+
+<br>
+
+<h2 align="left">Drawing & Surfaces</h2>
+
+<p>Using schemes and control properties you can change the general appearance and layout of existing controls, but it doesn't allow you to create completely new elements. To change the appearance of a panel you have to override the two virtual functions <span class="code2">Panel::Paint(</span>) and <span class="code2">Panel::PaintBackground()</span>. In these functions you can use drawing functions provided by the ISurface interface to place lines, rectangles, text, images etc. When updating the screen, VGUI calls first <span class="code2">PaintBackground()</span> and then <span class="code2">Paint()</span> for each panel and it's children panels recursively. Drawing coordinates are relative to the panel you draw in. Here same example code how to draw a red box in the upper left corner:</p>
+
+<pre class="code">
+void MyPanel::Paint(void)
+{
+	BaseClass::Paint();  
+	surface()->DrawSetColor(  255, 0, 0, 255 ); //RGBA
+	surface()->DrawFilledRect( 0, 0, 20, 20 ); //x0,y0,x1,y1
+}</pre>
+
+<p>To draw  text on a panel surface you need to set the used font first. Fonts have names like "DefaultSmall" and their properties like True-Type-Font, size and weight are defined in scheme resource files. The font handle can be retrieved by calling <span class="code2">GetFont("Name")</span> of the current panel scheme, then the surface can be told to use it as the current font. After setting the color and position for the next text output, the text itself must be passed as wide char string (Unicode) to <span class="code2">DrawPrintText(…)</span>. This text will not be printed as it is and not localized anymore, so localization tokens must be translated beforehand.</p>
+
+<pre class="code">
+void MyPanel::Paint(void)
+{
+	wchar_t *pText = L"Hello world!";	// wide char text
+
+	// get the right font handle for this scheme
+	vgui::IScheme *pScheme = vgui::scheme()->GetIScheme(GetScheme());
+	vgui::HFont hFont = pScheme->GetFont( "DefaultSmall" );
+
+	surface()->DrawSetTextFont( hFont ); // set the font	
+	surface()->DrawSetTextColor( 255, 0, 0, 255 ); // full red
+	surface()->DrawSetTextPos( 10, 10 ); // x,y position
+	surface()->DrawPrintText( pText, wcslen(pText) ); // print text
+}</pre>
+
+<p>To draw a texture or image, VGUI has to load the texture from disk once (panel constructor) and generate a corresponding texture ID. This texture ID is then used as reference when drawing the texture. Here an example how to load and draw the texture "<span class="code2">\resources\vgui\mylogo.vmt</span>":</p>
+
+<pre class="code">
+MyPanel::MyPanel(void)
+{
+	m_nTextureID = vgui::surface()->CreateNewTextureID();
+	gui::surface()->DrawSetTextureFile( m_nTextureID, "vgui/mylogo" , true, false);
+}
+
+void MyPanel::Paint(void)
+{
+	vgui::surface()->DrawSetTexture( m_nTextureId );
+	vgui::surface()->DrawTexturedRect( 0, 0, 100, 100 );
+}</pre>
+
+<h2>Localization</h2>
+
+<p>VGUI text elements support automatic localization for the preferred user language. Lets assume a text label should show "Hello world!" then you could set this text directly with <span class="code2">SetText( "Hello World.")</span>. But if the user would choose a different language than English this label would still show the English text. Therefore you should always use localization tokens to tell VGUI to translate the token into user language, in this example <span class="code2">SetText( "#MyMod_HelloWorld")</span>. Tokens are strings starting with the pound sign '<span class="code2">#</span>' as control character to tell VGUI that this is not plain text.</p>
+
+<p>VGUI keeps a global translation table to map tokens to plain text representation. These translation tables are loaded from resource files, were each file has an extra copy for every supported language (e.g. <span class="code2">\resource\hl2_english.txt, \resource\hl2_german.txt</span>). A new token definition for your game would look like this:</p>
+
+<p>In mymod_english.txt:</p>
+	<pre class="code">
+	"MyMod_HelloWorld"			"Hello world."
+	"[english] MyMod_HelloWorld "	"Hello world."
+    </pre>
+
+<p>In mymod_german.txt:</p>
+	<pre class="code">
+	"MyMod_HelloWorld"			"Hallo Welt."
+	"[english] MyMod_HelloWorld "	"Hello world."
+    </pre>
+
+<p>If your game folder is named "mymod" the Source engine will automatically load the correct translation file (<span class="code2">/resource/gamedir_language.txt</span>). You can load additional translation files using the ILocalize interface function <span class="code2">AddFile(…)</span>. </p>
+
+<p>You can use the <span class="code2">ILocalize</span> interface also to manually translate a token into current user language, e.g. <span class="code2">vgui::localize()->Find("#MyMod_HelloWorld")</span>. This function returns the translation as a 16-bit wide char string (Unicode).</p>
+
+<p>VGUI uses Unicode for all text representation to support languages that use more then the 255 ASCII characters like Chinese or Russian. Language resource files are encoded as Unicode, where each character is encoded by 2 bytes. Most text editors support Unicode documents and you won't notice a difference to ASCII documents. To convert strings between ANSI ASCII and Unicode during runtime you can used the ILocalize interface functions <span class="code2">ConvertANSIToUnicode(…</span>) and <span class="code2">ConvertUnicodeToANSI(…)</span>. Also a very useful function is <span class="code2">ConstructString(…)</span> which is basically like sprintf(…) for Unicode strings.</p>
+
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

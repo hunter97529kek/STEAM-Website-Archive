@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <title>Character Textures And Materials</title>
+	<link href="../../srcsdk.css" rel="stylesheet" type="text/css">
+	
+	<script>
+    <!--
+    function popup(src,scroll,x,y,target)
+    {
+        open(src,target,"scrollbars="+scroll+",width="+x+",height="+y+",menubar=0")
+    }
+    -->
+	</script>
+</head>
+
+<div class="content">
+
+<h1>Character Textures And Materials</h1>
+
+    <p class="para_indent">When you compile a model for the Source engine, the names of the texture files (.TGA files) are used to reference a material shader (.VMT) instead of the original image file. Here is an example of a simple .VMT file:</p>
+
+<pre class="code">
+"VertexLitGeneric"
+{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"$basetexture" "models/Humans/Female/naomi_facemap"
+}
+</pre>
+
+    <p class="para_indent">This file simply specifies the shader type (<span class="code2">VertexLitGeneric</span>) and includes a link to the image source, which is in the compressed .VTF image format.</p>
+
+    <p class="para_indent">When using the <strong>XSI Mod Tool</strong> to produce models that will run in the Source engine, place your textures into the Source SDK directories provided when you installed the SDK. See <a href="../../general/content_directory_structure.html">SDK Directory Structure</a> for more information on these directories.</p>
+
+<p class="para_indent">Using this structure, you can refer to the .TGA files in the <span class="code2">materialsrc/models</span> tree when you texture the model in XSI. When you compile or load the model into the Source engine or tools, it will refer to the .VMT files in the <span class="code2">materials/models</span> tree.</p>
+
+    <p class="para_indent">You can use the utility <span class="code2">vtex.exe</span> to convert .TGA files to our compressed .VTF format. For more information on how to create textures and use Vtex, see <a href="../../Materials/materials_creation.html">Creating Materials</a>. </p>
+
+
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+
+
+</body>
+</html>

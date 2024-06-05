@@ -1,0 +1,227 @@
+<html>
+
+<head>
+    <title>Character Setup For the Source engine</title>
+    <link href="../../srcsdk.css" rel="stylesheet" type="text/css">
+   
+    <script>
+    <!--
+    function popup(src,scroll,x,y)
+    {
+        open(src,"","scrollbars="+scroll+",width="+x+",height="+y+",menubar=0")
+    }
+    -->
+    </script>
+</head>
+
+<div class="content">
+
+<h1>Character Setup Overview</h1>
+
+<p>The following procedure is a step-by-step overview of how to prepare and compile a character for use in the Source engine, using the SOFTIMAGE|XSI Mod Tool.</p>
+
+<table width="100%" cellspacing="0" cellpadding="10">
+<tr>
+    <td width="3%" align="center" valign="top"><p class="side_number">1.</p></td>
+    <td width="82%" valign="top"><h3>Build Your Model</h3>
+    <p><strong>Note:</strong> If you're building your model using the <strong>XSI Mod Tool</strong>, you'll need to keep it within poly export limits which are 7500 triangles per enveloped mesh or character, and 4000 triangles for prop objects, or meshes without skeletons.</p>
+    <p>To get a triangle count for selected objects in XSI:</p>
+    <ol>
+    <li>Do one of the following:<br>
+    	<ol>
+    	<li>Click any viewport's eye icon and choose <strong>Visibility Options</strong> from the menu.</li>
+    	<li>From the main menu, choose <strong>View > Visibility Options (All Cameras)</strong>.</li>
+    	</ol>
+    	The Visibility Options property editor opens.<br>&nbsp;
+    </li>
+    <li>From the <strong>Stats</strong> tab, activate the <strong>Selection/Scene Info > Show Selection Info</strong> option.</li>
+	</ol>
+    </td>
+    <td width="15%" valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">2.</p></td>
+    <td valign="top"><h3>Texture Your Model</h3>
+    <p>For information on how textures in XSI relate to materials in the Source engine, refer to <a href="textures_materials.html">Character Textures and Materials</a>.<br>
+&nbsp;</p></td>
+    <td valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number"><a name="SetUpEyes" id="SetUpEyes"></a>3.</p></td>
+    <td valign="top">
+    <h3>Set Up the Eyes</h3>
+    <ul>
+    <li> Each eye needs its own texture. For example, we use "<span class="code2">eyeball_r.tga</span>" and "<span class="code2">eyeball_l.tga</span>", or "<span class="code2">dark_eyeball_r.tga</span>" and "<span class="code2">dark_eyeball_l.tga</span>" for our eye textures. These texture names are accessed for rendering the eyeball shaders in the engine.<br>
+&nbsp;</li>
+    <li> Create and position spheres for eyeball reference. These spheres should not be textured or enveloped, and will not be exported with actual model geometry.</li>
+    </ul>
+    </td>
+    <td align="center" valign="middle">
+    <p><a href="eye_position.html"><img src="img/qc_eyes_thumb.jpg" alt="" width="120" height="90" border="2" class="img_link"></a><br><span style="font-family: Tahoma; font-size: 9px;"><em>- click to view -</em></span></p>
+    </td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">4.</p></td>
+    <td valign="top">
+    <h3>Set Up the Mouth</h3>
+    <p>The mouth geometry also needs its own texture (we use "<span class="code2">mouth.tga</span>" or "<span class="code2">fmouth.tga</span>") which has the texture data for the upper and lower teeth and inner mouth). Again, this texture name is accessed by the mouth shader in the engine.<br>
+&nbsp;</p>
+    </td>
+    <td valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">5.</p></td>
+    <td valign="top">
+    <h3>Freeze Your Model</h3>
+    <p>Before setting up and creating the facial animations, freeze the model using XSI's <strong>Freeze</strong> and <strong>Transform > Freeze All Transforms</strong> commands.<br>&nbsp;</p>
+    </td>
+    <td valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">6.</p></td>
+    <td valign="top">
+    <h3>Define Animation Clusters</h3>
+    <p>Create two clusters for the facial shapekeys (morphs):</p>
+    <ul>
+    <li>One cluster for the flexible portion of the front of the face - from the lower front of the neck back to the front edge of the ears and up to the upper forehead.<br><br><strong>Note:</strong> Be sure NOT to include the teeth or inner mouth polygons in this cluster.</li>
+	<li>A separate cluster  for the lower teeth.</li>
+	</ul>
+    </td>
+    <td valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">7.</p></td>
+    <td valign="top">
+    <h3>Initialize the Shapekeys</h3>
+    <p>On each animation cluster, initialize the shapekeys for frames 0 through 35.</p>
+    <p>A quick way to do this is to run <strong> ValveSource> Shape Tools > Init Shape Keys</strong> on each animation cluster. Be sure the cluster is selected before running the script. This will create a keyshape copy of frame 0 on frames 1 through 40<br>&nbsp;</p>
+    </td>
+    <td valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">8.</p></td>
+    <td valign="top">
+    <h3>Create Shapekeys</h3>
+    <p>You'll need to create shapekeys for frames 1-34. For the complete list of keyshapes see the <a href="facial_shapekeys.html">Character Facial Animation Shapekey Set</a> page.</p>
+    <ul>
+    <li>To create a new keyshape, translate, rotate, or scale points to 'sculpt' the keyshape, then make sure that you have the appropriate cluster selected before you hit <strong>Animate > Deform > Shape > Save Shape Key</strong>.<br>
+<br>
+</li>
+    <li> To copy a shapekey to another frame number you can use the script <strong> ValveSource > Shape Tools > Copy Shape Keys</strong>.<br><br>Make sure to select the cluster with the corresponding shapekey, then run the script; you'll be prompted for the destination frame number.<br>
+<br>
+</li>
+    <li> You can blend a portion of one shapekey with another shapekey as follows:<br>
+</li>
+		<ol type="a">
+		<li>The first step is to select a cluster on the model and then hit <strong> ValveSource > Shape Tools > Blend Shape Keys > Set Cluster </strong>. This defines the cluster on which the shape key blending will occur. Points outside this cluster will never be changed. </li>
+		<li>The second step is to make sure that proportional modeling is turned on, move to the frame that you want to blend from, then make a proportional selection of points in the cluster. This defines the source frame and the weight map for the blending. </li>
+		<li>The third step is to move the key frame index (right click and drag in the timeline) to set the destination frame for the blending. You'll notice a green frame indicator on the destination frame, the red indicator on the source frame.</li>
+		<li>Finally, hit <strong> ValveSource > Shape Tools > Blend Shape Keys >Blend Shape </strong>. This will update the shape key at the destination frame by blending the points between the two frames based on the weight map. </li>
+		</ol>
+	</li>
+    </ul>
+    </td>
+    <td align="center" valign="middle">
+    <p><a href="facial_shapekeys.html"><img src="img/face_key_thumb.jpg" alt="" width="120" height="90" border="2" class="img_link"></a><br><span style="font-family: Tahoma; font-size: 9px;"><em>- click to view -</em></span></p>
+    </td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">9.</p></td>
+    <td valign="top">
+    <h3>Import the Character Rig</h3>
+    <p>You'll need to get a character rig. Use <strong> ValveSource > Characters > Biped Guide </strong> to set the size and position of your rig, then run <strong> ValveSource > Characters > Create Rig From Guide </strong> to create the rig. 
+	<p>You can also get a default male or female Valve rig with <strong> ValveSource > Helper Bone Tool > Default (Male/Female) Rig </strong> to load a Valve rig.</p>
+    <p>To add interpolator (helper) bones to your rig to help maintain better joint and limb deformations, you can use <strong> ValveSource > Helper Bone Tool > Import helper bones</strong>.<br>&nbsp;</p>
+    </td>
+    <td align="center" valign="middle">
+    <p><a href="javascript:popup('valvebiped.html','no',540,810)"><img src="img/valvebiped_thumb.jpg" alt="" width="120" height="90" border="2" class="img_link"></a><br><span style="font-family: Tahoma; font-size: 9px;"><em>- click to view -</em></span></p>
+    </td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">10.</p></td>
+    <td valign="top">
+    <h3>Envelope the Character Mesh to the Skeleton</h3>
+	<p>
+    </td>
+    <td valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">11.</p></td>
+    <td valign="top">
+    <h3>Export a .smd File</h3>
+    <p> The .smd file contains geometry, textures, envelope data and skeletal data.</p>
+    <p>To export a .smd file:</p>
+    <ol type="a">
+    <li> Select your enveloped mesh and the entire ValveBiped branch.</li>
+    <li> Open the SMD Export Options dialog from <strong>ValveSource> Export SMD...</strong>.</li>
+    <li> Select <strong>Model (.SMD)</strong> as your file type. Leave all Options checked, and click OK.</li>
+    <li> Navigate to the appropriate directory and name for the exported .smd file and click OK.</li>
+    </ol>
+    </td>
+    <td valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">12.</p></td>
+    <td valign="top">
+    <h3>Export a .VTA File.</h3>
+    <p>The .VTA file contains facial animation data.</p>
+    <p>To export a .VTA file:</p>
+	<ol type="a">
+    <li> Select your enveloped mesh and the entire ValveBiped branch.</li>
+    <li> Open the SMD Export Options dialog from <strong>ValveSource> Export SMD...</strong>.</li>
+    <li> Select <strong>Vertex Animation (.VTA)</strong> as your file type, leave all Options checked, and hit OK.</li>
+    <li> Navigate to the appropriate directory and name for the exported .VTA file and hit OK.</li>
+    </ol>
+    </td>
+    <td valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">13.</p></td>
+    <td valign="top">
+    <h3>Set up Character Eye Data for the .qc File.</h3>
+    <p>There are two ways to set up the character eye data:</p>
+    <ul>
+    <li> Using the QCEyes applet: run <strong>QCEyes</strong> and the help screens/text will take you through the process.</li>
+    <li> Doing it by hand, as described in the <a href="eye_position.html">Eye Position Setup</a> document.</li>
+    </ul>
+    </td>
+    <td align="center" valign="middle">
+    <p><a href="eye_position.html"><img src="img/qc_eyes_thumb.jpg" alt="" width="120" height="90" border="2" class="img_link"></a><br><span style="font-family: Tahoma; font-size: 9px;"><em>- click to view -</em></span></p>
+    </td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">14.</p></td>
+    <td valign="top">
+    <h3>Edit the .qc File</h3>
+    <p>The .qc file is the script for compiling your character resources (geometry, textures, animations, etc.) into a run-time model (.MDL).</p>
+    <p>To compile a new .MDL, you’ll need to  do the following:</p>
+    <ol>
+	<li>Update the eye/face data (see <a href="#SetUpEyes">Set Up the Eyes</a>).</li>
+	<li>Update the names of the model (<span class="code2"><em>modelname</em>_reference.smd</span>) and animation files (modelname_expressions.VTA) to the same names you exported from XSI.</li>
+	<li>Update the run-time model name (<span class="code2"><em>modelname</em>.MDL</span>) to what you want the model to be named.</li>
+    </ol>
+    </td>
+    <td valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td align="center" valign="top"><p class="side_number">15.</p></td>
+    <td valign="top">
+    <h3>Compile the run-time model with StudioMDL</h3>
+	<p>See <a href="../compiling_models.html">Compiling Models</a> for information on using StudioMDL to compile your character.</p>
+    </td>
+    <td valign="top">&nbsp;</td>
+</tr>
+</table>
+
+<p>If you wish to make further changes to your model, see <a href="changing_model.html">Making Changes to Your Character Model</a>.</p>
+
+
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+<html>
+
+<head>
+	<title>Source SDK Documentation</title>
+    <link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Physboxes and Ragdolls</h1>
+
+<p>Table of Contents</p>
+
+<ol>
+<li><a href="#physboxes">Creating Physboxes</a></li>
+<li><a href="#ragdolls">Making a Ragdoll</a></li>
+</ol>
+
+<h2><a name="physboxes">Creating physboxes</a></h2>
+
+<h3>Build a collision model</h3>
+
+<p>Each separate object is converted into a convex hull.  So you should have all faces that belong to a single object be a single smoothing group & texture.  Also, it uses simple vertex connectivity to determine what an object is, so don't connect things you don't want turned into a single convex hull.  Studiomdl does not optimize any of the meshes, it just makes convex hulls.</p>
+
+<p>As a rule of thumb, you shouldn't model anything smaller than 1" cubed as a detail.  You should be somewhat coarse in that regard, all details like bolts, buttons, etc should not be modeled as separate convex pieces.</p>
+
+<p>In general, it's totally fine for convex pieces to overlap.  So if this lets you make the model out of fewer (but larger) convex pieces, then that is good for performance.  Please do so.  You want to have as few convex pieces as possible.  Number of vertices is less important, but it should be on the order of a lower LOD of the render model.  You're not going to feel/notice inaccuracies of 1" in any cases - there are plenty of other factors that players will notice first.</p>
+
+<h3>Using $autocenter</h3>
+
+<p><span class="code2">$autocenter</span> moves the model so that its origin is at the center of its bounding box.</p>
+ 
+<p>It also adds an attachment point called "placementOrigin" which is the offset to the original origin.</p>
+ 
+<p>This is useful for building gibs.  You simply model them in XSI as a collection - where you'd want them to be placed.  Then you export them separately and add <span class="code2">$autocenter</span> to each qc.  So they get reasonable origins (centered) for lighting, bboxes, etc and they spawn in the correct position when the parent model is gibbed.</p>
+
+<h3>Useful Commands</h3>
+
+<ul>
+<li><span class="code2">$mass</span>
+<br><br><div class="definition">This lets you set the mass of the object in kilograms</div
+
+<br><div class="code">// set the mass to 100 kg
+<br>$mass 100
+</div>
+</li>
+
+<br><li><span class="code2">$automass</span>
+
+<br><br><div class="definition">this will automatically compute the mass using density/thickness of the material applied and the collisionmodel itself</div>
+
+<br><div class="code">// automatically compute mass
+<br>$automass
+</div>
+
+<br><li><span class="code2">$concave</span>
+
+<br><br><div class="definition">This tells studiomdl to assume the collision model is concave (i.e. a set of convex chunks).  Normally, studiomdl assumes the model is a single convex.</div>
+
+<br><div class="code">// collision model is not a single convex piece
+<br>$concave
+</div>
+</li>
+</ul>
+
+<h2><a name="ragdolls">Making a Ragdoll</a></h2>
+
+<h3>Build a Collision Model</h3>
+
+<p>Using one of the existing characters as a guideline, build a set of separate objects (one for each bone).  Make these objects as simple as possible, but don’t compromise the shape of the character too much.  Keep in mind that the physics system is going to make each bone a convex object.  It is not currently possible to make concave objects without using multiple bones.  These models should be fairly low poly in general, and each vertex should be assigned to a single bone.  It’s ok to leave holes in the skin (again, see one of the existing models like combine soldier or zombie).</p>
+
+<p>You should only add collision objects for some of the bones in this model.  If you put too many, you are just creating more work for someone else later.  Performance limitations mean that we can only simulate somewhere between 15-20 bones per character and still hit our budgets.  On bipeds, use an existing model as a template.  In HL2, we’ve cut down bipeds for simulation as follows:
+
+<ul>
+<li>We only support two spine segments</li>
+<li>Skip all fingers or toes</li>
+<li>Add-on equipment is usually merged in with another bone (like the combine soldier’s backpack)</li>
+</ul>
+
+<p>The end result is about 15 bones for most human characters.</p>
+
+<p>Export this model as an SMD file, and name it ragdoll.smd.  Save it in the directory with the model’s other animations.  You must export the SMD as a reference frame.</p>
+
+<h3>Build the Ragdoll Pose</h3>
+
+<p>Pose the model in its most relaxed state.  This pose will play the animation for each bone that isn’t being simulated.  With humans, we’ve eliminated the fingers, so it’s essential that you pose the fingers in this animation.  That way, if a character dies while holding a gun, he won’t fall over with his trigger finger out.</p>
+
+<p>Export this pose as an SMD, name it ragdoll_pose.smd.</p>
+
+<h3>Add the ragdoll.qc File</h3>
+
+<p>If there is another character that uses the same or a really similar skeleton, simply copy its ragdoll.qc.  Otherwise, copy $hl2/models/ragdoll.qc to your model’s folder.  Add a line at the end of the model’s qc file that says "<span class="code2">$include “ragdoll.qc”</span>".</p>
+
+<h3>Build the Model</h3>
+
+<p>Run studiomdl on the model.  It should tell you that it’s building a jointed collision model.</p>
+
+<h3>Run HLMV and Edit the Joints</h3>
+
+<p>Now run HLMV.  First, check the “Physics Model” checkbox.  Check over the wireframe physics model to make sure it built correctly and that your vertex assignments are ok.  Click the physics tab.  Now you can go through each axis of each joint and set the joint limits.  Again, if you copy the qc file from another character, you can start with its joint limits.  Be sure to set the mass to something appropriate (in kilograms).  1 kilogram is 2.2 pounds.</p>
+
+<p>After you’re done tweaking the limits, hit the “Generate QC” button.  Now a new QC file is on the clipboard.  Paste it into your ragdoll.qc and rebuild the model.</p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

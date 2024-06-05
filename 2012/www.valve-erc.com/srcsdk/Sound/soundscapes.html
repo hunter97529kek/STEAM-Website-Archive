@@ -1,0 +1,224 @@
+<html>
+<head>
+    <title>Soundscapes</title>
+    <link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1> Soundscapes </h1>
+<p><em> Soundscapes</em> are definitions of sounds to be played within the Source engine. These soundscapes include settings for various DSP effects as well as commands for controlling sound playback (randomizing, looping etc). The sound system will play one soundscape at a time and crossfade between soundscapes as they are changed. There is some flexibility here that will be explained later in the document. The entity <span class="code2">env_soundscape</span> can be used to set a player's soundscape if he moves within its radius and it has line of sight to the player. Only one <span class="code2">env_soundscape</span> can be active per player at any one time. The <span class="code2">env_soundscape</span> refers to individual soundscapes that are defined in the <span class="code2">soundscapes.txt</span> script file.</p>
+
+<h2>Using the env_soundscape Entity</h2>
+
+<p> To control soundscapes in a game map, we use the <span class="code2">env_soundscape</span> entity. Each entity has a <em>radius</em> and <em>soundscape</em> field. The <em>soundscape </em>field is the name of a soundscape to play when activated, as defined in <span class="code2">soundscapes.txt</span>. The radius describes a sphere around the entity that a player must be within to be considered for activating the soundscape. The player must also be visible to the soundscape entity (not occluded by walls or other obstructions). Once a player has triggered a soundscape, that soundscape will remain active until a new one is activated by the player. This means that even if a player leaves a soundscape&rsquo;s radius after having activated it, the soundscape will continue to play. Only one soundscape may play at any one time. If a new soundscape is activated, the currently playing soundscape will fade out while the new one fades in. </p>
+
+<p> The entity also has eight entity references slots available for use. These correspond to the <em>position</em> values declared in the soundscape. These may point to any valid entity, and will use that entity&rsquo;s position as a reference point for sound spatialization. </p>
+
+<h2>Creating and Editing soundscapes.txt Entries</h2>
+
+<p> <span class="code2">Soundscapes.txt</span> is a simple key/value pair file with the same format as .VMT or .VMF:</p>
+<pre class="code">
+&quot;example&quot;
+{
+   &quot;key1&quot; &quot;value1&quot; 
+   &quot;key2&quot; &quot;value2&quot; 
+   &quot;subexample&quot; 
+   { 
+          &quot;key3&quot; &quot;value3&quot; 
+   } 
+   &quot;key4&quot; &quot;value4&quot; 
+} 
+
+// Comment text, not parsed 
+&quot;example2&quot; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // This is a comment as well 
+{ 
+} 
+</pre>
+<p> Each root-level section (a section that is not within another section) is considered to be a definition of a soundscape. The name given to this soundscape is referenced by the <span class="code2">env_soundscape</span> entity. </p>
+<h2> Commands </h2>
+
+<table border="1px Black" bgcolor="#CCCCCC" cellpadding="8" cellspacing="0" width="100%">
+<tr><td>
+<h3>dsp</h3>
+
+<p>Sets the DSP effect to a particular room number. In general this should be set to 1, which is the &ldquo;automatic&rdquo; DSP. With this DSP the sound engine will attempt to discover the proper parameters based on the surrounding geometry. Setting the DSP to 0 will result in effectively turning DSP effects off. Using other pre-sets are only recommended for special cases. These pre-sets are declared in the <em>../hl2/scripts/dsp_preset.txt file</em>.</p>
+ 
+<p><strong>Example</strong></p>
+<pre class="code2">
+    // This soundscape disables DSP and plays no sounds 
+        &quot;Nothing&quot; 
+        { 
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;dsp&quot; &nbsp; &quot;0&quot; 
+        }</pre>
+</td>
+</tr>
+</table>
+
+<br><br>
+
+<table border="1px Black" bgcolor="#CCCCCC" cellpadding="8" cellspacing="0" width="100%">
+<tr>
+<td>
+
+<h3> playlooping </h3>
+
+<p>Plays a looping sound until a new soundscape is triggered. 
+    </p>
+    <p><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wave </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the wave file.<br>
+  <br>
+    <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;volume </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the wave's volume (0-1).<br>
+  <br>
+    <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pitch </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the pitch for the wave (100 is normal).<br>
+  <br>
+    <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attenuation </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the attenuation of the wave (only used if a &quot;position&quot; command follows).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>NOTE: </strong>These can be random intervals - the random value will be chosen once each time the soundscape is triggered. <br>
+    <br>
+    <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;position </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;References a position by index (0-7) that the level designer has pointed to in the env_soundscape entity. <br>
+    <br>
+    <strong>Example</strong></p>
+    <pre class="code2">
+    // This plays a single looping sound, with a generic reverb (room type 1)
+    &quot;GenericIndoor&quot; 
+    { 
+         &quot;dsp&quot;   &quot;1&quot; 
+         &quot;playlooping&quot; 
+         { 
+                &quot;volume&quot;       &quot;1&quot; 
+                &quot;pitch&quot;        &quot;100&quot; 
+                &quot;wave&quot;         &quot;ambient/areas/air_exchange/indoor2.wav&quot; 
+         } 
+    }</pre>
+
+</td>
+</tr>
+</table>
+
+<br><br>
+
+<table border="1px Black" bgcolor="#CCCCCC" cellpadding="8" cellspacing="0" width="100%">
+<tr>
+<td>
+<h3> playrandom </h3>
+<p>Plays random sound events until a new soundscape is triggered.</p>
+<p><em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time interval of the random event.<br>
+<br>
+  <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;volume </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Random volume interval (0-1).<br>
+<br>
+  <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pitch </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Random pitch interval (50-250).<br>
+<br>
+  <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attenuation </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Random attenuation of sound.<br>
+<br>
+  <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rndwave </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A list of random wave files to choose from.<br>
+<br>
+  <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;position </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Position to use, if spatialized (0-7).<br>
+<br>
+  <strong> Example </strong></p>
+<pre class="code2">
+    &quot;GenericOutdoor&quot;
+    
+    { 
+        &quot;dsp&quot;   &quot;1&quot; 
+        
+        &quot;playrandom&quot; 
+        { 
+            // Play every 0.1 to 1.5 seconds 
+            &quot;time&quot; &quot;0.1, 1.5&quot; 
+            
+            // At a volume of 0.5 to 1 
+            &quot;volume&quot; &quot;0.5,1&quot; 
+            
+            // At a pitch of 50% to 120% 
+            &quot;pitch&quot; &quot;50,120&quot; 
+            
+            // With an attenuation of 0.7 
+            &quot;attenuation&quot; &quot;0.7&quot; 
+            
+            // At entity specified at position 1 
+            &quot;position&quot;  &quot;1&quot; 
+            
+            // Play one of these .wav files randomly each time 
+            &quot;rndwave&quot; 
+            { 
+                &quot;wave&quot; &quot;temp/soundscape_test/music_snippet1.wav&quot; 
+                &quot;wave&quot; &quot;temp/soundscape_test/music_snippet2.wav&quot; 
+                &quot;wave&quot; &quot;temp/soundscape_test/music_snippet3.wav&quot; 
+            } 
+        } 
+    }</pre>
+</td>
+</tr>
+</table>
+
+<br><br>
+
+<table border="1px Black" bgcolor="#CCCCCC" cellpadding="8" cellspacing="0" width="100%">
+<tr>
+<td>
+
+<h3> playsoundscape </h3>
+
+<p> Plays another soundscape and all of its sub-commands. </p>
+<p><strong> NOTE: </strong>DSP effects cannot be altered by sub-soundscapes. </p>
+<p><em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sub-soundscape to play.<br>
+<br>
+<em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;volume </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All volumes in the sub-soundscape are scaled by this value (0-1).<br>
+<br>
+<em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;position </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An offset added to each position index of the sub-soundscape (0-7).<br>
+<br>
+<em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;positionoverride </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Forces all sub-soundscape positional sounds to occur at a single position originating from the entity at this index (0-7).<br>
+<br>
+<em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ambientpositionoverride </em><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Forces all sub-soundscape ambient sounds to be spatialized at a particular position originating from the entity at this index.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Useful to make ambient sounds come &ldquo;from a direction&quot; (0-7).</p>
+<p><strong> Example</strong></p>
+<pre class="code2">
+    &quot;SubSoundscape&quot;
+    { 
+        &quot;dsp&quot;   &quot;1&quot; 
+        
+        &quot;playsoundscape&quot; 
+        { 
+            // Sub-soundscape to play 
+            &quot;name&quot; &quot;GenericIndoor&quot;
+            
+            // All sub-soundscape volumes reduced by 50% 
+            &quot;volume&quot; &quot;0.5&quot;
+            
+            // All sub-soundscape position sounds will come from this point 
+            &quot;positionoverride&quot; &quot;0&quot;
+            
+            // All sub-soundscape ambient sounds will come from this point 
+            &quot;ambientpositionoverride&quot; &quot;1&quot; 
+        } 
+    }</pre>
+</td>
+</tr>
+</table>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

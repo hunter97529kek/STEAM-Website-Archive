@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <title>Making changes to your Character model</title>
+    <link href="../../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<div class="content">
+
+<h1>Making Changes to Your Character Model </h1>
+
+<p> Every time you make a change to your model in XSI, that action is saved as a modifier on the object. Before you can export your model in Source engine formats, you'll need to freeze or flatten the stack of changes to that object. This is done using the Merge/Freeze Character script.
+
+<ul>
+	<li> To freeze your model and flatten any changes to character geometry (adding, moving or deleting points, edges, polygons) while maintaining facial animations in XSI v. 4.0 or later, or the XSI Mod Tool:<br>&nbsp;
+		<ol>
+			<li>Make sure the model is selected and then press <strong>Freeze M</strong> on the <strong> Edit </strong> panel.<br><br>This freezes the geometry changes while keeping envelope and all of the facial shapekey animations and clusters intact.<br>&nbsp;</li>
+		</ol>
+	</li>
+
+	<li> To merge geometry that has facial animations with other geometry (putting the head on a different body, for instance):<br><br>
+		<ol>
+		<li>Multi-select the animated model first (head, face), then the non-animated model.<br>&nbsp;</li>
+		<li>Run <strong>ValveSource> Shape Tools > Merge Freeze</strong>.<br><br>
+This will create a new "frozen"and merged version of the model called "NewCharacter".<br>
+&nbsp;</li>
+		<li>Rename the new model to whatever you like.<br>&nbsp;</li>
+		<li>re-apply your envelope and export away.<br>&nbsp;</li>
+		</ol>
+	</li>
+	<li> For changes to texture coordinates, the modifiers are listed in the corresponding <strong>Texture_Coordinates</strong> folder (beneath <strong>Polygon Mesh > Clusters</strong>). You can freeze these changes by selecting the modifiers, right clicking and choosing <strong>Freeze</strong> from the menu - no need to run the Merge/Freeze script.</li>
+</ul>
+
+
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+
+
+</body>
+</html>

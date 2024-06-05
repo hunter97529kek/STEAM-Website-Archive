@@ -1,0 +1,165 @@
+<html>
+
+<head>
+	<title>Source SDK Documentation</title>
+    <link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Overview of Model Creation </h1>
+
+<p>This Document is an introduction to modeling and animating characters, weapons, vehicles and props for the Source Engine.  Other SDK documentation also covers the process of creating, rigging, animating, compiling, and defining physics interactions for Characters, Weapons, Vehicles and Props.</p>
+
+<h3>Table of Contents</h3>
+<ol>
+<li><a href="#in_brief">In Brief</a></li>
+<li><a href="#modeling_considerations">Modeling Considerations</a></li>
+<li><a href="#modeling_workflow">Modeling Workflow</a></li>
+<li><a href="#performance">Performance and Budgets</a></li>
+<li><a href="#directories">Directories and Workspace Setup</a></li>
+</ol>
+
+<h2><a name="in_brief"></a>In Brief</h2>
+
+<h3>Softimage|XSI Exp for Half-life 2</h3>
+
+<p>All of the models in Half-Life 2 were created with Softimage|XSI From Avid, A free version Softimage|XSI EXP, especially tailored to created content for the Source engine is available at <a href="http://www.softimage.com/products/exp/HL2/">www.softimage.com/products/exp/HL2/</a> , there you’ll fine tutorials, forums, and other resources for getting started with Softimage|XSI EXP. In addition to tutorials found in XSI EXP's net view, <a href="http://www.xsibase.com">www.xsibase.com</a> and <a href="http://www.edharris.com">www.edharris.com</a> also offer great resources for beginning modelers.</p>
+
+<h3>.SMD files</h3>
+
+<p>.SMD files are exported from XSI through the file/export menu, they come in three “flavors”. The Reference SMD file is a complete snapshot of the model, including its geometry, its skeletal structure, its texture, and the links between its mesh vertices and its skeleton. Reference .SMDs do not contain any animation data -- they produce only a static image of the complete model at one point in time.</p>
+
+<p>The Physbox .SMD is the volumes that the physics engine used to calculate collisions, and any links between it’s verticies and the skeleton.</p>
+
+<p>Animation .SMDs, on the other hand, contain only animation data and enough skeletal information for the StudioMdl program to be sure that the animation data matches the skeleton of the reference model. As you can see any animated model will require at least two .SMDs – and a glance at the Half-Life source files in the SDK will show you that most models include a very large number of animation files. Most models however will use only a single reference .SMD.</p>
+
+<h3>.QC files</h3>
+
+<p>It may be helpful to think of the .QC files as a kind of table of contents for model projects: the .QC provides a complete list of all the assets which will be included in a finished model.  The primary function of the .QC is to tell the StudioMdl program where to find textures and SMD files. 
+<br>
+The QC is also the place where game-engine data is specified. For example, the QC file tells the engine where to place effects like glow sprites or smoke, what animations correspond to the various AI activities, and when certain sounds should be played.</p>
+
+<h3>StudioMDL</h3>
+
+<p><span class="code2">Studiomdl.exe</span> is the command-line program that actually creates the Half-Life model files. It takes the name of a .QC file as a command parameter and uses the .QC to find the relevant .SMD and texture files. The program also provides feedback on the amount of memory used for the completed model’s geometry, textures, and animation data, which can be useful in debugging and optimizing your models. See <a href="compiling_models.html">Compiling Models Basics</a> for information on how to compile models with <span class="code2">studiomdl.exe</span>. </p>
+
+<h3>The finished product: .MDL files</h3>
+
+<p>The final output the process is a Half-Life model (.MDL) file, which contains all of the model data: geometry, animations, AI hooks, and so on. It’s ready to be called by relevant code.</p>
+
+<h2><a name="modeling_considerations"></a>Modeling Considerations</h2>
+
+<p>Before you start designing your model, you may want to consider a few things like, performance, in game usage, budgets, animation concerns, and naming conventions.  The biggest thing you need to consider before you start planning your model is the role this model has in your mod.</p>
+
+<h3>How is this character going to be used?</h3>
+
+<p>Is this a character that’s always going to be attacking from far away, or fighting up close? Is this character going to appear in dark spaces or in daylight, or both? What’s the overall color of the backgrounds this character is going to appear against?  How important or central is this character to your mod, is it a main character, or a seldom seen prop?  The best thing you can do for your design, overall, is decide what the most likely distance, pose and environment this character is going to appear in during play, then make sure the character works best in that situation. </p>
+
+<h2><a name="modeling_workflow"></a>Modeling workflow</h2>
+
+<p>Before starting any sort of modeling, you should have a clear drawing, much like a blueprint, for your character, vehicle or prop.  Create your geometry, edit the hard edges so it lights properly, add UV coordinates for the texture, envelope the mesh to your skeleton, add any facial expressions.</p>
+
+<h3>Concept art</h3>
+
+<p>Most of the time, you should start your model with a piece of concept art that solves most of the design issues at hand, this is where you decide what your character is, what shape it has, what the materials should look like and even what some of the basic poses for the animation set might be.  This is also a relatively painless way to test out ideas you’re your team without spending the time required to build, texture and animate a character.  Before you go any further, you should try and get as much feedback on your design as possible.  All of the characters in HL2 went through multiple versions and refinements before they were finalized.</p>
+
+<h3>The Model Sheet</h3>
+
+<p>Concept art usually shows a character posed and shown from an angle that may make it difficult to use as reference in modeling, so as your next step, you should make a model sheet. The model sheet is a view of the character from the front and the side, drawn straight on without any perspective, and in a neutral pose.  The model sheet is a blueprint of your geometry, where you make decisions about proportions, silhouette, and form.  Usually, you’ll want to use the model sheet at the background image in your viewports in XSI while modeling, (sometimes referred to as Rotoscopy, see the XSI|EXP documentation)</p>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/modelsheet.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">This model sheet shows the front and side views of the male and female<br>
+	    resistance fighters from HL2. Image by Moby Francke.</td>
+	</tr>
+</table>
+
+<p>This model sheet shows the front and side views of the male and female resistance fighters from HL2. Image by Moby Francke.</p>
+
+<h3>Creating Geometry</h3>
+
+<p>By now you have a rough idea of how your model going to be used, what your triangle budget looks like, what sort of a design you’re creating, the specifics of the geometry from front and side.  Now it’s time to start creating your geometry, this problem isn’t specific to creating models for HL2, so we won’t cover it in depth here, I’ll just talk about some basic guidelines that may smooth the process.</p>
+
+<h3>Approaches to Modeling</h3>
+
+<p>There are a number of ways to start creating a model, but the defacto industry standard is subdivision surfaces.  When creating content for the Source engine, you’ll most likely be using only one or two levels of subdivision, but this is still a good way to get organic shapes from low poly control cages.  Using this method, you’ll be doing most of your work by extruding geometry, and moving the resulting vertices and edges around until they match the model sheet you have in your viewport background.  Once common mistake made by beginning modelers is not taking advantage of the vertex weight influence on the resulting subdivision, please refer to the documentation in XSI|EXP for more info on working with subdivision surfaces.  At a certain point in the process, you will have to take direct control of the resulting mesh to do your final, small scale detailing.</p>
+
+<h3>Symmetrical modeling</h3>
+
+<p>Learning to identify areas of symmetry in your model can help to save time in the modeling, UV creation and Texturing process.  Also repeating elements in your design should only have to be created once, then cloned around the model as needed.  There are various tools for modeling symmetrically, but using Symmetrize Polygons is by far the most effective.  With this XSI tool (Model>Modify>Poly. Mesh>Symmetrize Polygons) you can duplicate areas of your mesh with a specified transform while preserving the UV coordinates and any other properties you may have defined.</p>
+
+<h3>Edgeloops and Animation</h3>
+
+<p>One thing that is required when creating your model is a good arrangement of edges around joints so that they deform accurately, with proper edge loops and enveloping, you can even have shoulders that work in most all positions.  The position and envelope weight of the Edgeloops will almost always need tuning after you’ve enveloped your mesh to the skeleton and test a few poses.</p>
+
+<h3>Editing Hard/Soft Edges</h3>
+
+<p>After you’ve carefully constructed the geometry that makes up your model, you’ll need to define which edges on the model should be creases.  You can use the automatic smoothing option, but this usually yields less than ideal results.  Choosing where hard edges go isn’t a simple task.  Hard edges are usually used to define creases, cracks, boundaries between materials, areas where the geometry has large angles between faces, (more than around 75 degrees).  In general, all edges that have more than 90 degrees between polygons should be a hard edge, so you may want to start with that as an automatic hard edge setting.  To edit hard edges, enter into an edge select mode ( hotkey &quot;I&quot; for example) select some edges, then right click on the selection and choose <strong>Mark hard edge/vertex</strong>.  Selecting those edges again, and choosing the same command act to toggle the hard edge property.  You may also remove hard edge properties by deleting the edge node in the explorer.</p>
+
+<h3>Defining your UV coordinate space</h3>
+
+<p>The next step in the modeling process is editing your UV coordinates.  For basic information on editing UV coordinates, Please refer to the XSI|EXP documentation, (section <strong>Shaders, Lights and Cameras.  Section: Texturing Basics</strong>).  One common pitfall when starting to use the texture editor in XSI is ending up with multiple UV sets, You’ll want to only have one IV set per model.  In this figure, you can see how in one Texture coordinates node, you can inadvertently end up with multiple UV sets.</p>
+
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/explorer.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">A Texture Coordinates node in Softimage|XSI with<br>
+		multiple UV sets.</td>
+	</tr>
+</table>
+
+<p>For the Beginner, this is generally to be avoided.  If you have good information in both sets, use the copy and paste UV functionality in the <strong>Texture Editor</strong> to consolidate your UV sets.</p>
+<p>As a starting point, Try using the <strong>Get>Property>Texture Projection>Cubic</strong> mapping type, this will give you a series of good UV Islands.  You can then use the Island Heal tool in the texture editor to quickly merge these pieces and correct for transform and scale.  Again, refer to the XSI Documentation section <strong>The Texture Editor</strong>, <strong>Healing Polygon Islands</strong>.</p>
+<p>After some careful healing and arranging, you should have a set of UVs with little distortion or streaking.  Using this <a href="images/checkerboard.bmp">Checkerboard Starter Texture</a> (right-click <strong>Save As...</strong>) as your starting material can help you evaluate your UVs.  If you see an area with unacceptable distortion, liberal use of the <strong>Relax UV</strong> tool can solve most problems.  In cases where this won’t work, just use a <strong>Subprojection</strong> from the <strong>Texture Editor</strong> to reapply the UVs in that space.</p>
+<h3>Enveloping the mesh to your skeleton</h3>
+
+<p>When you’ve got a good first pass on your geometry, UVs are set, and you have a skeleton that’s acceptable, it’s time to envelope your mesh to the bones.  You access this through the animation command panel, pressing 2 will switch the toolbar to animate mode.  With your mesh selected, choose <strong>Deform>Envelope>Set envelope</strong>, then select the bones you’d like to include.  To edit the resulting envelopes, use the weight panel, accessed through the brush icon near the bottom left corner of the UI.  On this panel, you can also access the weight editor, where you can save and load envelope weights.  For an in depth explanation of the Enveloping process, refer to the XSI documentation section: Envelopes.</p>
+
+<h3>Tuning your envelopes and geometry for animation</h3>
+
+<p>Usually, the first pass on an envelope is done in the skeleton’s reference position, but this won’t tell you how the envelope is really working, to see the envelope in action, you need go through a back and fourth process of editing the envelopes, moving the skeleton around, then correcting the deformation by tuning your envelopes.  At this point, it may be necessary to add edgeloops to joints, if you can’t get good deformation through envelope tuning alone.  XSI is ideally suited to this process though, since it’s non linear, you can adjust your geometry without reapplying your envelope operator again and again.</p>
+
+<h2><a name="performance"></a>Performance and Budgets</h2>
+
+<p><strong>HL2 Polycounts:</strong><br><br>
+Soldiers: 4682<br>
+Police: 3852<br>
+Resistance: 4976<br>
+Zombie: 4290<br>
+Helicopter: 6415<br>
+Strider: 6444<br>
+Alyx: 8323</p>
+  
+<p>There are no fixed rules in determining how many polygons you use in your model, or how much texture resolution you’ll use in your materials.  There are upper limits of engine capability, (25,000 polygons/model and 2048 texture size) but these aren’t usually going to be what you’re shooting for. You’ll need to consider how many of the character, vehicle, or prop you’re making will be on screen.  If you’d like dozens of them on screen at any given time, you’ll have a different budget than if you’d only like to see one of them ever on screen at a time.  With humanoid characters, especially for multiplayer use, you shouldn’t need to go over 4000 polygons to get a character that has enough detail to accurately describe the form, bend properly at the joints, and have enough edges to light properly.  Of course you can have more than that, but with normal mapping, and high res textures, you shouldn’t really need to.  One good thing about working in XSI is that you can keep your model as quads and have clearly organized edges (<em>edge loops</em>) that define the shape, with this sort of a model, it is easy to add and dissolve edges, especially since the UV coordinates are preserved and you can easily re-envelope your mesh with saved vertex weights.  Discreet levels of detail are supported in the Source engine and can drastically improve scene rendering speed.</p>
+
+<h2><a name="directories"></a>Directories and Workspace Setup</h2>
+
+<h3>Directory Structure</h3>
+
+<p>See <a href="../general/content_directory_structure.html">Source SDK Files and Directory Structure</a> for information on the location of the compiled models and source files. See <a href="compiling_models.html">Compiling Models Basics</a> for information on how to compile models using this structure. </p>
+<describe the Mymod folder structure>
+
+<h3>Windows tips</h3>
+
+<p>In windows explorer, open the tools/folder options/file types menu.  Associate .MDL files with <span class="code2">HLMV.exe</span>, double clicking on a .mdl file with automatically preview it in the modelviewer.  Associate .QC files with the Studiomdl batch file, so that you can compile the model simply by double clicking the .QC file, you can always use the open with… command to edit it in notepad, or you can add entry in the right click menu named edit, which will open the .QC file in notepad. and create an entry in the right click menu for compiling .TGA files with vtex.</p>
+
+<h2>Further Information </h2>
+
+<p>Return to the <a href="../index.html#models">Source SDK documentation</a> index for more detailed information on creating models for the Source engine.</p>
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

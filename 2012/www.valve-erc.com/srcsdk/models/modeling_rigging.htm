@@ -1,0 +1,116 @@
+<html>
+
+<head>
+	<title>Source SDK Documentation</title>
+    <link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Rigging</h1>
+
+<p>Table of Contents</p>
+
+<ol>
+<li><a href="#skeletons">Skeletons</a></li>
+<li><a href="#valvebiped">Creating a Valvebiped</a></li>
+</ol>
+
+<h2><a name="skeletons">Skeletons</a></h2>
+
+<h3>Custom vs Canned</h3>
+
+<p>Most of the time, Mod creators will want to start their work with an existing skeleton that has a working animation set, and start their modeling and gameplay prototyping from there.  This approach has lots of benefits, and some constraints.  Firstly, using an existing skeleton with animation lets you see your model in game faster, which then lets you refine and modify your design in the proper context.  Using an existing skeleton also lets you preview your enveloping.  But the biggest time saver is having a basic set of animation to start with, so that you can begin to prototype gameplay.  Once you have a character up an running in the engine, you can then modify, expand upon, or completely replace any or all of the animations as needed.</p>
+
+<h3>Making Your Own</h3>
+
+<p>Some designs will demand a custom skeleton here are some guidelines for creating a custom rig.  (XSI is mentioned, but these guidelines are applicable to just about any 3D package)</p>
+
+<p>When building/rigging a character for the game it helps to make a distinction in XSI between the Skeleton and the Rig.  The Skeleton is a hierarchy of deformers, as simple as possible and with one parent bone (usually the hips) that we use to deform the mesh.  This is what gets exported and is the skeleton we see in game.  The Rig is a separate hierarchy of controls that we use to animate the Skeleton (as needed) -- often the skeleton is constrained or somehow attached to the rig; but is not in the same hierarchy.  One benefit of keeping this distinction is that you will always have a valid Skeleton hierarchy that'll get into the game, plus you are able to change the Rig hierarchy per scene if you wanted, to give you specific controls for specific animations without changing the Skeleton at all.</p>
+
+<h3>Rigging Considerations</h3>
+
+<p>When setting up your skeleton, it needs to be robust and easy to animate.  The following considerations can hopefully save you some time and trouble on your production.</p>
+
+<p>When creating your Skeleton, just about any object can be used as a deformer.  You don’t have to use only “Bone” objects.  However, your Skeleton should be only one hierarchy. (all deformers are eventual children of the Hips, for example)</p>
+
+<p>It pays to be organized from the start.  This is especially true of your Skeleton bone names – All bone names must be consistent throughout all of your scenes, or else animation on misnamed bones wont be applied when the model is compiled.  (all bone names must match the Reference scene/smd)</p>
+
+<h3>Testing Your Rig</h3>
+
+<p>You’ll need to thoroughly test your skeleton before you start doing animations.  Once you’ve created your Reference scene and are happy with the Skeleton and Rig you want to compile the model and view it in HLMV to confirm that it’s working as needed, and is efficient.  It also helps to export a quick test animation to verify that the character deforms correctly in HLMV.</p>
+
+<p>When viewing your character in HLMV you want to take note of the following:</p>
+
+<ul>
+<li>In the Render tab, turn on the Bones checkbox.  Verify that the Skeleton looks to be in the correct place with respect to the mesh, and that the hierarchy looks correct.</li>
+<li>In the Render tab, turn on the Normals checkbox and Verify that the normals are correct, and the character will light correctly.  If the normals are incorrect, and your using XSI, be sure to Freeze All Transforms of your mesh before you apply your envelope and re-export the reference SMD.</li>
+<li>View your test animation, and verify that it looks correct with respect to your XSI scene.</li>
+<li>In the Bones tab, look at the Bone dropdown to see a list of bones in the Skeleton.  Verify that there aren’t extra or unused bones in your character.</li>
+</ul>
+
+<h3>Modifying the Example Skeleton</h3>
+
+<p>ValveBiped is the name of the standard human rig that was developed in XSI for animating human/biped characters in Half Life 2.</p>
+
+<p>It consists of a skeleton hierarchy and a control rig.  The skeleton hierarchy is used to deform the character’s mesh, and is what gets exported into the game.  The control rig is used solely to animate the skeleton hierarchy in XSI, and does not get exported into the game.  The skeleton hierarchy and control rig are two separate hierarchies, but the control rig controls the skeleton hierarchy by the use of constraints.</p>
+
+<p>The ValveBiped skeleton hierarchy is very similar to that of Character Studio’s Biped, as the ValveBiped was developed initially as a way to port existing animations from 3DSMax into XSI.</p>
+
+<p>A ValveBiped can be created very quickly in XSI, and can be created to any proportions.</p>
+
+<h2><a name="valvebiped">Creating a ValveBiped</a></h2>
+
+<h3>General</h3>
+
+<p>The process of creating a ValveBiped in XSI has been largely automated by the use of scripts.  The animator basically uses a guide (CharacterStudioGuide.emdl) to specify the desired proportions and then runs the scripts to create a ValveBiped.</p>
+
+<p>The basic steps to create a ValveBiped in XSI are as follows:</p>
+
+<ol>
+<li>Import CharacterStudioGuide.emdl into your scene.</li>
+<li>Move the control boxes of the CharacterStudioGuide to the desired joint positions of your character.  NOTE: It’s important that you do not scale any part of the CharacterStudioGuide. Only use the translate tool to position the control boxes of the guide.</li>
+<li>From the script editor open and run CreateRigBatchScript.vbs</li>
+</ol>
+
+<h3>Specifics and Troubleshooting</h3>
+
+<p>When you run the script CreateRigBatchScript.vbs, it actually calls two separate scripts which run in succession; ValveBipedFromGuide.vbs and ValveRigFromIsnerRig.vbs.  The first of these scripts imports the skeleton hierarchy and proportions it to the CharacterStudioGuide, and the second script builds the final control rig on top of the skeleton hierarchy and creates the organizational aspects of the ValveBiped model.  
+<p>The following is a list and description of all the component files used to create a ValveBiped as outlined above.  Some of these component files must exist in specific paths which are defined in the scripts, so be sure the paths in the scripts point to where the files are on your machine:</p>
+
+<ul>
+<li>CharacterStudioGuide.emdl
+
+<br><br><div class="definition">An XSI model that you import into your scene and use to set the desired proportions of the ValveBiped.  When setting up the proportions do not use the scale tool – the resulting ValveBiped’s proportions will not match the guide.  If the character you’re working on is symmetrical, you can use CharacterStudioGuide_Sym.emdl to save a little time – this is a version of the guide with a symmetry constraint so you only have to work on one side of the character.  Note:  if you use the symmetrical guide you must rename it to “CharacterStudioGuide” before running the scripts.</div>
+</li>
+
+<br><li>CreateRigBatchScript.vbs
+
+<br><br><div class="definition">The script you run to create the ValveBiped after positioning the CharacterStudioGuide.  This is just a short batch script that calls the two component scripts that actually create the ValveBiped (ValveBipedFromGuide.vbs and ValveRigFromIsnerRig.vbs).  Each of these component scripts must be located in the respective paths specified by CreateRigBatchScript.vbs.  (default: U:\HL2\XSI\Scripts)</div>
+</li>
+
+<br><li>ValveBipedFromGuide.vbs
+
+<br><br><div class="definition">The first component script called by CreateRigBatchScript.vbs -- was largely written by Michael Isner of Softimage.  This script imports ValveBiped. emdl (a basic version of the ValveBiped) into the scene and re-proportions it to the match the CharacterStudioGuide.  Running this script creates the initial version of ValveBiped that we got from Softimage – this is not the final version of ValveBiped, but was our starting point for building the control rig.  ValveBiped.emdl must be located in the path specified by line 33 of ValveBipedFromGuide.vbs.  (default: U:\HL2\XSI\models)</div>
+</li>
+
+<br><li>ValveBiped.emdl
+
+<br><br><div class="definition">An XSI model that gets imported into the scene and reproportioned by the script (ValveBipedFromGuide.vbs).  Make sure it exists in the path specified by that script.  This model is a primitive version of ValveBiped, and we built the final control rig on top of this model.  To build the final control rig on top of this model, run the script ValveRigFromIsnerRig.vbs.  ValveBiped.emdl must be located in the path specified by line 33 of ValveBipedFromGuide.vbs.  (default: U:\HL2\XSI\models)</div>
+</li>
+
+<br><li>ValveRigFromIsnerRig.vbs
+
+<br><br><div class="definition">The second component script called by CreateRigBatchScript.vbs.  This script builds the final control rig on top of the primitive ValveBiped, and also creates the organizational aspects of the ValveBiped (Groups, colors, object names, visibility properties, etc).  This script assumes that there’s a model called “ValveBiped” in your scene for it to work correctly.  This script was created entirely by dragging/dropping commands from the script editor’s listener pane – thus it is very easy to make changes/additions to this script to accommodate animator/project preferences.</div>
+</li>
+</ul>
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

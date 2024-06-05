@@ -1,0 +1,160 @@
+<html>
+
+<head>
+	<title>Source SDK Documentation</title>
+    <link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Vehicle Creation</h1>
+
+<p>Table of contents</p>
+
+<ol>
+<li><a href="#collision">Collision Model</a></li>
+<li><a href="#wheel">Wheel Collisions</a></li>
+<li><a href="#animations">Vehicle Animations</a></li>
+<li><a href="#driver">Driver's View</a></li>
+</ol>
+
+<h2><a name="collision">Collision model</a></h2>
+
+<p>All vehicles need a physics collision model.  Your qc needs a section like this (see the doc on collision models for how to build the SMD</p>
+
+<div class="code">$collisionmodel "digger_physbox.smd" {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Mass in kilograms
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Mass 1600
+<br>}
+</div>
+
+<p>To get started, you can simply use a copy of render model of the vehicle but make sure to remove the wheels.  The actual collision model will be the convex hull of the render model in that case.  You can visualize it by placing your vehicle in a level and using the command "vcollide_wireframe 1" in the console.</p>
+
+<h2><a name="wheel">Wheel Collisions</a></h2>
+
+<p>Next, we’ll set up the wheels.   For best results, you’ll want to place attachment points in the .QC file for each wheel.</p>
+
+<div class="code">$attachment wheel_fl "Dummy04" 0 0 8
+<br>$attachment wheel_fr "Dummy03" 0 0 -8
+<br>$attachment wheel_rl "Dummy01" 0 0 8
+<br>$attachment wheel_rr "Dummy02" 0 0 –8
+</div>
+
+<p>There are four wheels supported at this time.  They are named with two letter codes: fl “front left”, fr “front right”, rl “rear left”, rr “rear right”.  You MUST name the attachments as above.  It does not matter what order you add them to the qc file however.</p>
+
+<p>One important detail is that the wheels are modeled as spheres.  For this reason, I’ve pulled the wheels under the vehicle a bit.  The origin of the wheel bones is actually the center of the wheel graphically, but in order to avoid having the spherical wheels poke out from under the car (thus brushing against things next to the car), I’ve pulled each attachment in a bit.</p>
+
+<p>e.g. this would place the wheel sphere exactly over its graphical representation</p>
+
+<div class="code">$attachment wheel_fl "Dummy04" 0 0 0</div>
+
+<p>This is adjusted in by 8 inches.</p>
+
+<div class="code">$attachment wheel_fl "Dummy04" 0 0 8</div>
+
+<p>The amount to pull them in depends on the size of the wheels and the collision model of the car.  In this case, the wheels have a radius of about 22.5 inches and I’ve pulled them in by 8 inches.  Using this ratio is a good starting point.  You can visualize the wheels using "ent_bbox prop_vehicle" in the console if you build a map with your vehicle as a prop_vehicle.</p>
+
+<h2><a name="animations">Vehicle Animations</a></h2>
+
+<p>The vehicle requires a few animations.</p>
+
+<ol>
+<li>A sequence with the steering of the wheels.  This can be only 3 frames (left, center, right) if you’d like.  Be sure to note the exact angle that the wheels turn and make it consistent.  You’ll need to put that angle into the vehicle’s script file so that the physics will match the animation.</li>
+<li>A sequence with the suspension animated.  This can be only 2 frames (fully compressed, fully extended).  This sequence determines the amount of travel each wheel has.  So if you want to have a car be angled/jacked up, you’ll need to make the back wheels extend further than the front wheels.</li>
+<li>A sequence with all of the wheels spinning one revolution.</li>
+</ol>
+
+<p>Because steering, suspension and wheel rotation are all animation you can map them to anything.  You can animated flexing dune-buggy suspensions or counter rotating wheel pieces, etc.  These won’t be simulated by the physics system, but they will appear to be simulated because they will be precisely coordinated with the simulation.  You’ll need the following pose parameters to map the simulation onto the animation.</p>
+
+<p>This controls the steering. –1 is left, +1 is right</p>
+
+<div class="code">$poseparameter "vehicle_steer" -1 1</div>
+
+<p>These control the height of each wheel (flex the suspension).  0 is compressed, 1 is extended.</p>
+
+<div class="code">$poseparameter "vehicle_wheel_fl_height" 0 1
+<br>$poseparameter "vehicle_wheel_fr_height" 0 1
+<br>$poseparameter "vehicle_wheel_rl_height" 0 1
+<br>$poseparameter "vehicle_wheel_rr_height" 0 1
+</div>
+
+<p>These control the rotation of each wheel.  +/- 180 degrees from neutral/base rotation.</p>
+
+<div class="code">$poseparameter "vehicle_wheel_fl_spin" -180 180 wrap
+<br>$poseparameter "vehicle_wheel_fr_spin" -180 180 wrap
+<br>$poseparameter "vehicle_wheel_rl_spin" -180 180 wrap
+<br>$poseparameter "vehicle_wheel_rr_spin" -180 180 wrap
+</div>
+
+<p>Here’s an example qc file that sets up the pose parameters.</p>
+
+<div class="code">$animation neutral "digger_idle" frames 0 0
+
+<br><br>$weightlist front_wheels { "Dummy03" 1.0 "Dummy04" 1.0 }
+<br>$animation turn_left "digger_turn" frame 0 0 subtract neutral 0 weightlist front_wheels 
+<br>$animation turn_right "digger_turn" frame 2 2 subtract neutral 0 weightlist front_wheels 
+<br>$sequence turning { turn_left turn_right blend vehicle_steer -1 1 } weightlist front_wheels delta autoplay
+
+<br><br>// front right
+<br>$weightlist wheel_fr { "Dummy03" 1.0 }
+<br>$animation wheel_fr_low "digger_suspension" frame 0 0 subtract neutral 0 weightlist wheel_fr 
+<br>$animation wheel_fr_high "digger_suspension" frame 2 2 subtract neutral 0 weightlist wheel_fr 
+<br>$sequence wheel_fr_suspension { wheel_fr_low wheel_fr_high blend "vehicle_wheel_fr_height" 0 1.0 } weightlist wheel_fr delta autoplay
+
+<br><br>$animation wheel_fr_spin0 "digger_wheelspin" frame 0 0 subtract neutral 0 weightlist wheel_fr 
+<br>$animation wheel_fr_spin120 "digger_wheelspin" frame 3 3 subtract neutral 0 weightlist wheel_fr 
+<br>$animation wheel_fr_spin240 "digger_wheelspin" frame 6 6 subtract neutral 0 weightlist wheel_fr 
+<br>$sequence wheel_fr_spin { wheel_fr_spin0 wheel_fr_spin120 wheel_fr_spin240 wheel_fr_spin0 blendwidth 4 blend "vehicle_wheel_fr_spin" -180 180 } weightlist wheel_fr delta autoplay
+
+<br><br>// front left
+<br>$weightlist wheel_fl { "Dummy04" 1.0 }
+<br>$animation wheel_fl_low "digger_suspension" frame 0 0 subtract neutral 0 weightlist wheel_fl 
+<br>$animation wheel_fl_high "digger_suspension" frame 2 2 subtract neutral 0 weightlist wheel_fl 
+<br>$sequence wheel_fl_suspension { wheel_fl_low wheel_fl_high blend "vehicle_wheel_fl_height" 0 1.0 } weightlist wheel_fl delta autoplay
+
+<br>$animation wheel_fl_spin0 "digger_wheelspin" frame 0 0 subtract neutral 0 weightlist wheel_fl 
+<br>$animation wheel_fl_spin120 "digger_wheelspin" frame 3 3 subtract neutral 0 weightlist wheel_fl 
+<br>$animation wheel_fl_spin240 "digger_wheelspin" frame 6 6 subtract neutral 0 weightlist wheel_fl 
+<br>$sequence wheel_fl_spin { wheel_fl_spin0 wheel_fl_spin120 wheel_fl_spin240 wheel_fl_spin0 blendwidth 4 blend "vehicle_wheel_fl_spin" -180 180 } weightlist wheel_fl delta autoplay
+
+<br><br>// rear right
+<br>$weightlist wheel_rr { "Dummy02" 1.0 }
+<br>$animation wheel_rr_low "digger_suspension" frame 0 0 subtract neutral 0 weightlist wheel_rr 
+<br>$animation wheel_rr_high "digger_suspension" frame 2 2 subtract neutral 0 weightlist wheel_rr 
+<br>$sequence wheel_rr_suspension { wheel_rr_low wheel_rr_high blend "vehicle_wheel_rr_height" 0 1.0 } weightlist wheel_rr delta autoplay
+
+<br>$animation wheel_rr_spin0 "digger_wheelspin" frame 0 0 subtract neutral 0 weightlist wheel_rr 
+<br>$animation wheel_rr_spin120 "digger_wheelspin" frame 3 3 subtract neutral 0 weightlist wheel_rr 
+<br>$animation wheel_rr_spin240 "digger_wheelspin" frame 6 6 subtract neutral 0 weightlist wheel_rr 
+<br>$sequence wheel_rr_spin { wheel_rr_spin0 wheel_rr_spin120 wheel_rr_spin240 wheel_rr_spin0 blendwidth 4 blend "vehicle_wheel_rr_spin" -180 180 } weightlist wheel_rr delta autoplay
+
+<br><br>// rear left
+<br>$weightlist wheel_rl { "Dummy01" 1.0 }
+<br>$animation wheel_rl_low "digger_suspension" frame 0 0 subtract neutral 0 weightlist wheel_rl 
+<br>$animation wheel_rl_high "digger_suspension" frame 2 2 subtract neutral 0 weightlist wheel_rl 
+<br>$sequence wheel_rl_suspension { wheel_rl_low wheel_rl_high blend "vehicle_wheel_rl_height" 0 1.0 } weightlist wheel_rl delta autoplay
+
+<br>$animation wheel_rl_spin0 "digger_wheelspin" frame 0 0 subtract neutral 0 weightlist wheel_rl 
+<br>$animation wheel_rl_spin120 "digger_wheelspin" frame 3 3 subtract neutral 0 weightlist wheel_rl 
+<br>$animation wheel_rl_spin240 "digger_wheelspin" frame 6 6 subtract neutral 0 weightlist wheel_rl 
+<br>$sequence wheel_rl_spin { wheel_rl_spin0 wheel_rl_spin120 wheel_rl_spin240 wheel_rl_spin0 blendwidth 4 blend "vehicle_wheel_rl_spin" -180 180 } weightlist wheel_rl delta autoplay
+</div>
+
+<h2><a name="driver">Driver's View</a></h2>
+
+<p>If the vehicle is drivable, you’ll also need to place an attachment point for the driver’s eyes.</p>
+
+<div class="code">$attachment vehicle_driver_eyes "view" 0 0 0</div>
+
+<p>It must be named vehicle_driver_eyes.</p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<html>
+
+<head>
+	<title>Source SDK Documentation</title>
+    <link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Materials</h1>
+
+<h3>Table of Contents</h3>
+
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#checkerboard">Checkerboard Starter Texture</a></li>
+<li><a href="#applying_textures">Applying Textures in XSI</a></li>
+<li><a href="#viewing">Proper Previewing</a></li>
+</ol>
+
+<h2><a name="overview">Overview</a></h2>
+
+<p>Materials for Source have a few components, the source files (.TGA file and .TXT file), the material definition, (.VMT) and the output from Vtex, the .VTF file (what’s seen in engine).</p>
+
+<h3>TGA source images</h3>
+
+<p>You can use whatever application you’d like for creating your source .TGA, most people choose to use Photoshop, Painter, Zbrush, or Deep Paint, depending on the needs.  You should definitely keep a layered full size version of your source separate from the collapsed downsized version you convert into a .VTF.</p>
+
+<h3>VMT material definitions</h3>
+
+<p>Each Material for the Source engine needs a .VMT file.  The .VMT file defines the lighting model, the base texture, and any other additional channels you may have like: specularity, self-illumination, normal mapping, transparency, translucency, and proxy shaders.  Here’s an example .VMT file from HL2:</p>
+
+<div class="code">"VertexLitGeneric"
+<br>{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"$baseTexture" 	"Models/Combine_soldier/Combine_elite"
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"$envmap" "env_cubemap"
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"$bumpmap" "models/combine_soldier/combine_elite_normal"
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"$normalmapalphaenvmapmask" 1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"$envmapcontrast" 1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"$model" 1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"$selfillum" 1
+<br>}
+</div>
+
+<p>This example is a material used on a polygonal model, using the <span class="code2">“VertexLitGenric”</span> material.  The basetexture, or diffuse map is defined, <span class="code2">"$baseTexture" "Models/Combine_soldier/Combine_elite"</span> along with the environment map <span class="code2">"$envmap" "env_cubemap"</span>, (env_cubemap refers to cubemap entities placed in the level, the specular reflections of this character will always reflect the world around it, assuming you have cubemap entities placed approprirately in you level.  You can use a custom cubemap instead, of you choose.  The normalmap is defined next.   The next line <span class="code2">"$normalmapalphaenvmapmask" 1</span> tells the renderer that this material has a mask for the specularity, so only some areas of the model will reflect the env_cubemap information, as defined in this case by the alpha channel of the normal map, the specual mask can be here, in the alpha of the basetexture <span class="code2">“$basealphaenvmapmask 1”</span> or in a separate mask file “<span class="code2">$envmapmask:” models/modelname/mymask</span>” For this model, the environment mask is multiplied by itself one time to create more contrasy reflections, the <span class="code2">"$envmapcontrast" 1</span> command  controls this.  All models need to also contain the command, <span class="code2">"$model" 1</span> which tells the renderer that this material is being used on a polygonal model created from StudioMDL.  The last line <span class="code2">"$selfillum" 1</span> tells the renderer that the alpha channel of the basematerial contains self illuminated areas, these areas of the alpha channel show up as glowing areas of the model.</p>
+
+<h3>Proxy shaders</h3>
+
+<p>The most powerful component of the source engine material system is the Proxy shader system.  Examples of what proxy shaders are capable of are shown in the shaderzoo map contained in the sdk, and furthur documentation on thier creation can be found in the materials documents.</p>
+
+<h3>VTEX texture converter</h3>
+
+<p>Vtex is an application used to convert .TGA files to the source engine format (.VTF).  The simplest way to use  Vtex is to create a shortcut to <span class="code2">vtex.exe</span> on your desktop, and drag .TGA files onto the shortcut.  This will create a .VTF file in of the same name as your .TGA file in the materials directory.  When you drag open a tga file with Vtex, a .TXT file is also created in the same directory as your .TGA, in this file you can issue commands to Vtex to alter your compression.</p>  
+
+<p>For quick material creation, try adding "-shader VertexLitGeneric" to your target field in the Vtex shortcut properties.  this works with any shadertype.  Dragging a texture on to this modified shortcut will then create a .VTF file as usual, and create a .VMT file with the shader and basetexture defined for you.</p>
+
+<h2><a name="checkerboard">Checkerboard Starter Texture</a></h2>
+
+<p>Using a checkerboard texture is a good way to start laying out your UV coordinates; this lets you see very quickly if you have any distortions, streaks, or seams that may need to be corrected.  Also, using a checkerboard texture gives you a very good way to measure how much texel density you have on the various parts of your model, as you define the UV’s, some areas like faces may need a bit of extra density, but overall you should strive for even and consistent texel density across your model.  The default noicon.pic file in XSI is a good choice or you may use this file, <a href="./images/checkerboard.bmp">Checkerboard Starter Texture</a> (right-click save as...) included in the SDK.</p>
+
+<h2><a name="applying_textures">Applying Textures in XSI</a></h2>
+
+<p>Applying textures in XSI is fairly straightforward, you should try to only use one basetexture, unless material demands require otherwise.  Multiple textures on a model can drastically affect rendering time.  To apply a texture to your model in XSI, select your model, then get property>material>blin, then get>texture>image.  You can then point XSI to the location of your texture.  If you do need to create multiple textures on one model, you must first select a group of polygons, make a cluster of them, then apply the material and image to your cluster.  Make sure that you have your preferences set to "reload externally modified images on focus".  This reloads textures when you alt-tab back to XSI from another program like Photoshop, a good time saver.</p>
+
+<h2><a name="viewing">Proper Previewing</a></h2>
+
+<p>Making judgments about the progress of your textured character should be done directly in the Source engine, before getting too far with your material, export a vtf, create a vmt, build you mdl and look at the model in the engine.  Working the fine points of texturing and shader parameters can only really happen after you’ve seen your model in the Engine.</p>
+
+<p>How large should my material be?  Export a .VTF as early as possible and load preview your model in the engine, using the mat_showmiplevel command at the console, check what mip level you’re seeing at some of the most common encounters your character is going to have during gameplay.  While it may seem that bigger is better, this isn’t always the case, mipmapping can force your large texture down in size until blurriness becomes a problem.</p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

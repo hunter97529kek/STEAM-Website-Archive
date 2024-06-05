@@ -1,0 +1,614 @@
+<html>
+
+<head>
+	<title>Source SDK Documentation</title>
+    <link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>.QC file Commands</h1>
+
+<p>Table of Contents</p>
+
+<ol>
+<li><a href="#standard">Standard Commands</a></li>
+<li><a href="#lod">Level of Detail Commands</a></li>
+<li><a href="#new_model">New $model Options</a></li>
+<li><a href="#new_anim">New $animation Options</a></li>
+<li><a href="#new_ik">New IK Options</a></li>
+<li><a href="#ikrule">IKrule Options</a></li>
+<li><a href="#new_sequence">New $sequence Options</a></li>
+<li><a href="#new_macro">New Macro Commands</a>"</li>
+</ol>
+
+<h2><a name="standard">Standard Commands</a></h2>
+
+<ul>
+<li><div class="code2">$poseparameter (name) (min) (max) [“loop” (number)] [“wrap”]</div>
+
+<br><br><div class="definition">These are the same as “blend” parameters normally specified in sequences, except that you can now explicitly declare their range instead of letting studiomdl try to figure it out.  If “loop” is specified, the engine will wrap calculate values.</div>
+</li>
+
+<p><li><div class="code2">$attachment (name) (bone name) (X) (Y) (Z) [“absolute”] [“rigid”] [“rotate” pitch yaw roll]</div></p>
+
+<div class="definition">Attachment points are now named based instead of fixed indexed based.  They also can be defined in absolute coordinates instead of being bone relative.  If defined as “rigid”, the bone they’re attached won’t be assumed to animate and may be optimized out, in which case they’ll reattach themselves to the first available parent bone.
+
+<br><br>The “rotate” option will change the orientation of the attachment point, in place, relative its parent joint.</div>
+</li>
+
+<p><li><div class="code2">$hierarchy (child bone) (parent bone)</div></p>
+
+<div class="definition">This forces a specific bone hierarchy on the model, regardless of what's in the reference file.  Normally, the bone hierarchy is generated based on the first occurrence of a parent child relationship.  This commands allows you override it with any arbitrary hierarchy.
+
+<br><br>Note: The model builder will now allow the animator to change the bone hierarchy between animations, at least in the source.  The hierarchy in unified into a single fixed hierarchy for playback, but it’s often easier to change this certain hand animation tasks.  The hierarchy is defined by the first instance of the parent->child relationship.
+</div>
+</li>
+
+<p><li><div class="code2">$definebone (name) (parent) (X) (Y) (Z) (xr) (yr) (zr) (fixup XR) (fixup YR) (fixup ZR)</div></p>
+
+<div class="definition">Defines a bone outside of any .smd source.  This is useful when building animation only mdl’s that would otherwise optimize out all the bones since none of them are connected to any geometry or attachment points.  You can get studiomdl to dump this out using the “-definebones” command line option.</div>
+</li>
+
+<p><li><div class="code2">$animation (name) (file) [(options)...]</div></p>
+
+<div class="definition">Use this when you're creating a sequence that uses multiple source animations, but where you may need different options - such as frame numbers, alignment, etc. - on each of the different animations. When creating your sequence, refer to the animations by name instead of by filename.</div>
+</li>
+
+<p><li><div class="code2">$declaresequence (name)</div></p>
+
+<div class="definition">Forward declares a sequence.  This useful when sequence that want to add other sequences as layers that aren’t locally declared, such as when they’re actually part of an external mdl file.  $declaresequence makes a empty sequence entry so that the local sequence pointers can get set, and at run time these references are overwritten with the actual sequence index. </div>
+</li>
+
+<p><li><div class="code2">$includemodel (filename)</div></p>
+
+<div class="definition">Adds a .mdl file that this .mdl will include at run-time, and all new sequences and animations will be appended to the model.  Animations and sequences are processed in-order, and subsequent animations/sequences that have name conflicts will be ignored, and any references to .mdl local entry by the same name will be overwritten with the reference to a first one declared.
+
+<br><br>Included .mdl’s can have different bone ordering, but they need to have the same bone hierarchy and ikchain declarations.  Currently there’s no run-time checking to verify they match.
+
+<br><br>Only animations and sequences are used from included .mdls.  Currently models, textures, faces, attachments, etc. are ignored.
+</div>
+</li>
+
+<p><li><div class="code2">$animblocksize (size in K)</div></p>
+
+<div class="definition">If this is specified, all the animation data will be written to a .ani file, and when sequences need it the data will be demand loaded.  The “size in K” is the block size the animations will be grouped into.  Sizes between 4K and 64K are fine, though 16K or 32K has better memory fragmentation characteristics.</div></p>
+</li>
+
+<p><li><div class="code2">$weightlist (name) (bone name) (weight) [[(bone name) (weight)] ....]</div></p>
+
+<div class="definition">This creates a named list of boneweights that can be used by animations that are intended to be blended on top of other animations.  The weightlist is built assuming that the root bone has a weight of 0, and that all child bones inherit the weight of their closest specified parent bone. This means that you only have to specify weights when they change, not for each and every bone in the list.</div>
+</li>
+
+<p><li><div class="code2">$staticprop</div></p>
+
+<div class="definition">Causes all bones to be collapsed in the object; this can only be used when there’s no animation associated with the object. You want to use it wherever possible though, because it will make the models render more quickly.</div>
+</li>
+
+<p><li><div class="code2">$realignbones</div></p>
+
+<div class="definition">This forces all the bones to reorient themselves – if possible - so that their longest axis is along their X axis.  This helps with building both hit boxes, quite often child bones are at some diagonal to their parent and the axis-align-bounding-box that gets connected to their parent bone is often badly shaped for models that are mostly made of long tubes, as well as making IK possible since the IK system requires that the child bones are always along the X axis of their parent.
+
+<br><br>Bones with multiple children, such as the pelvis, are not realigned and cannot be used as part of an IK system (i.e. the hip bone can’t change position in relation to the pelvis).
+</div>
+</li>
+
+<p><li><div class="code2">$surfaceprop (name)</div></p>
+
+<div class="definition">Applies a particular surface property to the entire model. The surface property affects a number of parameters for the model: it’s physics properties (weight, etc), what sounds it makes when it collides, what particles it emits when you shoot it, etc. To add or change surface property types, edit the file hl2\scripts\surfaceproperties.txt. HLMV can be used to generate blocks of .QC file that sets the surface properties correctly.</div>
+</li>
+
+<p><li><div class="code2">$jointsurfaceprop (joint name) (name)</div></p>
+
+<div class="definition">Applies a surface property to a particular joint and all of its children. HLMV can be used to generate blocks of .QC file that sets the surface properties correctly.</div>
+</li>
+
+<p><li><div class="code2">$contents (list of names of content types)</div></p>
+
+<div class="definition">Specifies the contents to use for contents-mask tests during non-hitbox traces. This feature was specifically added to allow us to make things like fences out of props instead of brush models.
+
+<br><br>The current contents types you can use are:
+
+<ul>
+<li>"grate" 	Makes it be a grate (not solid to bullets, solid to everything else)</li>
+<li>"monster" 	Makes it be marked as an NPC</li>
+<li>"notsolid"	Makes it be not solid to anything</li>
+<li>"solid" 	Makes it be solid (usually useful only for the $jointcontents command to make a solid child of a non-solid parent)</li>
+<li>"ladder"	Make it be a ladder</li>
+</ul>
+
+<br>For example,
+
+<br><br><div class="code">$contents "monster" "grate"</div>
+</div>
+
+<p><li><div class="code2">$jointcontents (joint name) (list of names of content types)</div></p>
+
+<div class="definition">This command is just like contents, but it applies the contents to the specified bone and all child bones of that bone.</div>
+</li>
+
+<p><li><div class="code2">$opaque</div></p>
+
+<div class="definition">Causes the model to be assumed to be opaque with respect to its sorting against all other objects in the scene. Use this in cases where only a small portion of the model is translucent (hair, eyes, glasses, etc.) so if there are any sorting issues, it won’t matter.</div>
+</li>
+
+<p><li><div class="code2">$mostlyopaque</div></p>
+
+<div class="definition">Causes the model to be rendered in two passes: The first pass renders only the opaque portions of the model, and the second pass renders only the translucent portion of the model. Good for improving translucency sorting for things like trees.</div>
+
+<p><li><div class="code2">$keyvalues</div></p>
+
+<div class="definition">This allows you to add an arbitrary block of keyvalues into the .mdl file. For example,</div>
+
+<br><div class="code">$keyvalues
+<br>{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"build_points"
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"build_point_0"
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"valid_objects"
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"obj_manned_plasmagun"	1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"obj_resourcepump"		1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"obj_shieldwall"		1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>}
+</div>
+</li>
+
+<p><li><div class="code2">$definemacro (macroname) [arg_name1] [arg_name2] […] \\</div></p>
+
+<div class="definition">Defines a string substation macro.  The macro definition begins on the next line, and all subsequent lines that end with \\ (two backslashes).   Arguments are referenced by surrounding them with $’s  (i.e.  <span class="code2">$arg_name1$</span> ), and can be embedded inside of other words.  To use the macro, type <span class="code2">$macroname</span> and the next N tokens will be taken as arguments.</div>
+
+<br><div class="code">$definemacro testmacro seqname filename endframe \\
+<br>$sequence $seqname$01 $filename$ { \\
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frames 0 $endframe$ \\
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtract $seqname$ 0 delta \\
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weightlist justbody \\
+<br>}
+</div>
+
+<br>Then to use to do:
+
+<br><br><div class="code">$testmacro small_flinch “npc flinch 01” 20</div>
+</li>
+
+<p><li><div class="code2">$lod (distance)
+{
+	(lod commands here)
+}
+</div></p>
+
+<div class="definition">Begins a block of commands to describe how to perform LOD on the model. The distance parameter represents that this particular set of LOD commands should be run when the camera is farther than distance away from the model. The commands allow you to replace various materials, textures, etc. The commands you can include in the lod block are shown in the Level of Detail section.</div>
+</ul>
+
+<h2><a name="lod">Level of Detail Commands</a></h2>
+
+<ul>
+<p><li><div class="code2">replacebone (original bone) (replacement bone)</div></p>
+
+<div class="definition">Causes a bone to be used in place of the original bone in the reference model. This can be useful for collapsing all of the bones in the hand together. Instead of using the ‘finger’ bone, the finger could just be tied to the ‘hand’ bone.</div>
+</li>
+
+<p><li><div class="code2">bonetreecollapse (bone name)</div></p>
+
+<div class="definition">Causes all child bones of the specified bone to use the specified bone instead of whatever they currently are attached to. It’s a simpler way to use replacebone in the case where you want to collapse a large number of bones; hands especially can use this feature.</div>
+</li>
+
+<p><li><div class="code2">replacemodel (model name) (replacement model) [reverse]</div></p>
+
+<div class="definition">Causes the source model to be replaced with a different model. If reverse is specified, the normals of the replacement model are reversed. If the replacement model name is ‘blank’, then the source model is not rendered at all. This is used to replace the model with lower polygon-count versions.</div>
+</li>
+
+<p><li><div class="code2">removemodel (model name)</div></p>
+
+<div class="definition">Causes the model to not be rendered at this lod.</div>
+</li>
+
+<p><li><div class="code2">replacematerial (original material name) (replacement material name)</div></p>
+
+<div class="definition">Replaces all instances of a particular material on a model with a different material. This can be used to cause lower LODs to use a smaller version of the texture, for instance.</div>
+</li>
+
+<p><li><div class="code2">removemesh (model name)</div></p>
+
+<div class="definition">Removes all the triangles attached to the named material from this LOD.</div>
+</li>
+
+<p><li><div class="code2">nofacial</div></p>
+
+<div class="definition">Causes facial animation to be deactivated for this LOD.</div>
+</ul>
+
+<h2><a name="new_model">New $model Option</a></h2>
+
+<ul>
+<p><li><div class="code2">eyeball (name) (bone name) (X) (Y) (Z) (material name) (diameter) (angle) (iris material) (pupil scale)</div></p>
+
+<div class="definition">
+(name) Name of eyeball, used to match eyelid rules.
+(bone name) Name of bone that the eye is parented to, typically the head.
+(X) (Y) (Z) World location of the center of the ball of the eye. 
+(material name) Material name to use when searching for vertices to consider as the “white” of the eye (used in dynamically texture mapping the iris and cornea onto the eye).
+(diameter) Diameter of the ball of the eye
+(angle) Default yaw offset from “forward” for iris. Humans are typically 2-4 degrees walleyed.  Not setting this correctly will result in your either characters appearing cross-eyed, or if you’ve compensated by misplacing the ball of the eye, them not tracking side to side. 
+<iris material> Material to use as the iris texture.
+<pupil scale> World scale of the iris texture
+</div>
+</li>
+
+<p><li><div class="code2">eyelid (name) (expression file) lowerer/neutral/raiser (frame) (height) split (distance) eyeball (name)</div></p>
+
+<div class="definition">(name) Base name of the eyelid flexcontroller.  This is combined with the “lowerer”, “neutral”, and “rasier” options to build the piecewise blend positions of the eyelid.
+(expression file) The name of the file to find the morph targets.
+
+lowerer/neutral/raiser (frame) (height) One of the three options, the frame number in the (expression file) that it can be found, and the distance above or below the center of the pupil that polygon edge of the eyelid crosses the white of the eye.
+split (distance) Where to start, on the opposite side of the “0” line, for finding vertices that belong to this eyelid morph target.
+eyeball (name) Name of the eyeball that will drive this eyelid’s flexcontroller.
+</div>
+</li>
+
+<p><li><div class="code2">flex (name) [(expression file)]</div></p>
+
+<div class="definition">frame (frame)
+	position <target>
+	split (distance)
+</div>
+</li>
+
+<p><li><div class="code2">defaultflex </div></p>
+
+<div class="definition"></div>
+</li>
+
+<p><li><div class="code2">flexfile (expression file)</div></p>
+
+<div class="definition"></div>
+</li>
+
+<p><li><div class="code2">localvar (name) [(name) …]</div></p>
+
+<div class="definition"></div>
+</li>
+
+<p><li><div class="code2">mouth (flexcontroller name) (bone name) <dx> <dy> <dz></div></p>
+
+<div class="definition"></div>
+</li>
+
+<p><li><div class="code2">spherenormals (material name) (X) (Y) (Z)</div></p>
+
+<div class="definition"></div>
+</li>
+
+</ul>
+
+<h2><a name="new_anim">New $animation Options</a></h2>
+
+<ul>
+<p><li><div class="code2">fixuploop (pre loop frames) (post loop frames)</div></p>
+
+<div class="definition">This finds the difference between the last frame and the first frame in the animation and blends the difference across the boundary.  The <pre loop frames> range from some negative value (number of frames back from the last frame) to 0, and <post loop frames> ranges from 0 to some positive number of frames after the first frame.  
+
+<p>This is useful when building a looping animation out of a portion of a non-looping animation, or even cleaning up a animation that is supposed to loop but has a slight hitch.</p>
+</div>
+</li>
+
+<p><li><div class="code2">alignto (goal animation)</div></p>
+
+<div class="definition">This will shift the current animation so that the root position of the first (local) frame matches the root position (X and Y axis only) of the first (local) frame of another animation.   This is useful when animations don't start on the origin, or when you're cutting out just a small piece of a longer source animation and you need a quick way to get it aligned to a shared origin.</div>
+</li>
+
+<p><li><div class="code2">align (reference animation) [X Y Z XR YR ZR] (reference frame) (to match frame)</div></p>
+
+<div class="definition">This is similar to alignto, except that you can specify how the two animations are to match, and that the (to match frame) on the animation is aligned with the (reference frame) of the (reference animation).  This is useful when aligning animations with vertical motion.</div>
+</li>
+
+<p><li><div class="code2">alignboneto (bone name)  (goal animation)</div></p>
+
+<div class="definition">Same as alignto, but will match the specified bone instead of the root.</div>
+</li>
+
+<p><li><div class="code2">startloop (local frame)</div></p>
+
+<div class="definition">This resets the starting frame of a looping animation.  This is useful when creating sequences that have multiple animations and the animations need to all run together in phase, but the source animations don't all quite match.
+
+<p>All animations default to a weightlist that assumes all bones have a weight of 1.0.  QC specified weightlists </p>
+
+<div class="code">$weightlist no_hands "Bip01" 1.0 "Bip01 L Hand" 0.0 "Bip01 R Hand" 0.0 
+<br>$weightlist head_n_arms "Bip01 Spine 2" 1.0</div>
+
+<p>Only the bones with a weight > 0 will have any influence over the animation. </p>
+</div>
+</li>
+
+<p><li><div class="code2">fudgeloop</div></p>
+
+<div class="definition">Looping animations, at least ones with movement, need the first and last frames to match position (ideally) as well as have movement.  The reason for this is that studiomdl needs to tell the engine exactly how far to move the model between the “last” unique keyframe and the “first” keyframe when calculating those last tween frames.  Since this last little 1/30th or 1/10th of a second distance is probably not exactly the same distance as the previous keyframe nor is probably exactly the same distance as the average per-frame movement, skipping the definition of the overlap can cause a hitch or foot slide during playback if studiomdl guesses wrong.
+
+<br><br>If for some serious reason the animator can't create the last frame overlap, then this option tells studiomdl to assume the movement is the average per-frame motion seen so far in the animation, and that it needs to create the overlapping frame itself.</div>
+</li>
+
+<p><li><div class="code2">weightlist (weightlist name)</div></p>
+
+<div class="definition">This copies a predefined list of bone weights to the current animation.  You can do this any number of times per animation, which can be useful since subsequent options subtract, match, and fixuploop options only operate on bones with weights > 0.  The last specified weightlist option is the one the animation system uses when doing blending.  Sequences that use multiple animations need to have all their source animations use the same weightlist or the results are undefined.</div>
+</li>
+
+<p><li><div class="code2">subtract (animation) (frame #)</div></p>
+
+<div class="definition">This subtracts the specified frame of the specified animation from all the frames of the current animation and creates an animation that is the differences between the two, effectively converting the animation to just be the changes from a reference frame of another animation.
+
+<br><br>This also creates something that can be used as a “delta” animation.   The easiest way to think of these are that they’re just fancy bonecontrollers, but ones that have multiple bones and can be a time sequence animation.  The resulting animations by themselves are meaningless and are only valid when played on top of other animations.</div>
+</li>
+
+<p><li><div class="code2">presubtract (animation)</div></p>
+
+<div class="definition">This subtracts all the frames of the current animation from the first frame of the specified animation and creates an animation that is the differences between the two.</div>
+</li>
+ 
+<p><li><div class="code2">match (animation)</div></p>
+
+<div class="definition">Makes the first frame of the animation match the first frame of the specified animation, and then applies the difference between the two frames to all subsequence frames. This is mainly used to correct animations that are supposed to start at a common pose but don’t for some uncontrollable reason.</div>
+</li>
+
+<p><li><div class="code2">walkframe (frame) [LX LY LZ LXR LYZ LZR]</div></p>
+
+<div class="definition">You can set up to 16 of these per animation to specify linear piecewise movement.  Matches root bone from the previous walkframe command – defaults to frame 0 – to the specified frame of each segment, extracting linear motion between each.</div>
+</li>
+
+<p><li><div class="code2">walkalignto (frame) (reference animation) [LX LY LZ LXR LYR LZR]</div></p>
+
+<div class="definition">Like walkframe, but at extracts motion such that at (frame),  the model is aligned to the specified (reference animation). This is useful when trying to extract the motion inside a animation that’s used to transition between two existing animations.</div>
+</li>
+
+<p><li><div class="code2">walkalign (frame) (reference animation) [LX LY LZ LXR LYR LZR] (reference frame) (to match frame)</div></p>
+
+<div class="definition">Like walkalignto, but motion is calculated such that the (to match frame) matches the (reference frame) of the (reference animation).  This is useful when the last frame being used to extract motion over doesn’t quite match a goal animation, but a subsequent frame does.</div>
+</li>
+
+<p><li><div class="code2">rotateto (angle)</div></p>
+
+<div class="definition">Finds the current direction of movement (uses the first movement if there are multiple pieces), then rotates the animation so that the resulting movement is in the specified direction.</div>
+</li>
+
+<p><li><div class="code2">noanimation</div></p>
+
+<div class="definition">Makes the animation additive, removes all the animation, zero’s out the weight list and sets a flag so that at run time the engine will skip all processing of the if it’s the only thing contributing to the sequence.  This is handy for blended sequences where the “zero” position should have no effect on the model.</div>
+</li>
+
+<p><li><div class="code2">derivative (scale)</div></p>
+
+<div class="definition">Turns the animation into the derivative of itself by simply subtracting the previous frame from each frame in the animation.  The derivative can be automatically scaled to compensate for any fps issues.</div>
+</li>
+
+<p><li><div class="code2">lineardelta</div></p>
+
+<div class="definition">Turns the animation into a delta animation, by subtracting a linear blend of the first and last frames from each frame of the animation.</div>
+</li>
+
+<p><li><div class="code2">splinedelta</div></p>
+
+<div class="definition">Turns the animation into a delta animation, by subtracting a spline (s-curve) blend of the first and last frames from each frame of the animation.</div>
+</li>
+
+<p><li><div class="code2">compress (skip)</div></p>
+
+<div class="definition">Turns a animation into a lower fps version of itself by only using every Nth frame.  Automatically converts specified fps values into new equivalent.</div>
+</li>
+
+<p><li><div class="code2">numframes (frames)</div></p>
+
+<div class="definition">Forces an animation to be a specified number of frames, either by clipping the animation or by duplicating the last frame until it has been padded with enough.</div>
+</li>
+</ul>
+
+<h2><a name="new_ik">New IK Options</a></h2>
+
+<ul>
+<p><li><div class="code2">$ikchain (name) (end bone) [height (units)] [pad (units)][floor (units)]</div></p>
+<div class="definition">Declares a named set of bones that are used to form an IK chain. Chains are specified by naming the bone farthest down in the chain, the next two bones are automatically found by walking the hierarchy.</p>
+<br><br>Ikchains are used exclusively with ikrule and iklock animationoptions. Depending in the specific rule used, the end bone is moved into the needed position, the top most bone is assumed fixed in place, and the position of the middle bone is moved so that that the distance from the end-to-middle and middle-to-top bones remain constant. An example would be a IK chain of the ankle-knee-hip chain, where the ankle is adjusted to hit to relative to the ground, the hip is locked in place, and the knee is bend such that the leg remains its original length.
+</div>
+</li>
+
+<p><li><div class="code2">iklock (chain) (lock position) (maintain local rotation)</div></p>
+
+<div class="definition">For this sequence, keep track of the position/orientation of the specific chain before the sequence is applied, then after it’s applied, do a local IK rule to move it back into position/orientation. The weights are floating point values form 0.0 to 1.0.
+
+<br><br>This is used to keep the specified IK chains from moving during this sequence, which can be useful when applying pelvis or body motion to a model but you want the hands or feet to remain in place.
+
+<br><br>NOTE: The value for the rotation lock is somewhat backwards from the position. To lock both of them, set it to “1 0”, to let both of them freely move, set it to “0 1” (which is pointless, just don’t do the iklock in this case, but you get the idea).
+
+</div>
+</li>
+
+<p><li><div class="code2">ikrule (chain) touch (bone) [options...]</div></p>
+
+<div class="definition">Adds an IK rule where a bone needs to be needs to be positioned relative to another part of the body.  This is useful when the hand needs to touch some other part of the model, such as the face, hip, other hand, etc., and that other body part may be not in the original animated location due to additional animation layers, bone controllers, or other IK rules.
+
+<br><br>Specify a bone of “” to get the chain to move relative to the models origin instead of an animated bone.
+</div>
+</li>
+ 
+<p><li><div class="code2">ikrule (chain) footstep (slot #) [options…]</div></p>
+
+<div class="definition">Adds an IK rule where a subsequent body part – such as a foot – needs to be moved relative to the ground.</div>
+</li>
+
+</ul>
+
+<h2><a name="ikrule">Ikrule Options</a></h2>
+
+<ul>
+<p><li><div class="code2">range (start) (peak) (tail) (end)</div></p>
+
+<div class="definition">Sets the fade-in, hold, and fade-out frame numbers for the ikrule.</div>
+</li>
+
+<p><li><div class="code2">height (units)</div></p>
+
+<div class="definition">Used by footstep rules, specifies how high to start the search above the desired ground height.</div>
+</li>
+
+<p><li><div class="code2">floor (units)</div></p>
+
+<div class="definition">Used by footstep rules, specifies where the actual ground is ground height.</div>
+</li>
+
+<p><li><div class="code2">pad (radius)</div></p>
+
+<div class="definition">Used by footstep rules, specifies how big the ground contact check should be.</div>
+</li>
+
+<p><li><div class="code2">contact (frame) </div></p>
+
+<div class="definition">Used by footstep rules, specifies what frame use use when checking for ground position.</div>
+</li>
+
+<p><li><div class="code2">radius (units) </div></p>
+
+<div class="definition">Used by attachment rules, specifies how out to search.</div>
+</li>
+
+<p><li><div class="code2">usesource </div></p>
+
+<div class="definition">Use the original animation source to determine the IK goals.  This is use useful if the current sequence is a composite that is different from the source animation and you want to get the movement back to its original form.</div>
+</li>
+
+<p><li><div class="code2">usesequence </div></p>
+
+<div class="definition">Run all the sequence rules, including blendlayer and addlayer rules to determine the IK goals.</div>
+</li>
+
+</ul>
+
+
+<h2><a name="new_sequence">New $sequence Options</a></h2>
+
+<ul>
+<p><li><div class="code2">autoplay</div></p>
+
+<div class="definition">The sequence is automatically added at the end of the bone setup during playback, after all other sequences have been composited together.  These sequences are usually “delta” sequences, but they don’t have to be.  If the model has multiple autoplay sequences, they’re added in the order they appear in the QC file.
+
+<br><br>The easiest way to think of these are that they’re just fancy bonecontrollers, but ones that have multiple bones.   Autoplay sequences are only played at a cycle/frame index of 0.</div>
+</li>
+
+<p><li><div class="code2">addlayer (sequence)</div></p>
+
+<div class="definition">Automatically composites another sequence on top of the current sequence, before it’s composited on top of the current bone setup.  The cycle index of this new sequence is the same as the current sequence.</div>
+</li>
+
+<p><li><div class="code2">blendlayer (sequence) (start) (peak) (tail) (end) [spline] [xfade]</div></p>
+
+<div class="definition">Similar to addlayer, but the layer is only composited over the specified frames.  The “spline” option coverts the linear fade in (start to peak) and fade out (tail to end) to a spline curve.</div>
+</li>
+
+<p><li><div class="code2">delta </div></p>
+
+<div class="definition">The compliment to the “subtract” command, this tells the animation compositing system to “add” this sequence on top of the current bone setup instead of overriding each bones’ animation based on the typical cross-fade weighting scheme. </div>
+</li>
+
+<p><li><div class="code2">predelta</div></p>
+
+<div class="definition">The compliment to the “presubtract” command, this tells the animation compositing system to add the current bone setup on top of a different frame of reference instead of overriding each bones’ animation based on the typical cross-fade weighting scheme.  </div>
+</li>
+
+<p><li><div class="code2">snap</div></p>
+
+<div class="definition">Remove all blending when transitioning to this animation. This is useful for reaction animations that are the result of sudden and violent changes in the models state such as flinching for creatures or shooting for weapons.</div>
+</li>
+
+<p><li><div class="code2">realtime</div></p>
+
+<div class="definition">Ignore the cycle clock, play the sequence off of the real-time system clock.  Useful when adding layers that need to not be cycle locked to their parent sequence.</div></p>
+</li>
+
+<p><li><div class="code2">fadein (time)</div></p>
+
+<div class="definition">Override default 0.2 second blend with specified time when transitioning to this animation.</div>
+</li>
+
+<p><li><div class="code2">fadeout (time)</div></p>
+
+<div class="definition">Override default 0.2 second blend with specified time when transitioning from this animation.</div>
+</li>
+
+<p><li><div class="code2">blendwidth (width)</div></p>
+
+<div class="definition">Instead of just 1x1, 2x1, 3x1, 2x2, and 3x3 blends, by blending width, you can now have any size rectangular blends such as 7x1, 3x4, 2x9, etc.</div>
+</li>
+ 
+<p><li><div class="code2">blend (name) (min) (max)</div></p>
+
+<div class="definition">Blending options – called PoseParameters in the engine and dll’s - are now named and can be shared between sequences.  You can have up to 8 unique parameters.</div>
+</li>
+
+<p><li><div class="code2">node (name)</div></p>
+
+<div class="definition">Tags the sequence as belonging to a point on the sequence transition graph table.  This is for animations which don’t change graph state, such as looping animations.  Multiple sequences can be at the same entry in the graph table, at which point they won’t need transition animations be move between each other.  Alternatively, you can have them at different points and expressly skip transitions (see $skiptransition).  Sequences with no declaration are assumed at the root node and the transition graph assumes any sequence can move from the root node or to the root node without a intermediate transition.</div>
+</li>
+
+<p><li><div class="code2">transition (from) (to)</div></p>
+
+<div class="definition">This specifies that the animation enters from one point on the node graph and exits at another point.   This is used to play transitional sequences such as walk_to_stand, run_to_crouch, etc.</div>
+</li>
+
+<p><li><div class="code2">rtransition (name1) (name2)</div></p>
+
+<div class="definition">Same as transition, but flags the sequence as able to be run in reverse order.  This was used by the tentacle in HL1 but I don’t recommend it be used expect in special cases.</div>
+</li>
+
+<p><li><div class="code2">exitphase (phase)</div></p>
+
+<div class="definition">When transitioning between looping animations, such as “stand_to_run”, this tells the movement system where to start the next sequence, assuming it’s looping.  It’s also assumed that you’ve made all the sequences that share the next node to be phase matched (see startloop).</div>
+</li>
+
+<p><li><div class="code2">$skiptransition (name1) (name2) [(name3) …]</div></p>
+
+<div class="definition">This adds a rule to the transition graph to allow direct movement between all the named nodes.  This is useful for transitions between unique named nodes that that may not require any specific intermediate animation.  This is how to avoid the transition graph from forcing “walk” to “run”  to instead be a “walk” to “stand” to “run” transition.</div>
+</li>
+
+
+<p><li><div class="code2">keyvalues { [stuff] }</div></p>
+
+<div class="definition">Add a keyvalue block (see $keyvalues) to a specific sequence.</div>
+</ul>
+
+<h2><a name="new_macro">New Macro Commands</a></h2>
+
+<ul>
+<p><li><div class="code2">$definemacro (macroname) [named parameters …]</div></p>
+
+<div class="definition">Defines a named macro that can be use as a short hand way to specify other QC commands.  The macro creates a block a named block of text, that when referred to will virtually insert that text into the QC file, along with replacing the named parameters with the specified values.  
+
+<br><br>Example:</div>
+
+<br><div class="code">$definemacro makeidlenoise idleNoiseName fileName \\
+<br>$sequence $idleNoiseName$ {\\
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fileName$ \\
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtract $idleNoiseName$ 0 \\
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iklock lfoot 1 0 iklock rfoot 1 0 \\
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delta \\ 
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hidden \\
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;realtime \\
+<br>}
+<br>
+<br>$makeidlenoise idleNoise03 "Idle03"
+<br>$makeidlenoise idleNoise04 "Idle04_v32"
+</div>
+</li>
+
+</ul>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

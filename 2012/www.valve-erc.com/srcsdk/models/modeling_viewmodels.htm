@@ -1,0 +1,33 @@
+<html>
+
+<head>
+	<title>Source SDK Documentation</title>
+    <link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Viewmodels</h1>
+
+<h2>Setting up Viewmodels</h2>
+
+<p>To preview your model in XSI, set a 54 degree F.O.V. perspective camera at origin (0,68,0) facing along the negative Y axis. This simulates pretty well the player’s camera view in the game. Build your model using the camera view as a guide. However it is not a good idea to assume you will get absolutely identical results in the game. If you are optimizing your model by removing unseen geometry, be sure to leave a little leeway around the bottom and sides of your screen.</p>
+<p>You can use the camera_interest entity in XSI to show where your weapon is pointing.  Just set it directly in front of the camera about 50 units away to get a good idea of whether or not its aiming towards the center of the screen.</p>
+<p>When a player jumps or falls the viewmodel will lag behind his motion by several frames. In the case of violent accelerations (explosions, etc.)  you may see parts of your viewmodel which you thought safely off-camera hanging exposed in mid-air. Be sure to test your viewmodel with jumps, falls, and explosions.</p>
+
+<h2>Optimization</h2>
+
+<p>Since you have complete control over the viewers relationship to the viewmodel, you can greatly optimize your model’s polygon usage. Any face on the model which is not visible from the camera viewport can be safely deleted.</p>
+
+<p>You should perform this optimization after animating the model, so that you can be sure which polygons always face away from the camera. You can test an unoptimized version for jump-induced viewpoint shifts (see above) as well.</p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

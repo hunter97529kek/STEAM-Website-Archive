@@ -1,0 +1,250 @@
+<html>
+
+<head>
+    <title>Eye Position Setup For The Source Engine</title>
+    <link href="../../srcsdk.css" rel="stylesheet" type="text/css">
+   
+    <script>
+    <!--
+    function popup(src,scroll,x,y,target)
+    {
+        open(src,target,"scrollbars="+scroll+",width="+x+",height="+y+",menubar=0")
+    }
+    -->
+    </script>
+</head>
+
+<div class="content">
+
+<h1>Eye Position Setup</h1>
+
+    <p>Before compiling your run-time character, you need to set up the proper eye position data. If you modify a model later, but leave the eyes in pretty much the same position, you won't need to change any of the eye settings.</p>
+
+    <p>This is what the eye data looks like for one of our female models:</p>
+
+<pre class="code">
+//start eye/face data
+$eyeposition 0 0 70
+
+// head controllers
+<strong>$attachment "eyes" "ValveBiped.Bip01_Head1" 0.002 -3.6165 65.0652 absolute</strong>
+$attachment "mouth" "ValveBiped.Bip01_Head1" 0.10 -5.70 0.00 rotate 0 -80 -90
+$attachment "chest" "ValveBiped.Bip01_Spine2" 4.00 4.00 0.00 rotate 0 95 90
+
+$model female_06 "female_06_reference.smd"{
+<strong>     eyeball righteye "ValveBiped.Bip01_Head1" -1.2783 -3.6165 65.0663 "eyeball_r" 1 4 "pupil_r" 0.63
+     eyeball lefteye "ValveBiped.Bip01_Head1" 1.2823 -3.6165 65.0642 "eyeball_l" 1 -4 "pupil_l" 0.63
+
+     eyelid  upper_right "female_06_expressions" lowerer 1 -0.2275 neutral 0 0.1475 raiser 2 0.2559 split 0.1 eyeball righteye
+     eyelid  lower_right "female_06_expressions" lowerer 3 -0.2879 neutral 0 -0.2046 raiser 4 -0.0462 split 0.1 eyeball righteye
+     eyelid  upper_left "female_06_expressions" lowerer 1 -0.2275 neutral 0 0.1475 raiser 2 0.2559 split -0.1 eyeball lefteye
+     eyelid  lower_left "female_06_expressions" lowerer 3 -0.2879 neutral 0 -0.2046 raiser 4 -0.0462 split -0.1 eyeball lefteye</strong>
+
+     mouth 0 "mouth" "ValveBiped.Bip01_Head1" 0 1 0     // mouth illumination
+
+     flexfile "Female_06_expressions" {
+          $include "../../standardflex_xsi.qci"
+     }
+
+     $include "../../facerules_xsi.qci"
+     $include "../../bodyrules_xsi.qci"
+}
+//end eye/face data
+</pre>
+
+    <p>The bolded lines are the ones that will need to be modified to set-up specific position data for a model with new eye positions. You can use the applet QCEyes to format your eye data, or do it manually as described  below.</p>
+
+    <p><strong>Note: </strong>Before you start, you'll want to move the eye spheres to the appropriate location for your model and make sure to <strong>Freeze All Transforms</strong>.</p>
+
+    <p>To get the eye position data from the model, do the following:</p>
+	<ol>
+    <li>Get the position of the center point on each eye in all 3 axes (be sure to "Freeze All Transforms" on the eye reference spheres first.)<br><br>
+
+		<ul>
+		<table width="70%" cellspacing="0" cellpadding="6">
+		<tr bgcolor="#eeeeee">
+			<td nowrap valign="top"><p>Righteye_center_X<br>Righteye_center_Y</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_XY_R.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_XY_R.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr>
+			<td nowrap valign="top"><p>Righteye_center_Z</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_Z_R.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_Z_R.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr bgcolor="#eeeeee">
+			<td nowrap valign="top"><p>Lefteye_center_X<br>Lefteye_center_Y</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_XY_L.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_XY_L.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr>
+			<td nowrap valign="top"><p>Lefteye_center_Z</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_Z_L.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_Z_L.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		</table>
+		</ul><br>&nbsp;
+    </li>
+
+    <li>Get the position on the Y axis for the center point of each eyelid in its default position, raised position and lowered position (if the character is relatively symmetrical, you can use the positions from one eye for both eyes).<br><br>
+
+		<ul>
+		<table width="70%" cellspacing="0" cellpadding="6">
+		<tr bgcolor="#eeeeee">
+			<td nowrap valign="top"><p>Right_upper_def (upper eyelid, frame 0)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_upper_mid.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_upper_mid.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr>
+			<td nowrap valign="top"><p>Right_upper_lo (upper eyelid, frame 1)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_upper_lo.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_upper_lo.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr bgcolor="#eeeeee">
+			<td nowrap valign="top"><p>Right_upper_hi (upper eyelid, frame 2)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_upper_hi.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_upper_hi.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr>
+			<td nowrap valign="top"><p>Right_lower_def (lower eyelid, frame 0)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_lower_mid.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_lower_mid.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr bgcolor="#eeeeee">
+			<td nowrap valign="top"><p>Right_lower_lo (lower eyelid, frame 3)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_lower_lo.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_lower_lo.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr>
+			<td nowrap valign="top"><p>Right_lower_hi (lower eyelid, frame 4)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_lower_hi.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_lower_hi.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr bgcolor="#eeeeee">
+			<td nowrap valign="top"><p>Left_upper_def (upper eyelid, frame 0)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_upper_mid.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_upper_mid.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr>
+			<td nowrap valign="top"><p>Left_upper_lo (upper eyelid, frame 1)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_upper_lo.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_upper_lo.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr bgcolor="#eeeeee">
+			<td nowrap valign="top"><p>Left_upper_hi (upper eyelid, frame 2)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_upper_hi.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_upper_hi.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr>
+			<td nowrap valign="top"><p>Left_lower_def (lower eyelid, frame 0)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_lower_mid.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_lower_mid.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr bgcolor="#eeeeee">
+			<td nowrap valign="top"><p>Left_lower_lo (lower eyelid, frame 3)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_lower_lo.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_lower_lo.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		<tr>
+			<td nowrap valign="top"><p>Left_lower_hi (lower eyelid, frame 4)</p></td>
+			<td align="right"><p><a href="javascript:popup('qceyes/eye_lower_hi.html','no',500,250,'qceyes')"><img src="qceyes/t.eye_lower_hi.jpg" alt="" width="180" height="90" border="2" class="img_link"></a></td>
+		</tr>
+		</table>
+		</ul><br>&nbsp;
+    </li>
+
+    <li>Once you've acquired the position data for the eyeballs and eyelids, as listed above, you'll need to do some simple arithmetic to get the following values:<br><br>
+
+
+		<table width="100%" cellspacing="0" cellpadding="6">
+		<tr valign="top" bgcolor="#eeeeee">
+			<td class="code2"><strong>X_avg_pos</strong></td>
+			<td><p>The average of Righteye_center_X and Lefteye_center_X</p></td>
+		</tr>
+		<tr valign="top">
+			<td class="code2"><strong>Y_avg_pos</strong></td>
+			<td><p>The average of Righteye_center_Y and Lefteye_center_Y</p></td>
+		</tr>
+		<tr valign="top" bgcolor="#eeeeee">
+			<td class="code2"><strong>Z_avg_pos</strong></td>
+			<td><p>The average of Righteye_center_Z and Lefteye_center_Z</p></td>
+		</tr>
+		<tr valign="top">
+			<td class="code2"><strong>R_lid_up_hi</strong></td>
+			<td><p>Right_upper_hi - Righteye_center_Y</p></td>
+		</tr>
+		<tr valign="top" bgcolor="#eeeeee">
+			<td class="code2"><strong>R_lid_up_def</strong></td>
+			<td><p>Right_upper_def - Righteye_center_Y</p></td>
+		</tr>
+		<tr valign="top">
+			<td class="code2"><strong>R_lid_up_lo</strong></td>
+			<td><p>Right_upper_lo - Righteye_center_Y</p></td>
+		</tr>
+		<tr valign="top" bgcolor="#eeeeee">
+			<td class="code2"><strong>R_lid_low_hi</strong></td>
+			<td><p>Right_upper_hi - Righteye_center_Y</p></td>
+		</tr>
+		<tr valign="top">
+			<td class="code2"><strong>R_lid_low_def</strong></td>
+			<td><p>Right_upper_def - Righteye_center_Y</p></td>
+		</tr>
+		<tr valign="top" bgcolor="#eeeeee">
+			<td class="code2"><strong>R_lid_low_lo</strong></td>
+			<td><p>Right_upper_lo - Righteye_center_Y</p></td>
+		</tr>
+		<tr valign="top">
+			<td class="code2"><strong>L_lid_up_hi</strong></td>
+			<td><p>Left_upper_hi - Lefteye_center_Y</p></td>
+		</tr>
+		<tr valign="top" bgcolor="#eeeeee">
+			<td class="code2"><strong>L_lid_up_def</strong></td>
+			<td><p>Left_upper_def - Lefteye_center_Y</p></td>
+		</tr>
+		<tr valign="top">
+			<td class="code2"><strong>L_lid_up_lo</strong></td>
+			<td><p>Left_upper_lo - Lefteye_center_Y</p></td>
+		</tr>
+		<tr valign="top" bgcolor="#eeeeee">
+			<td class="code2"><strong>L_lid_low_hi</strong></td>
+			<td><p>Left_upper_hi - Lefteye_center_Y</p></td>
+		</tr>
+		<tr valign="top">
+			<td class="code2"><strong>L_lid_low_def</strong></td>
+			<td><p>Left_upper_def - Lefteye_center_Y</p></td>
+		</tr>
+		<tr valign="top" bgcolor="#eeeeee">
+			<td class="code2"><strong>L_lid_low_lo</strong></td>
+			<td><p>Left_upper_lo - Lefteye_center_Y</p></td>
+		</tr>
+	</table>
+	</li><br><br>
+
+    <li>Now format the eye position data as shown below:</li>
+	</ol>
+
+<pre class="code">
+//start eye/face data
+$eyeposition 0 0 70
+
+// head controllers
+<span class="navy">$attachment "eyes" "ValveBiped.Bip01_Head1" X_avg_pos Z_avg_pos Y_avg_pos absolute</span>
+$attachment "mouth" "ValveBiped.Bip01_Head1" 0.10 -5.70 0.00 rotate 0 -80 -90
+$attachment "chest" "ValveBiped.Bip01_Spine2" 4.00 4.00 0.00 rotate 0 95 90
+
+$model female_06 "female_06_reference.smd" {
+<span class="navy">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eyeball righteye "ValveBiped.Bip01_Head1" Righteye_center_X Righteye_center_Z Righteye_center_Y "eyeball_r" 1 4 "pupil_r" 0.63
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eyeball lefteye "ValveBiped.Bip01_Head1" Lefteye_center_X Lefteye_center_Z Lefteye_center_Y "eyeball_l" 1 -4 "pupil_l" 0.63
+    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eyelid  upper_right "female_06_expressions" lowerer 1 R_lid_up_lo neutral 0 R_lid_up_def raiser 2 R_lid_up _hi split 0.1 eyeball righteye
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eyelid  lower_right "female_06_expressions" lowerer 3 R_lid_low_lo neutral 0 R_lid_low_def raiser 4 R_lid_low _hi split 0.1 eyeball righteye
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eyelid  upper_left "female_06_expressions" lowerer 1 L_lid_up_lo neutral 0 L_lid_up_def raiser 2 L_lid_up _hi split -0.1 eyeball lefteye
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eyelid  lower_left "female_06_expressions" lowerer 3 L_lid_low_lo neutral 0 L_lid_low_def raiser 4 L_lid_low split -0.1 eyeball lefteye</span>
+    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mouth 0 "mouth" "ValveBiped.Bip01_Head1" 0 1 0     // mouth illumination
+    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flexfile "Female_06_expressions" {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$include "../../standardflex_xsi.qci"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$include "../../facerules_xsi.qci"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$include "../../bodyrules_xsi.qci"
+}
+//end eye/face data
+</pre>
+
+
+
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+<html>
+<head>
+	<title>Motion Mapper</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Motion Mapper</h1>
+
+<h2>Basic Usage</h2>
+
+<p>Motionmapper is a command-line tool designed specifically to remap motion from a &quot;source&quot; .SMD skeleton to a &quot;target&quot; .SMD skeleton. The target is assumed to have been built such that the bone lengths and locations are somewhat different from the source. Used in its default state, Motionmapper does its best to maintain the animation "feel" of the source animation, while solving for limb extremity location (i.e. feet on the ground and hands on weapons).</p>
+
+<p class="code">motionmapper.exe sourceAnimation.smd targetSkeleton.smd mappedMotion.smd</p>
+
+<p>Executing the above on a command line will execute a default mapping of the animation in the "<span class="code2">sourceAnimation.smd</span>" file to the skeleton defined in the first frame of animation in the "<span class="code2">targetSkeleton.smd</span>" file and output the results into the "<span class="code2">mappedMotion.</span><span class="code2">smd</span>" file.</p>
+
+<p>Some notes on the .SMD files used:</p>
+
+<ol class="numberedlist">
+
+<li>Motionmapper determines its mapping by comparing the source skeleton to the target skeleton. Because there is no default pose inherent in the .SMD files, Motionmapper uses the first frame of animation from both the source and target .SMD files. Thus:
+<br>
+<br>
+<ul>
+	<li type="a">Both the source and target files must have a minimum of 1 frame of animation.</li>
+	<li type="a">The target need not have more than 1 frame of animation, as it will be overwritten anyway.</li>
+</ul>
+</li>
+
+<br><br>
+
+<li>Motionmapper assumes both the source and target skeletons have <strong>exactly</strong> the same hierarchical structure with the exception of bone length and joint orientation. Thus:
+<br><br>
+<ul>
+	<li type="a">Both the source and target skeletons must have the same number of bones arranged in the same hierarchical order.</li>
+	<li type="a">It is not necessary for the source and target bones to have the same names as long as their locations in the hierarchy are equivalent.</li>
+<li type="a">When utilizing template file options, bone names always refer to the names used in the source .SMD file.</li>
+</ul>
+</li>
+
+<br><br>
+
+<li>Motionmapper assumes the skeletons are in the standard Valve coordinate frame and built with following standards:
+<br><br>
+<ul>
+	<li type="a">As far as the root is concerned, the Z-axis is up and down.</li>
+	<li type="a">The root is the only bone to have both translation and rotation animation -- all other bones are rotation only.</li>
+	<li type="a">Bone lengths are typically along the X-axis, and if not, universally jointed rotate around the Z-axis.</li>
+</ul>
+</li>
+
+</ol>
+
+<a name="SDKExample"></a>
+<h2>SDK Example</h2>
+
+An example skeleton is included with the SDK to demonstrate the use of MotionMapper. To test it:
+
+<ul>
+	<li>Run this command on the command line (it spans multiple lines in your browser, but you can copy the whole thing and paste it into a command prompt). 
+		
+		<p class="code">"%sourcesdk%\bin\MotionMapper.exe" "%sourcesdk%\..\sourcesdk_content\hl2mp\modelsrc\combine_soldier_xsi\reload_standing.smd" "%sourcesdk%\..\sourcesdk_content\generic\modelsrc\heavy_walk.smd" "%sourcesdk%\..\sourcesdk_content\generic\modelsrc\MOTIONMAPPED_reload_standing.smd"</p>
+
+		This command line is long, so let's break it down. There are three parameters on the command line:<br><br>
+		<ol>
+			<li><span class="code2">"%sourcesdk%\..\sourcesdk_content\hl2mp\modelsrc\combine_soldier_xsi\reload_standing.smd"</span> - This references the source animation.
+									It happens to be a reload animation used in HL2MP. The final animation will look like this animation, but the proportions
+									of the skeleton will be made to look like the second parameter.
+			<li><span class="code2">"%sourcesdk%\..\sourcesdk_content\generic\modelsrc\heavy_walk.smd"</span> - This references a single-frame animation file where the proportions
+									of the skeleton are different from the normal HL2MP character.
+			<li><span class="code2">"%sourcesdk%\..\sourcesdk_content\generic\modelsrc\MOTIONMAPPED_reload_standing.smd"</span> - This tells MotionMapper where to store the final animation
+									(all the frames of animation in the first parameter's SMD file mapped onto the skeleton in the second parameter's SMD).
+		</ol>
+
+	
+	<br><li>Now we have an animation file (MOTIONMAPPED_reload_standing.smd) which we can put on the HL2MP character, and it should have strange proportions. Add the following line to the bottom of the
+		<span class="code2">sourcesdk_content\hl2mp\modelsrc\player\player_anims.qci</span> file: 
+			<p class="code">$makereload TEST_reload_shotgun  "..\..\..\generic\modelsrc\motionmapped_reload_standing" ACT_HL2MP_GESTURE_RELOAD_SHOTGUN 1</p>
+
+	<br><li>Recompile the HL2MP player animations:
+		<p class="code">"%sourcesdk%\bin\studiomdl" -game "%sourcesdk%\..\half-life 2 deathmatch\hl2mp" "%sourcesdk%\..\sourcesdk_content\hl2mp\modelsrc\player\player_male_anims.qc"</p>
+
+	<br><li>Now you can run Model Viewer from inside the Source SDK window (make sure Half-Life 2: Deathmatch is selected in the game list). Select
+	any male model (we only recompiled the male animations in the previous step - to do the female animations, just change the end of the last parameter to use player_female_anims.qc).
+	For example, you can choose <b>Humans\Group02\male_04</b>. Then select the <b>TEST_reload_shotgun</b> sequence and notice the modified proportions on the character.
+
+	<br><br><li><b>Note:</b> You may want to delete your <span class="code2">Half-Life 2 Deathmatch\hl2mp\models\player\male_anims.mdl</span> file, or else you'll
+	see this strange motion-mapped animation show up in-game.
+</ul>
+
+
+<h2>Using Template Files</h2>
+
+<p>When Motionmapper is used without the <span class="code2">-templateFile</span> argument, it does a default mapping from the source skeleton to the target skeleton. Various parameters in the mapping can be changed to achieve different motion effects. These parameters need to be placed in a text file and that file used as the option to the <span class="code2">-templateFile</span> argument.</p>
+
+<h2>Generic Template Files</h2>
+
+<p>Motionmapper comes with a set of generic template files that should fulfill most your needs:</p>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>walk.mmt</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Basic template for walk/run cycles and non-two handed weapon motions</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>twoHandedWeapon.mmt</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Basic template for two handed, non-shoulder fired, weapon motions, wherein the left hand maintains it's exact relationship to the right but the right is motion mapped to the new skeleton</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>twoHandedShoulderWeapon.mmt</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Basic template for two handed, shoulder fired, weapon motions, wherein the left hand maintains it's exact relationship to the right and the right hand maintains it's exact relationship to the shoulder (Spine2).<br><br>
+Note that both the "twoHandedWeapon" templates use "relativeLock", which assumes that the distance between the mapped joint and it's "relativeLock" has not been altered in the destination skeleton. If that distance has been changed, it's possible to scale the "locked" joint by altering the scalar argument at the end of the command.</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>rootLock.mmt</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">This template is for motions wherein the character interacts with an object in the environment. No actual "mapping" is done to foot and hand positions. However, the new joint lengths are solved for.<br><br>
+Note that the positions of the hands and feet will attempt to remain the same relative to the ROOT, which is not changed from the source animation. If bones lengths are shortened significantly this may not be possible and you may get motion artifacts.</p></td>
+	</tr>
+</table>
+	
+<h2>Alternate Template Files</h2>
+
+<p>Please note: When a template file is used, Motionmapper abandons all default settings and depend entirely on the template file to guide its mapping. Thus:</p>
+ <ul><li>When using a template file, the template file must fully specify the mapping desired</li></ul>
+
+<p>To make this task easier, there are a few ways to build template files. One method is to just use one of the 6 or 7 template files supplied with Motionmapper:</p>
+
+<ul>
+<li>default.mmt</li>
+<li>template1.mmt</li>
+<li>template2.mmt</li>
+<li>template3.mmt</li>
+<li>template4.mmt</li>
+<li>template5.mmt</li>
+<li>template6.mmt</li>
+<li>template7.mmt</li>
+</ul>
+
+<p>Beside the "<span class="code2">default.mmt</span>" file, each one of these templates exhibit some form of varied motion mapping and have some comments regarding their function. Alternately, you can use the <span class="code2">-printTemplate</span> argument in motionmapper and pipe the output into a file and work from there:</p>
+
+<p class="code">
+ motionmapper.exe -printTemplate &gt myTemplate.txt
+</p>
+
+<p>This will give you a file that is the equivalent to Motionmapper's default settings, which you can then edit from there. This default file is not heavily commented and does not contain a lot of explanation. An explanation of the default template settings and their variations follows.</p>
+
+<h2>Template Settings</h2>
+
+<p>Template files contain actions and attributes. They both take arguments on the same line. The main difference is that actions can be scheduled and attributes are the parameters for those actions. It's admittedly a little confusing and may be changed in the future into a more consistent form. We will discuss them as they appear in the <span class="code2">default.mmt</span> file.</p>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>rootScaleJoint ValveBiped.Bip01_L_Foot</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">The rootScaleJoint command takes one argument that specifies which two jointed limb to base it's root motion scaling on. This is typically one of the feet as an alteration in the length of the legs would usually be the only reason to scale the root.
+<br><br>
+<strong>Note:</strong> specifying a limb that isn't also specified in a "twoJointIKSolve" (below) will most certainly result in slipping feet.</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>rootScaleAmount 1.0</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">While the argument to this attribute is a floating point value, this attribute is included for the sole purpose of turning root scaling on and off, which will be discussed in the "Alternate Mappings" section.</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>toeFloorZ 2.7777</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">This attribute specifies where along the Z-axis the "floor" lives. This attribute affects both the root scaling as well as the "oneJointPlaneConstraint" (below).</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>twoJointIKSolve ValveBiped.Bip01_L_Foot</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">
+	This action can actually scheduled multiple times in the same template file and (preferably) on different joints. The objective of this command and it's various attributes is to establish a position based relationship between the joint and it's grandparent in the source skeleton and then to replicate that relationship in the target. The various attributes specify ways of altering that relationship. You'll notice in the default.mmt template file that there are 4 twoJointIKSolves scheduled:
+<ul>
+<li>ValveBiped.Bip01_L_Foot</li>
+<li>ValveBiped.Bip01_R_Foot</li>
+<li>ValveBiped.Bip01_L_Hand</li>
+<li>ValveBiped.Bip01_R_Hand</li>
+</ul>
+</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>reverseSolve 0.0</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">This attribute tells the IK solver to bend the joint one way or the other. You'll notice looking at the template file that elbows are actually bent the reverse of knees.</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>extremityScale 1.0</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">This attribute is determining whether or not to match the motion of the extremity being solved for to it's new limb length or to maintain the same scale of animation as it's source. Note: this attribute, when applied to feet, is intimately related to rootScaleAmount and they should be set the same.</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>limbRootOffsetScale 1.0 1.0 0.0</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">This attribute is specifying how much and along which axis (in root space) to mimic the change in the limb's root or the joint being solved's grandparent. In other words, if the hips are now wider, do we want the feet to be spread wider as well? Same goes for shoulders, do we want the hands to be spread wider if the shoulders are wider? The reason for the 3 axis argument is this: If the hips of the new skeleton are lower, we don't actually want to offset the feet by that same amount as it will put them through the floor. The opposite could be potentially be true for the arms, if the shoulders are wider, the back shorter and your animation includes holding a weapon you would probably want the hands offset in vertical space so that they aren't up over the character's head but not necessarily set wider apart as they would not longer be properly holding a weapon.</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>relativeLock ValveBiped.Bip01_R_Hand 1.0</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">This attribute is specifically for keep on hand in an absolute relationship to another hand, for holding weapons, etc. This attribute is typically only set on one of the hands and hand being locked to needs to be solved before the hand being locked. The scalar value at the end of the attribute can be used to scale the location of the locked hand in the space of the "locking" hand, effectively growing or shrinking their relative distance (smaller or larger weapons).</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>oneJointPlaneConstraint ValveBiped.Bip01_L_Toe0</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">This is a simple one joint plane constraint that adjusts the parent joint such that the specified bone will not penetrate the "floor" as defined by the "toeFloorZ" attribute above. This is for keep toes above the ground when a twoJointIKSolve has pushed them below.<br><br>
+<strong>Note:</strong> This solve only works if the &quot;foot&quot; node is still above the ground, which it should always be if you are executing a reasonable mapping.
+</p></td>
+	</tr>
+</table>
+
+<h2>Special Template Commands</h2>
+
+<p>There are a couple of special commands that can be placed in a template file that are related to skeleton alteration. Although these were primarily used for testing, they can be used for skeletal changes.</p>
+
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>jointScale ValveBiped.Bip01_L_Foot 1.5</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">This would scale the left foot bone in the destination skeleton by a factor of 1.5</p></td>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>skeletonScale 1.5</td>
+	</tr>
+	<tr class="codeLite"><td><p class="definition">This would scale every bone in the destination skeleton by a factor of 1.5</p></td>
+	</tr>
+</table>
+
+
+</div>
+</body>
+</html>
