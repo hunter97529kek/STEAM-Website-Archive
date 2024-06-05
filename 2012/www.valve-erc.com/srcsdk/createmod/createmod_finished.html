@@ -1,0 +1,67 @@
+<html>
+
+<head>
+	<title>Source SDK Documentation</title>
+    <link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>New Mod Information </h1>
+<p>You have successfully completed the Mod Wizard.</p>
+<p>Note: this document refers to your mod install directory as <span class="code2">&lt;mod directory&gt;</span>. For example, if you entered <span class="code2">C:\Program Files\Valve\Steam\SteamApps\SourceMods\MyMod</span> in the Mod Wizard, and this document mentions <span class="code2">&lt;mod directory&gt;\bin</span>, then the directory being referred to on your hard drive is <span class="code2">C:\Program Files\Valve\Steam\SteamApps\SourceMods\MyMod\bin</span>. This document also refers to your mod name (which you entered in the mod wizard) as <span class="code2">&lt;mod name&gt;</span>.</p>
+<p>The Mod Wizard has created these subdirectories under your mod install path. </p>
+<table class="table">
+  <tr>
+    <th width="146"><div align="left">
+        <p>Directory</p>
+    </div></th>
+    <th width="655"><div align="left">
+        <p>Purpose</p>
+    </div></th>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">bin</p></td>
+    <td class="cell"><p>This directory contains batch files that you can use to run tools to edit your mod. It also is the place where tool executables will be built. </p>
+  </td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">&lt;mod name&gt; </p></td>
+    <td class="cell"><p>This directory contains all the content for your game, including maps, models, sounds, materials, weapon scripts, VGUI interface scripts.</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">src</p></td>
+    <td class="cell"><p>This directory contains all the source code to your mod. The best place to start in here is to open <span class="code2">game_sdk.sln</span> inside Microsoft Visual Studio .NET (see below for info on how to compile). </p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">src\utils</p></td>
+    <td class="cell"><p>The utils directory under src contains source for all the utilities used to build and compile content for a mod. If you open <span class="code2">src\everything_sdk.sln</span> in Microsoft Visual Studio .NET, you can compile all the tools and game source code from one place. </p></td>
+  </tr>
+</table>
+
+<h2>&nbsp;</h2>
+<h2>Where To Start</h2>
+<p>Here are some ways to start making additions to your mod.</p>
+<h3>Make your first Half-Life 2 change </h3>
+<p><em>Note: this step only applies if you chose the &quot;Modify Half-Life 2&quot; button in the mod wizard.</em></p>
+<p>To make your first Half-Life 2 change, walk through the steps in the  <a href="../MyFirstMod.htm">My First Mod</a> document. </p>
+<h3>Add Content to Your Mod</h3>
+<p>If you're modifying Half-Life 2, your content should go under <span class="code2">&lt;mod directory&gt;\hl2</span>. If you're building your mod from scratch, then your content should go under <span class="code2">&lt;mod directory&gt;\&lt;mod name&gt;</span>. </p>
+<ul>
+	<li>To add maps to your mod, refer to the <a href="../Hammer/index.html">Hammer Documentation</a>.<br><br></li>
+	<li>To add models to your mod, refer to the <a href="../models/compiling_models.html">Compiling Models</a> document.<br><br></li>
+	<li>To add materials to your mod, refer to the <a href="../Materials/materials_creation.html">Creating Materials</a> document.<br><br></li>
+</ul>
+<h3>Read the programmer documentation</h3>
+<p>See the <a href="../index.html">SDK Documentation</a> page for a listing of programmer documentation. </p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

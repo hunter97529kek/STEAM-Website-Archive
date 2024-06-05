@@ -1,0 +1,612 @@
+<html>
+<head>
+	<title>The FacePoser Editor</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>The FacePoser Editor</h1>
+
+<p>FacePoser is the tool used to create all of the facial animation and acting scenes in the Source engine and for Half-Life 2. </p>
+
+<h3>Basics</h3>
+<ul>
+<li><a href="#GeneralTool">General Tool Manipulation and Interface </a></li>
+</ul>
+
+<h3>Expressions</h3>
+<ul>
+<li><a href="#ExpressionCreation">Expression Creation Tool</a></li>
+<li><a href="#CreateExpressionClass">Creating a new expression class</a></li>
+<li><a href="#MarkovExpressions">Support for Markov Groups of Expressions</a></li>
+</ul>
+
+<h3>Choreography</h3>
+<ul>
+<li><a href="#ChoreographyTool">Choreography Tool</a></li>
+<li><a href="#ChoreoEvents">Choreography Events</a></li>
+</ul>
+
+<h3>Phoneme Editing</h3>
+<ul>
+<li><a href="#PhonemeEditor">Phoneme Editor and Extraction Tool</a></li>
+<li><a href="#PhonemeEditorTools">Phoneme Editor Tools </a></li>
+<li><a href="#WaveformEditing">Waveform Editing </a></li>
+<li><a href="#WordEditing">Word Editing </a></li>
+<li><a href="#PhonemeEditing">Phoneme Editing </a></li>
+<li><a href="#KeyboardShorcuts">Phoneme Editor Keyboard Shortcuts</a></li>
+<li><a href="#PhonemeEmphasisEditing">Phoneme Emphasis Editing</a></li>
+</ul>
+
+<h3>Other Tools</h3>
+<ul>
+<li><a href="#CaptioningTool">Close Captioning Tool</a></li>
+<li><a href="#FlexAnimTool">Flex Animation Tool</a></li>
+<li><a href="#RampTool">Ramp Tool</a></li>
+<li><a href="#GestureTool">Gesture Tool</a></li>
+<li><a href="#ControlPAnel">Control Panel</a></li>
+<li><a href="#WavesBrowser">Waves Browser</a></li>
+<li><a href="#TimeSampleSnapping">Time Sample Snapping</a></li>
+</ul>
+
+<h3>Source Code</h3>
+<ul>
+<li><a href="#SourceCode">FacePoser Source Code</a></li>
+</ul>
+
+<hr noshade>
+
+<h2><a name="GeneralTool"></a>General Tool Manipulation and Interface </h2>
+
+<p>The FacePoser workspace consists of several areas:</p>
+
+<ol>
+<li>Main title bar showing name of current .VCD (which stands for Valve Choreography Data) with a &quot;*&quot; signifying that changes have been made to the currently loaded .VCD</li>
+<li>Main menu with expression and choreography menus and model loading menu, as well as Window menu which is useful for showing and hiding various tools</li>
+<li>A main workspace tray where all of the FacePoser tools reside</li>
+<li>A tab tool tray at the bottom of the application which as two sets of tabs</li>
+	<ul>
+		<li>Tabs for each FacePoser tool (left side of tray)</li>
+		<li>Tabs for each loaded model (right side of tray)</li>
+	</ul>
+<li>A couple of buttons at the bottom right of the tab tool tray for turning on selection snapping and setting the granularity for snapping (these settings are saved in each .VCD file)</li>
+</ol>
+
+<p>Clicking on the name tab of a tool window in the tab tray will bring it to the front. Double clicking on the tab will show/hide the tool. Right clicking on the tab will bring up an option to show/hide the tool or lock/unlock the tool.</p>
+
+<p>Tool windows can be locked into place once you have them positioned where you like them, making them safe from accidental movement. Either choose lock from the right mouse menu of the tool or right-click on the tool caption bar. To unlock a locked tool window, just right-click again on its caption, or click the up/down arrow box to the left of the close box of the locked tool.</p>
+
+<p>FacePoser currently has the following tools, which are described in detail later in this document:</p>
+
+<ul>
+<li>Output Window (mainly for informational printouts)</li>
+<li>3D view</li>
+<li>Control Panel (controls info about model rendering and some global settings)</li>
+<li>Phoneme Editor (where phoneme extraction occurs, too)</li>
+<li>Flex Animation Editor</li>
+<li>Gesture Editor</li>
+<li>Ramp Editor</li>
+<li>Scene Ramp Editor (same as Ramp, but applies to entire scene)</li>
+<li>Expression/Thumbnail browser</li>
+<li>Animations brows (for browsing available gestures/animations for a model)</li>
+<li>Flex slider controls</li>
+<li>Choreography Editor</li>
+<li>Waves / Sound Browser</li>
+</ul>
+
+<p>The Window menu has the standard options for tiling and cascading the visible tools as well as options for showing or hiding all of the tools.</p>
+
+<p>The model tab works similarly to the tool tab. To switch the active model just click on the tab of another loaded model. Right clicking on the tabs brings up a context menu which allows you to load a new model, close the selected model or all models, center the view on the selected model, associate a model with an actor, and to add or remove actors from the 3d view (you can have multiple actors present in the 3d view as needed).</p>
+
+<h2><a name="ExpressionCreation"></a>Expression Creation Tool</h2>
+
+<p>The expression creation tool (&quot;Expressions&quot; tab) works in conjunction with any loaded Source engine model file (.MDL) in the 3d View and with the controls in the &quot;Flex Sliders&quot; tool. The general workflow is to manipulate the flex sliders into an expression that you wish to store for the model and then to right-click in the Expressions tool and choose &quot;New Expression&quot; which stores a thumbnail and the slider settings required to pose the face in the desired expression. One or more of these thumbnail/expressions become an expression class that can be saved/loaded to a .txt file for later re-use.</p>
+
+<p>A good starting point is to look at the facial expressions for each of the phonemes/visemes used to drive just the mouth portion of an actor's face during .wav playback. Choose &quot;Expressions | Load&hellip;&quot; from the main menu and pick phonemes.txt from the &quot;expressions&quot; subfolder. Alternately, you can load/save expression class files by right-clicking anywhere in the expression class tab row (where the names of the current expression classes are listed) and picking &quot;Load&hellip;&quot; from the context menu.</p>
+
+<p>If you have a model loaded and you load an expression class, FacePoser will check for changes that require recreating the thumbnails and will automatically recreate them as needed. Currently there are about 50 phonemes, so this might take a minute or so to complete. Any time you want to recreate all of the bitmaps for the current expression class file and current model, choose &quot;Expressions | Recreate all bitmaps&quot; from the menu.</p>
+
+<p>To select an expression, click on the thumbnail. Picking a thumbnail sets all of the sliders in the Flex Slider tool to the current flex settings for that thumbnail. Note that each flex slider has a checkbox indicating whether the slider is active for the specified expression.</p>
+
+<p>Most operations on an expression occur by right-clicking on the thumbnail. For instance, you can delete an expression by right-clicking on it and choosing delete from the menu.</p>
+
+<p>If you make a change to an expression by moving one of the flex sliders in the upper right, then a few changes to the thumbnail will appear:</p>
+
+<p>First, a save option will become accessible from the right mouse menu. In addition, changing the sliders will create an Undo/Redo history for the expression. The undo button is the left facing arrow button on the left edge of the thumbnail. If you make multiple changes you'll see a Redo button next to it. A blue &quot;*&quot; will show in the upper left corner of the thumbnail showing that it has been changed. You can click the Undo and Redo buttons to cycle forward and backward in the change history for the sliders you've moved for the thumbnail. The 0/6 (e.g.) numbers displayed just show how much Undo information you currently have queued up and where you are in that stack of information. Hitting the Save button will clear out the undo information as the current state is committed to memory. Once you have made your first change to a thumbnail, a &quot;Revert&quot; option is also available in the right mouse menu. When you hit the undo/redo buttons, the sliders and real-time view (but not the thumbnail) will reflect the current settings.</p>
+
+<p>If you make any changes to an expression of a class, when you go to close that class, or to close the application, or to change the current model, the application will prompt whether you want to save all changes to expressions out to disk. Answer &quot;Yes&quot; to save your work to disk.</p>
+
+<p>You can re-order the thumbnails by dragging them around in the view. Just click, drag to a new spot, and release the mouse to do this. The ordering won't be saved unless you save the class of expressions out to disk. You can also drag an expression directly onto an actor's choreography channel to create an expression event.</p>
+
+<p>Using the A/B control. If you've selected one thumbnail then clicked on another, you can cycle between these last two selected thumbnails by pressing the A/B button in the upper right of the expression tray view.</p>
+
+<p>You can reset / zero all of the sliders by clicking the &quot;Zero Sliders&quot; button in the flex controller slider area.</p>
+
+<p>You can load multiple expression files at the same time. The tab control allows you to change the current expression set.</p>
+
+<p>You can close the current expression class or all classes by choosing &quot;File | Close&quot; or &quot;File | Close all&quot; from the main menu or from the right-click context menu.</p>
+
+<h2><a name="CreateExpressionClass"></a>Creating a new expression class</h2>
+
+<p>You'll probably want to leave the phonemes alone (since they have been carefully defined them globally for all models) and just create a new class of expressions for your actors to use when playing back a .VCD. To do so, choose &quot;Expression | New&hellip;&quot; from the right-click menu or main menu. Here, you'll want to create a .txt file in the &quot;models&quot; folder. The raw filename you provide here becomes the name of the class of expressions.</p>
+
+<p>Creating a new expressions file will select that new class as the current class and the thumbnail views will be empty.</p>
+
+<p>To create a new expression, move the sliders around to a desirable position and right-click in the expression thumbnail area and choose &quot;New Expression&hellip;&quot; from the context menu. This will bring up a dialog box where you can enter the name and description for the new expression. Enter a new name and description and press &quot;OK&quot; to create the new expression. You can now select the new expression by clicking on it in the tray. Note that clicking the &quot;New&quot; button deselects any current expression so that manipulating the sliders isn't treated as making changes to the previously selected expression. Once you hit the &quot;OK&quot; button, any sliders you change after that point will be stored in the Undo/Redo buffers of the selected thumbnail/expression.</p>
+
+<p>If you want to change the name or description of an expression in the tray, just right-click on it and choose &quot;Edit&hellip;&quot;</p>
+
+<p>You can now use the mouse wheel to scroll the thumbnail list of expressions.</p>
+
+<p>You can also draw an expression onto an actor's channel in the Choreography tool to create a new &quot;Expression&quot; event with the expression. You'll see the focus rectangle as you drag the expression off the Expressions tool. Furthermore, you can drag an expression from the Expressions tool onto a particular time spot in the Flex Animation tool to set the slider keys from the predefined expression at the time where the cursor is positioned when you let go of the mouse button.</p>
+
+<h2><a name="MarkovExpressions"></a>Support for Markov Groups of Expressions</h2>
+
+<p>A Markov group is simply a weighted graph where the next place to go to in the graph is randomly selected from a list of options. The way this works in the FacePoser is that you can select multiple expressions that you consider of a similar enough &quot;type&quot; to group together and use them to create a Markov group. During playback, when the model is told to play the expression that is a Markov group, one of the underlying expressions is chosen at random.</p>
+
+<p>To create a Markov group, shift left-click one or more normal expressions in the expression tray and then right-click anywhere and choose &quot;Create Group&hellip;&quot; from the menu. Give the Markov group and name and description</p>
+
+<p>The Markov groups look like the other expressions in the thumbnail view, except that they show some additional text information:</p>
+
+<p>First, they show the total weight of all of the items in the group. By default, each expression in a Markov group has a weight of 100. Thus, if there are two items in the group, the total weight is 200. When playing back from this group, it's easy to see that there is a 50/50 chance of either expression being chosen. The chance for the currently displayed group member is shown in the thumbnail view next to the label &quot;Prob&quot; (which stands for probability).</p>
+
+<p>Just above the probability display is text showing which item of the group and how many total members in the group exist. Additionally, the item name and current weight are shown. To see other members of the group, click on it once with the left mouse button to make it active. This will highlight the group in red and will also highlight any other group members with a blue/purple highlight. You can also use the mouse wheel to cycle through the members of the Markov group that is currently selected. </p>
+
+<p>There are two ways to change the weighting of a group member. First, you can use the mouse wheel on the group thumbnail to cycle to the desired member and use the right mouse button to bring up a menu and choose the &quot;Change weight of 'member' in group 'group name'&quot; option. The other way to change the weight is to select the group as above and to right-click on the blue-highlighted member whose weight you'd like to change.</p>
+
+<p>If you right-click (but don't left-click or you'll deselect the currently selected Markov group) on a thumbnail that's not part of the currently selected group, you can choose &quot;Add '[expression name]' to group 'group name'&quot; from the menu to add the item to the currently selected group.</p>
+
+<p>Similarly, if you right-click on a blue highlighted group member, you can select &quot;Remove '(name 'from group)' group name to delete the item from the Markov group.</p>
+
+<p>In all other respects, a Markov group is just like a regular expression except that, during playback, when the group is encountered, a random one of the weighted options from the list is chosen. This allows for variability during playback of the scene.</p>
+
+<p>In general, expressions are global to all available models (i.e., an expression will work across all of our models). However, you can specify per-model overrides to tweak the look of a certain expression for a certain model.</p>
+
+<p>To create an override, select an expression and manipulate the flex sliders into a facial pose that you want to use for the override. Then right-click on the expression, and choose &quot;Save &lt;name&gt; as an override for model 'current model'&quot; where &lt;name&gt; is the name of the expression you were working with and current model depends on which model is active in the 3d View.</p>
+
+<p>Now, if &quot;Show overrides&quot; is checked, the thumbnail will show &quot;++override&quot; in the top left to signify that you are viewing a per-model override for the expression. You can delete the override using the right-click menu. Toggle the &quot;Show overrides&quot; checkbox to show/hide the overrides and to globally enable/disable them during preview playback, etc.</p>
+
+<h2><a name="ChoreographyTool"></a>Choreography Tool</h2>
+
+<p>The main tool in FacePoser is the choreography tool. This tool is used for sequencing expressions and other acting cues and previewing what the scene will look like in the engine. A scene can refer to multiple actors and thus can be used to block out fairly complicated interactions and dialogue between game characters.</p>
+
+<p>To access the scene User interface, first load a model and load any expression class files with which you are going to work.</p>
+
+<p>If you didn't have a scene file open previously, you'll see a note that no choreography data file (*.VCD) has been loaded. To create a new .VCD file, choose Choreography | New from the menus. To load an existing file, choose Choreography | Load&hellip; from the menus. If you create a new choreography file, you will have to add at least one actor. Just fill in the actor's name to the Create Actor dialog and click OK. If you hit cancel, you can still add a new actor by selecting Choreography | New Actor from the menus.</p>
+
+<p>Once you've loaded a scene or created a new actor, you'll see a timeline at the top of the window and a list of actor(s) along the left. Each actor in the scene has one or more channels that contain one or more events that are triggered at some during playback of the scene. Although channels are mostly for convenience in editing, during playback in the engine, if two events occur at the same starting time, then the event with the lower channel (higher in the view) will be applied first.</p>
+
+<p>To add a channel to an actor, right-click on the actor's name and choose &quot;New Channel&hellip;&quot; Fill in the name of the channel and choose which actor to which to add the channel and click OK. Now you will see a channel appear under the specified actor's name. There is an expand/collapse button to the left of each actor's name. This will show and hide the actor's channels. When the actor's channels are hidden, there is a display stating the number of channels and events being hidden. In addition, you can double click on a channel or an entire actor name to enable or disable the channels from playback preview. Disabling channels only affects the preview playback.</p>
+
+<p>Any channel which contains one or more .WAV events can be made to show close captioning information. This information can be shown/hidden by clicking the black triangle marker at the top left corner of the channel. When the triangle is pointed down, then the additional data is shown. The data includes a language selector (which only works if you have the foreign language versions of the game .dll available). Due to timing issues, some of the dialog of the game was &quot;split&quot; into multiple .wav files. For the foreign versions, these .WAVs are considered &quot;combined&quot; into a single .wav for convenience of playback. Thus, when a .wav is selected, the right mouse menu will contain a few additional options for combining/uncombining the .wav files and disabling captions. If you are not working on a localized, single-player MOD, you probably won't need to pay attention to these settings.</p>
+
+<h2><a name="ChoreoEvents"></a>Choreography Events</h2>
+
+<p>The choreography system can sequence the following types of events:</p>
+
+<blockquote>
+<h3>Expression</h3>
+
+<p> The actor blends into the specified expression at the start time of the event, holds the pose for the duration of the event. Note that an actor can play multiple expressions simultaneously (you should consider putting the overlapped expressions in additional actor channels). The weight of the expression can be varied over time using the Ramp Tool (more later).</p>
+
+<h3>Gesture</h3>
+
+<p> The actor triggers the named gesture. Gestures have a relative timing curve that can be edited in the Gesture Tool (more later). Multiple gestures within a channel imply a crossfade between each other. &quot;NULL Gesture&quot; events can be used to force a cross fade cutoff.</p>
+
+<h3>Sequence</h3>
+
+<p> Tells the actor to play a specific animation sequence</p>
+
+<h3>WAV File/Speak event</h3>
+
+<p> The actor plays back a sound name as enumerated in the various game_sounds.txt files (this can also refer to raw .wav files, but such usage is discouraged) that contains phoneme (and hence viseme) tags created by the phoneme editor/extractor tool (PhonemeEditor). Click the &quot;Show all sounds&quot; button to see sounds not marked at CHAN_VOICE in the sounds.txt files, otherwise, the list is restricted to such files. You can also choose a raw .wav file using the Choose File&hellip; button or by typing in the relative path into the Speak .WAV combo box text file</p>
+
+<h3>Look at</h3>
+
+<p> The actor looks at another named actor in the scene (eyes only)</p>
+
+<h3>Move to</h3>
+
+<p> The actor moves to another named actor's area of the scene or to a specified target. When editing this event you can place a preview pitch/yaw to use for posing the scene. This is ignored by the engine, but is useful for making sure the actors move their heads as scripted in the .VCD file.</p>
+
+<p> Note that the actor uses the Source engine AI system to perform the actual move. If the player or obstacles are in the way, then the move can take longer or shorter than originally expected. If the completion of the move is critical to continuing the scene, then you should consider inserting a scene &quot;Pause&quot; point during the move and marking the move as a &quot;Resume Condition&quot;. This will cause the scene to automatically resume playing once the actor finally reaches his or her mark.</p>
+
+<h3>Face</h3>
+
+<p> The actor faces one of the other actors in the scene.</p>
+
+<h3>Flex animation</h3>
+
+<p>Allows for animation of individual flex sliders along splines over the time of the animation (See <strong>Expression Tool</strong>, below).</p>
+
+<h3>Fire Trigger</h3>
+
+<p> Fires an AI trigger.</p>
+
+<h3>Generic</h3>
+
+<p> This is passed to code in CSceneEntity in the game .dll code for processing.</p>
+
+<h3>Sub-scene</h3>
+
+<p> A top-level .VCD can drive simulation of one or more &quot;sub-scenes&quot; which are embedded. Note that these sub-scenes themselves cannot have any additional layers of sub-scenes (for now).</p>
+
+<h3>Permit Responses</h3>
+
+<p> At certain times during a scene, an actor might not be speaking and if the player is doing something which generates an response from the response system, then if the actor's scene is at a time when a &quot;Permit Responses&quot; event is allowed, then the actor can play the interjected response while continuing to be an actor in the .VCD.</p>
+</blockquote>
+
+<p>Note that for looking, moving, and facing, it is also possible to have the actor face the &quot;first person player&quot; by selecting the &quot;!player&quot; as the target actor name. Other options are &quot;!self&quot;, &quot;!enemy&quot;, &quot;!friend&quot;, and &quot;!target#&quot; where the targets are defined by the level designer placing an associated <span class="code2">logic_choreographed_scene</span> entity in a map.</p>
+
+<h3>Creating and editing events </h3>
+<p>To create an event, right-click in any channel area of any actor to whom you want to add an event. Note that the mouse click position is the starting time for any event created (the timing can be changed). Choose &quot;New Event | Expression&quot;, e.g., from the menu. Here you will be able to choose the expression (from the currently opened expression class), set a name, and alter the start and end time (most events have a start and end time, although some are &quot;fire and forget&quot;) for the event. Set the values and choose OK to create the event. Note that start times can be relative to any existing timing tags embedded in relation to other events in the scene, such as SPEAK events. If you move the SPEAK event or the tag within the event, any relatively offset events will be moved along with the SPEAK event. Furthermore, depending on the type of event, there are additional parameters that show up in the various Add/Edit event dialogs.</p>
+<p>The new event will show up in the channel area of the current actor. Because the above example created an Expression, a face icon will show up under the bar showing the duration of the event. You can drag the bar with the left mouse button to move the event. Hovering the mouse or clicking near the left/right edge will show a sizing cursor allowing you to change the start or end time by clicking and dragging with the mouse button at that point.</p>
+
+<p>To delete and event, right-click it and choose Delete from the menu or press the &quot;Del&quot; key on your keyboard. </p>
+
+<p>You can also edit event properties by right-clicking on the event and choosing &quot;Edit | Event &lt;name&gt;&quot;. Alternatively, you can press Alt-Enter to edit the selected event.</p>
+
+<p>Further details about any event under the mouse are shown along the bottom of the Choreography Editor.</p>
+
+<h3>Using the timeline </h3>
+<p>There is some additional information in the time line at the top of the screen. First, (depending on how much of the scene you can see based on your current zoom level) there is a dashed blue line showing the end time of the final event in the scene. In addition, there are typical VCR controls (Play, Pause and Stop) in the top left of the tool window. The Space bar can also be used to play or stop the scene. If you click the play button and have some active events, they will be played back for viewing in the 3d view area. Clicking play will show a green time scrubber at the top as it moves from left to right. If the current playback time is not within the view, the current time is still printed at the top left. </p>
+<p>Various tools in FacePoser use a scrubber. The scrubbers all match the current playback time. You can click and drag a scrubber to manually play the scene forward or backward. Or you can click in the horizontal tray where the scrubber is drawn to have the scrubber automatically play until the clicked position. Note that all of the scrubbers across all of the tools in FacePoser are synchronized to each other.</p>
+
+<p>If you left-click and drag a scrubber, the current scrub position is shown with a vertical bar.</p>
+
+<p>The Choreography view also has a slider for changing the playback rate, so you can watch the preview in faster or slower than normal speed.</p>
+
+<p>If you move the mousewheel in an active tool (or, in a few cases where the mousewheel already performs another function, hold Shift and move the mousewheel) then the tool will zoom in/out based on the movement of the mousewheel.</p>
+
+<p>A scene can have &quot;global&quot; Pause events placed. To create a Pause event, right-click anywhere in the channel name or channel tray for any actor and choose &quot;New Section Pause&hellip;&quot; from the menu. You can give the section pause a name, and you can have the section pause optionally perform an automatic action. The need for the section pause events arises out of the need for triggering of certain events that have ambiguous end times. For instance, as noted above, a &quot;move to&quot; event might be triggered which will cause the AI to start the actor moving to his/her next position. Due to obstacles, movement speed, etc., it is not possible to exactly determine how long it will take the actor to arrive at the location. This is a good location for a Pause event. In general, you can simply institute a section pause just after issuing the &quot;Move To&quot; event to an actor. The AI system will later notify the scene that the &quot;Resume Condition&quot; for the pause has been satisfied (assuming you checked the &quot;Resume condition&quot; checkbox in the event properties for the events overlapping the Pause point).</p>
+
+<p>In other words, you would tag the &quot;move to&quot; event that you are waiting for as a &quot;Resume Condition&quot;. To tag an event as a resume condition, you can right-click on the event in the channel tray and edit its properties and click the check box labeled: &quot;Event must complete for paused scene to resume&quot;.</p>
+
+<p>It is possible that an actor being told to move to a spot, etc., can fail to arrive in that spot for some reason. In this case, the scene designer can decide to automatically take one of two actions: 1) resume the scene anyway, or 2) cancel playback of the rest of the scene. To set the automatic resume action, right-click on the blue triangle marker for the &quot;Section Pause&quot; event and choose &quot;Edit&quot; from the menu. In the properties dialog, you'll notice a checkbox next to the word &quot;Automatically&quot;. If you check this box, then you can choose what action to automatically perform. The drop-down list allows you to choose to either &quot;Resume&quot; or &quot;Cancel&quot; and the final text entry area allows you to specify how long of a delay to allow before automatically taking action. </p>
+
+<p>During playback of the scene in the engine, if any AI event that is marked as a &quot;resume condition&quot; takes less time than the &quot;automatic&quot; action you've specified, the automatic action is skipped since it was not needed.</p>
+
+<p>Like the Section Pause event, the &quot;Loop&quot; point event is similarly a global trigger for the scene. Instead of pausing however, the Loop point event allows resetting the .VCD clock backward to the beginning of the .VCD or to a specified time offset. Using this event near the end of your .VCD is useful for making it loop. You can specify that the event should loop a set number of times, maximum, or that it loops forever by editing the Loop point's properties.</p>
+
+<p>Events that don't have an end time (i.e., which are just triggered at the start time) are shown without a &quot;sizing&quot; bar and can only be moved left or right in time by dragging them around. To specify an end time, right-click on the event and edit the end time and check the checkbox next to End Time. (Note: the End Time must be after the Start Time). An end time of -1.0 is the same as specifying &quot;no end time&quot;.</p>
+
+<h3>Other Choreography Features</h3>
+<p>In general you cannot accidentally move events between channels. To drag an event from one channel to another, hold down Shift as you are dragging.</p>
+<p>Because multiple events can overlap in a single channel, the right mouse menu on an event has a &quot;Move event &lt;name&gt; to back option&quot; which can make it easier to see and select underlying events. In addition, FacePoser will expand the layout of the channel vertically to accommodate overlapping events.</p>
+
+<p>Events can be copied to and pasted from the clipboard from the right mouse menu.</p>
+
+<p>Events can be exported and imported from simple event text files (also from the right mouse menu).</p>
+
+<p>You can see the Ramp of all events only by choosing &quot;Ramp only&quot; from the right-click menu.</p>
+
+<p>You can ask the FacePoser to verify that all animation sequences are valid (i.e., non-looping if needed and of correct duration) by choosing &quot;Check sequences&quot;</p>
+
+<p>You can turn off sequence processing from the preview (keeping the camera mostly on the actors' faces) by un-checking the &quot;Process sequences&quot; menu option.</p>
+
+<p>Finally, because the FacePoser supports multiple actors you should associate the .VCD actor slots with loaded .MDLs. You can do this from the right-click menu or from the models tab in the main window tool area at the bottom right of the application.</p>
+
+<p>You can also associate a .BSP or map file with a .VCD, so that the relative positions of targets and the names of other actors/entities can be loaded when browsing in various properties dialogs.</p>
+
+<h2><a name="PhonemeEditor"></a>Phoneme Editor and Extraction Tool</h2>
+
+<p>In order to perform phoneme extraction you must have the Microsoft Speech API 5.1 (SAPI 5.1) installed. It can be downloaded from Microsoft's web site at the following URL:</p>
+
+<p><a href="http://www.microsoft.com/speech/download/old/sapi5.asp">http://www.microsoft.com/speech/download/old/sapi5.asp</a></p>
+
+<p>The FacePoser application contains a tool for editing phoneme/word tags for the .wav files that actors can use with the &quot;SPEAK&quot; event. You can either load a scene that contains a spoken .wav file and the select any of the SPEAK events in the Choreography View, or you can directly load a .wav file by clicking the &quot;Load&quot; button along the bottom of the Phoneme Editor view. </p>
+
+<p>Once you've loaded a .wav file, the display will show the general wave form of the sound file. In addition, along the top, the display shows the previously recognized words of the sentence, while along the bottom the display shows the previously tagged phonemes of the spoken .wav. Useful information about the .wav file is displayed in the bottom section of the view. The full text of the sentence, and information about the currently selected phoneme/word is displayed along the right side of the workspace. There is a scroll bar at the top to allow sliding the view of the wave view left/right. In addition, the mouse wheel can be used to zoom in/out. The zoom factor is shows at the bottom left of the tool window. Finally, there is a tab control that allows changing from manipulation of phonemes to editing of phoneme emphasis or of close captioning/localization information.</p>
+
+<h2><a name="PhonemeEditorTools"></a>Phoneme Editor Tools </h2>
+
+<p>The row of buttons along the bottom of the editor view have these functions:</p>
+
+<blockquote>
+<h3>Redo Extraction</h3>
+
+<p>Resubmits the sound file to the speech recognizer. If this is successful, a new list of words/phonemes will show up &quot;inset&quot; from the original data. To accept the new data and begin editing it, right-click in the workspace (in the wave form display) and choose &quot;Commit extraction&quot; from the context menu. To remove the inset data, right-click and select &quot;Clear extraction&quot; from the menu. Note, committing the results doesn't clobber the original .wav file, that only occurs when you click the &quot;Save Changes&quot; button, or you say &quot;Yes&quot; to the &quot;Save file&quot; prompt when changing .wav files or quitting the FacePoser application.</p>
+
+<h3>Save</h3>
+
+<p> Press the save changes button to save the working .wav file out to disk. </p>
+
+<h3>Load</h3>
+
+<p>Load a new .wav file into the editor for editing.</p>
+<p>In addition, there are several less often used commands available from the right mouse context menu:</p>
+
+<h3>Play</h3>
+
+<p>This option has three sub-options to play the original .wav, the edited wav or just the selected portion, if a selected portion is active. Playing and stopping the .wav can also be accomplished by pressing the Spacebar.</p>
+<h3><strong>Load/Save</strong></h3>
+<p>These options either load a new .wav or save the changes made to the current .wav.</p>
+
+<h3>Stop</h3>
+
+<p>Stops all sound playback on the sound engine</p>
+<p>Also, there are additional options available from the right-click menu.</p>
+
+<h3>Deselect</h3>
+
+<p> If you've marked some portions of the .wav file as selected by dragging the left mouse along the wave form, you can click this button to remove all such markings.</p>
+
+<h3>Redo extraction</h3>
+
+<p>Same as above</p>
+
+<h3>Redo extraction of selected words</h3>
+
+<p>This option requires that you have a portion of the wave form selected as well as a contiguous set of words form the sentence selected. The option will send the subset of the sentence off to the phoneme extraction tool and will display the results when finished. The tool will not change the positions of words, though it will wipe out and re-populate any phonemes belonging to words in the set. Sometimes the phoneme extractor has a hard time with long sentences. In such cases, working on sections of the sentence piecemeal can help with extraction.</p>
+
+<h3>Commit extraction</h3>
+
+<p>If word/phoneme data has been processed by the extraction system, choosing &quot;Commit&quot; will overwrite the current working data.</p>
+
+<h3>Clear extraction</h3>
+
+<p>Throws away the &quot;uncommitted&quot; data.</p>
+
+<h3>Cleanup words/phonemes</h3>
+
+<p>Iterates through all phonemes and words and finds words that are within a couple of pixels of touching (or are overlapping by such and amount) and fixes up the start/end times of the words/phonemes.</p>
+
+<h3>Change Speech API</h3>
+
+<p>The SDK version of FacePoser supports Microsoft SAPI 5.1 for performing automatic phoneme extraction from .wav files.</p>
+
+<h3>Import / export word data to .txt</h3>
+
+<p>If you need to work with the .wav file in a sound tool which strips our data chunks, you can save the original data lump into a .txt file and reapply after you edit the .wav externally.</p>
+
+<h3>Disable voice duck</h3>
+
+<p>The Source engine automatically lowers non-voice volume levels when a spoken wav is playing back. This behavior can be disabled for a spoken .wav by choosing &quot;Disable voice duck&quot; from the right-click menu.</p>
+<h3>Other Controls </h3>
+<p>In addition to these buttons, the mouse and keyboard can be used to perform various actions on the words/phonemes/wave form.</p>
+<p>The general interaction UI works as follows:</p>
+
+<p>To select, simply left-click on items.<br>
+  To deselect, click outside the item area for type of item being used<br>
+  To shift the position of an item left, right, hold down the SHIFT key<br>
+  To shift a boundary/edge of an item, hold down the CTRL key</p>
+
+<p>Note that the cursor will reflect the appropriate mode (4 way cursor == item can be shifted, East-West cursor means item can be resized)</p>
+
+</blockquote>
+
+<h2><a name="WaveformEditing"></a>Waveform Editing </h2>
+
+<blockquote>
+<p>To select a portion of the waveform, simply click and drag with the left mouse button. To move the selection area, hold SHIFT and use the left mouse to drag the area. To resize the selection, hover the mouse over the solid blue lines at either edge while holding the CTRL key. To deselect, click anywhere outside of the current selection, or press the ESCAPE key. You can play the current selection or re-extract phonemes using the right mouse context menu or by hitting the SPACE bar.</p>
+</blockquote>
+
+<h2><a name="WordEditing"></a>Word Editing </h2>
+
+<blockquote>
+<p>Use the left mouse to select words. Once selected, one or more words can be moved by holding down the SHIFT key and using the mouse to drag the selection. If a single word is selected, it can be moved by holding down the SHIFT key and using the RIGHT or LEFT arrow on the keyboard to shift it pixel by pixel. The size of a word can be adjusted by holding the CTRL key and hovering the left mouse over the edge of the word, then clicking and dragging the edge left or right. The right boundary (end time) of a word can be adjusted using the keyboard by holding CTRL and using the RIGHT/LEFT arrows.</p>
+
+<p>To deselect words, click anywhere outside of the word area (e.g., just above the words area works just fine)</p>
+
+<p>Right clicking without words selected brings up a context menu with just a couple of options: First, the &quot;Edit sentence text&hellip;&quot; option allows you to specify the entire text of the current sentence. Clicking okay to exact the dialog will cause phoneme extraction to be performed again. Additionally, &quot;Cleanup words phonemes&quot; is an available option any time a .wav is loaded.</p>
+
+<p>If you have one or more words selected, the right menu shows additional options:</p>
+
+<p><strong>Delete 'word'</strong> - You can delete the selected word(s) using this option.</p>
+
+<p><strong>Edit 'word'</strong> - If there is just one word selected, you can type in new text for the word by selecting this option. Only one word may be entered.</p>
+
+<p><strong>Insert word before/after 'word' - </strong>If you have a single word selected, and there is sufficient time before/after the word, then you can insert a new word by choosing this menu item. A dialog appears in which you can type a single word, once you click OK, another dialog appears which allows you to pick one or more phonemes for the word just entered. You can type a space separated list of phonemes, or click one or more phoneme buttons to create the phoneme list for the newly entered word, or just click Cancel to put in a word with no phonemes.</p>
+
+<p><strong>Add phoneme to 'word'</strong> - If the selected word doesn't have any phonemes, you can choose this option to allow entry of a string of one or more phonemes to use for the word.</p>
+
+<p><strong>Select all words before/after 'word'</strong> - If a single word is selected, you can use this option to select the rest of the row in either direction (so you can shift everything down with the mouse easily)</p>
+
+<p><strong>Deselect all</strong> - Deselects all words/phonemes currently selected</p>
+
+<p><strong>Merge words</strong> - If two or more contiguous words are selected, choosing &quot;Merge words&quot; will make the start time of each word match the end time of the previous word</p>
+
+<p><strong>Separate words</strong> - If two or more contiguous selected words are close together, this option will provide a bit of space between the words.</p>
+
+<p><strong>Clear Undo</strong> - Resets undo information, deleting the undo history.</p>
+</blockquote>
+
+<h2><a name="PhonemeEditing"></a>Phoneme Editing </h2>
+
+<blockquote>
+<p>The phoneme area behaves almost identically to the word area as far as mouse and keyboard interaction are concerned.</p>
+
+<p>When using the mouse to drag one or more selected phonemes/words, selection rubber band while dragging as well as the entire move is bounded to a valid amount of space.</p>
+
+</blockquote>
+
+<h2><a name="KeyboardShorcuts"></a>Phoneme Editor Keyboard Shortcuts</h2>
+
+<blockquote>
+<p>ESCAPE - if a .wav is currently being played, stop playback. If not, deselects all words/phonemes/selection areas</p>
+
+<p>PGUP/PGDN - moves the keyboard focus either to the word area (PGUP) or the phoneme area (PGDN). The current focus area is shown by a light green bar along the top or bottom edge of the word or phoneme display. Clicking/manipulating words or phonemes will set the focus appropriately.</p>
+
+<p>RIGHT/LEFT arrow - The right/left arrows move and select the next or previous word or phoneme. For phonemes, the arrows cycle within a word. </p>
+
+<p>TAB/SHIFT + TAB - You can change words at any time by using the TAB key.</p>
+
+<p>SHIFT + ARROW KEY - Move the selected word/phoneme to right or left</p>
+
+<p>CTRL + ARROW KEY - Resize end position of selected word phoneme</p>
+
+<p>INSERT / SHIFT + INSERT - Insert a new word to right/left of selected word/phoneme</p>
+
+<p>DELETE - Delete selected word(s) (which deletes all phonemes of the word, too) or delete selected phoneme(s).</p>
+
+<p>UP or CTRL+RETURN - Edit the selected word or phoneme.</p>
+
+<p>CTRL+Z - Undo<br>
+  CTRL+Y -Redo</p>
+
+<p>SPACE - Play selection or entire wav file.</p>
+</blockquote>
+
+<h2><a name="PhonemeEmphasisEditing"></a>Phoneme Emphasis Editing</h2>
+
+<blockquote>
+<p>By clicking on the &quot;Emphasis&quot; tab with a .wav loaded, you'll see most of the view grayed out but there will now be a work area with a blue line at the center of the screen. You can create an emphasis spline by laying down points using the CTRL key and left-clicking on points in the work area.</p>
+
+<p>Once you have placed points, you can select them (shown in red) by dragging a rectangle around the desired points with the mouse. To move the points, just left-click on one or more selected points and move the mouse. If you right-click in the work area, there are various options for selecting/deselecting all points and for undo/redo of editing changes.</p>
+
+<p>The emphasis track scales the intensity of phonemes during playback. For certain phonemes, you may want to author a &quot;weak&quot; and &quot;strong&quot; version and add these to the &quot;phonemes_weak&quot; and &quot;phonemes_strong&quot; expression class files. Note that Valve did not actually use this feature in shipping HL2 (but in theory, it should work).</p>
+
+<p>The blue center line is normal emphasis of the phonemes in the &quot;phonemes&quot; class. As the line goes to the top, the amount of the phoneme from phonemes is faded out and the phoneme from &quot;phonemes_strong&quot; is faded in. If a phoneme doesn't have strong or weak override, then the absolute scale for emphasis is appropriately clamped.</p>
+</blockquote>
+
+<h2><a name="CaptioningTool"></a>Close Captioning Tool</h2>
+
+<p>By default, the English text is inserted into the close captioning view as a single &quot;phrase&quot;. The right mouse menu allows splitting up or joining of phrases to get the close captioning data to lay out as desired.</p>
+
+<p>Playing the .wav from this view shows a mini-preview of the close captioning in the upper right corner.</p>
+
+<p>You can embed formatting parameters into phrases, choosing &quot;edit&quot; from the mouse menu gives a legend of available options.</p>
+
+<p>Line breaks, color changes, bold, italic and extra lingering (default 2 seconds) for phrases can all be accomplished by embedding appropriate HTML-like codes into the CC phrase data.</p>
+
+<h2><a name="FlexAnimTool"></a>Flex Animation Tool</h2>
+
+<p> The Flex Animation tool allows more control over facial expressions than the poses created with the Expression tool. Instead of setting the Flex Sliders to specific positions, the tool allows animation of both the amplitude and left/right portion of such sliders along a smooth curve.</p>
+
+<p> If you create a new &quot;Flex animation&quot; event or select one from the currently visible .VCD scene data, then the &quot;Flex Animation&quot; tool will contain information useful for animation of individual flex control sliders.</p>
+
+<p> When an event is selected in the expression view, the name of the event is displayed in the top left corner as a reference. In addition, for each flex controller, there is a work which indicates the name of the controller at the left and whether that controller is currently enabled (active controllers are highlighted in green). Furthermore, for active controllers, the number of sample points is also shown in brackets in red text.</p>
+<p>Right-clicking brings up a context menu with the following options:</p>
+
+<blockquote>
+<p><strong>Expand:</strong><br>
+  <strong>All</strong> - maximize all rows.<br>
+  <strong>Used</strong> - only rows with one or more sample points.<br>
+<strong>&lt;Track name&gt;</strong> - expand only the track you right-clicked on.</p>
+
+<p> <strong>Collapse:</strong><br>
+  <strong>All</strong> - collapse all rows. <br>
+<strong>&lt;Named track&gt; </strong>- collapse only the track you right-clicked on.</p>
+
+<p><strong>Enable/Disable</strong> - Doesn't change expansion, but turns influence on/off so you can isolate one or more tracks.</p>
+</blockquote>
+
+<p>In addition, the context menu has timing tag editing info (timing tags are explained below):</p>
+
+<blockquote>
+<p> <strong>Insert timing tag</strong> - allows placing a named timing tag at the mouse click position.</p>
+
+</blockquote>
+
+<p>If you right-click on the triangle marker for a timing tag you can:</p>
+
+<blockquote>
+<p>
+<strong>Unlock timing tag</strong>/<strong>Lock timing tag</strong> -  locks/unlocks tag under mouse<br>
+<strong>Delete timing tag</strong> - Delete tag under mouse
+</p>
+</blockquote>
+
+<p>You can move a timing tack by left-clicking in it and moving the mouse.</p>
+
+<p>Furthermore, right-clicking inside the drawing area of any individual flex controller row (whether collapsed/minimized or not) will bring up the following context menu:</p>
+
+<blockquote>
+	<p> <strong>Copy</strong>/<strong>Paste</strong> - copies all sample points to clipboard, these can be pasted into another row (replacing the contents of the other row completely) (CTRL+C/CTRL+V shortcuts)</p>
+	
+<p><strong>Select all</strong> - selects all sample points</p>
+	
+	<p><strong>Deselect all</strong> - deselects sample points (ESC is shortcut)</p>
+	
+	<p><strong>Delete</strong> - Deletes selected sample points (DEL key is a shortcut)</p>
+	
+	<p><strong>Edit left/right</strong>/<strong>Edit amount</strong> - switches edit mode for stereo/paired controllers (SPACE key is shortcut for switching)</p>
+</blockquote>
+
+<p>To place sample points, place the mouse over the drawing area of a non-collapsed flex controller row, hold the CTRL key and click the left mouse button.</p>
+
+<p>To select a sample point, place the mouse over an existing sample point, then left-click on the point. To add to the selection or toggle the selection of a point, hold SHIFT and select a point.</p>
+
+<p>To move one or more selected sample points, click with the left mouse or the right mouse one of the selected points and drag the selection while holding the left mouse down. The left mouse drags the magnitude of the point, but leaves the time unchanged. The right mouse can be used to move the time, but not change the magnitude of a selected point. If you hold the CTRL key you can freely drag one or more selected points along the time or magnitude axes.</p>
+
+<p>You can select points within a selection rectangle by clicked and dragging a rectangle inside the edit area of a flex controller track. You can hold SHIFT while dragging a rectangle if you don't want to deselect all points outside of the rectangle.<br>
+  If you click anywhere in the edit area that's not a selected point, all selected points will be deselected.</p>
+
+<p>Selected points are highlighted in red; all other points are shown in blue.</p>
+
+<p> You can select points among multiple tracks and certain commands like &quot;delete &quot; will delete all selected points across all tracks.</p>
+
+<p> Certain operations can be performed on a vertical sub-slice of the event, which can be thought of as covering all of the tracks at once. First, you must select the points in a vertical slice. You do this by clicking just above the workspace of the first track and dragging out a selection area. A blue area will be drawn once you release the mouse after moving it horizontally. All sample points between the start and end time of this rectangle will be selected. They can be manipulated or deleted as a group. You can move the selection area by hold SHIFT and left-clicking with the mouse to move the entire area, or by holding CTRL and moving either the left or right edge of the selection area. Simply click outside of the selection area to clear the selection.</p>
+
+<p> Paired flex controller items are edited as above except there is a second spline that shows the left/right panning of the flex controller over time. Paired items show left and right and current edit mode along the left edge of the area when expanded. You can toggle between modes by hitting the SPACE bar. The current mode is shown along the left edge of the edit area. The spline and all points for the other mode are shown in light gray.</p>
+
+<p> As a further aid to getting relative timings correct, any relative tag names for overlapping events (such as a .wav file relative tag) are be displayed in the Flex Animation tool as a blue triangle/name markers with a light blue vertical line at the appropriate time position. These relative tags can be used to synchronize flex animation sample points to tags associated with .wav file and other playback events.</p>
+
+<p> There are a few additional functions available from the right mouse menu.</p>
+
+<p> If you like the facial expression at a certain time, you can create one from a snapshot of the slider positions at that time by selecting &quot;Create Expression&hellip;&quot; from the menu.</p>
+
+<p> There are functions to import and export flex animation splines to simple text files.</p>
+
+<p> You can sort the flex animation tracks by usage (used before empty) or alphabetically by name from the Sort menu.</p>
+
+<p> The final part of the UI for the Expression Tool is something called &quot;Timing Tags&quot;. These are tags used just by the current flex animation event for dealing with timing issues. Timing tags, once locked, can be moved and all sample points on the left / right of the timing tag until the left/right edge of the edit area (or until the next closest locked timing tag) will move in such a way as to preserve the general shape of the sample point spline after the move. Thus, you could use a timing tag to correspond to a relative tag name and then just move the locked timing tag to compensate for movement of the relative tag. The timing tags can be locked/unlocked by right-clicking on them. Furthermore, you can delete tags by right-clicking and choosing &quot;delete&quot; from the context menu. You can also move timing tags by using the left mouse to select and drag the vertical timing tag line. As noted above, if a locked tag is moved in this manner, the general shape of the spline to the left and right of the locked tag is preserved.</p>
+
+<p> The scrubber in the Flex Animation tool works just like the main scrubber in the Choreography View.</p>
+
+<h2><a name="RampTool"></a>Ramp Tool</h2>
+
+<p>The Ramp Tool determines the absolute magnitude of any event over time. It is useful for creating an envelope describing how quickly to fade in and out of an event, but because it's based on Catmull-Rom splines, much more complicated envelopes are easily described.</p>
+
+<p>The UI for the ramp tool is identical to that of editing a single flex animation slider in the Flex Animation tool.</p>
+
+<p>The general shape of the ramp is also drawn as a black line over each event in the Choreography View.</p>
+
+<p>Scrubbing works as with the other tools.</p>
+
+<h2><a name="GestureTool"></a>Gesture Tool</h2>
+
+<p>The gesture tool allows for altering the playback timing of a gesture sequence for an actor model.</p>
+
+<p>The gesture tool consists of a &quot;Playback Time&quot; top section and an &quot;Original Time&quot; bottom section. The way this tool works is that relative tags are inserted at various points along the timeline and then the time at which that tag happens in the Playback Time area can be offset from the time in the Original Time during playback. In other words, Playback Time is a real time clock and you can hit marks in the underlying gesture animation faster or slower than actual time based on the positions of the corresponding tags. The green scrubber at the top shows real time, while the red informational scrubber at the bottom of the screen shows where in the actual gesture animation playback is occurring at the time.</p>
+
+<p>You can add additional timing tags by selecting &quot;Insert Timing Tag&hellip;&quot; from the right-click menu. You can then drag the timing of the tag from either the top or the bottom in order to adjust relative timing position.</p>
+
+<p>You can delete tags using the right menu.</p>
+
+<p>Choosing &quot;Revert Timing Tags&quot; will line up timing tags vertically, i.e. at the same time. This can be used to &quot;restart&quot; any relative timing you are trying to accomplish.</p>
+
+<p>You can move timing tags with the left mouse. You cannot move a tag past another already placed tag. This preserves that playback will move forward smoothly in the animation and playback frame rate will be the parameter which is varied.</p>
+
+<h2><a name="ControlPAnel"></a>Control Panel</h2>
+
+<p>There are only a couple of things to note here, first is a model spacing slider which spreads models apart when you have more than one model active in the 3d View.</p>
+
+<p>The second is the &quot;All tools drive mouth&quot; checkbox. When this is selected, any scrubber from any tool window will drive the WAV events and thus cause sounds to be played, etc. If not, then only scrubbing in the main choreography window will cause sound to be heard.</p>
+
+<h2><a name="WavesBrowser"></a>Waves Browser</h2>
+
+<p>The Waves Browser can be used for quickly navigating all of the sounds used by the game and previewing them or selecting them for editing in the Phoneme Editor.</p>
+
+<h2><a name="TimeSampleSnapping"></a>Time Sample Snapping</h2>
+
+<p>The final controls of note are the fps and snap controls in the lower right of the main window tool bar. When snapping is on, you can change the granularity of sample point positioning for events and spline samples by clicking the &quot;&lt;n&gt; fps&quot; button and typing in a different nominal frame rate. For instance, if you click snap so that it indicates &quot;snap: on&quot; and click &lt;n&gt; fps and enter 10 fps, then many of the tools will show your current mouse time position as a frame and sub-frame indicator</p>
+
+<p>E.g., at 10 fps, time 1.8 would be 1 + 8 /10 seconds and frame 18.</p>
+
+<p>All mouse manipulation will snap to this granularity when the snap button is marked on. The current fps and snap settings are saved into your .VCD file.</p>
+
+<h2><a name="SourceCode"></a>FacePoser Source Code</h2>
+
+<p>The code for the FacePoser tool itself is not currently in the SDK. However, all of the code for a choreography scene (including actors, channels, and raw events) is included in the SDK in the game_shared folder as <span class="code2">choreo*.cpp/.h</span>. In addition, the server.dll code for the <span class="code2">logic_choreographed_scene</span> entity is included in the SDK at <span class="code2">dlls/sceneentity.*</span>. All of the code for setting up the facial controllers is contained in the server at<span class="code2"> dlls/baseflex.*</span> and in the client at <span class="code2">cl_dll/c_baseflex.*</span>.<br>
+</p>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>
