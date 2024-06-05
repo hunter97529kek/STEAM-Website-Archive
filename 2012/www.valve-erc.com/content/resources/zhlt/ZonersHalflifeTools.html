@@ -1,0 +1,393 @@
+<HTML>
+<HEAD>
+<TITLE>Zoner's Halflife Tools : Revision History</TITLE>
+<link rel="stylesheet" type="text/css" href="zhlt.css">
+</HEAD>
+<BODY>
+<H1>Zoner's Halflife Tools : Revision History</H1>
+
+<TABLE>
+<TR><TD class="headingCELL"><BR>Version 2.5.3</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Fixed clients not exiting on unexpected disconnects from the server in some cases. (Primarily affected Linux)</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Added -nopaque switch which causes any entities with the opaque zhlt_lightflag bit set to be ignored for the compile.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Added missing -dscale help to the command line help in hlrad.</A></TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.5.2</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Changed default smoothing threnshold for phong shading from 45 to 50</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed overrides of the values light emitting textures with multiple rad files not working properly.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Increased MAX_WVERTS for tjunction remover, as it was sometimes running out of room to do its work.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Fixed condition where the mixed face contents checks were not checking the last face in a brush correctly.</A></TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.5.1</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Added a new zhlt_lightflags flag, to light up the concave portion of arches correctly.  Entities of arches using the opaque setting to block light would tend to get black fringes at the seams.  The ConcaveFix flag was created to handle that situation.  Its value is 4, and must be combined with the Opaque flag (2) to work.  So use the value 6.  The ConcaveFix is not compatible with the EmbeddedFix.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Fixed precision change which broke some outdoorsy maps as well as some Quark made maps</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Fixed a bug in csg which caused solid skies and inexplicable shadows to appear in outdoor areas.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Allow SKY texture on any world brush without generating a mixed face contents error.  All the faces inside a 'sky area' should be sky to help hlrad out by not having allocate lightmaps for faces inside the sky areas.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Leaks in hulls 1-3 will no longer overwrite leakfiles for hull 0.</A></TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.5.0</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Fixed crash in hlbsp.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Added proper error message when hlbsp encounters a solid entity with no brushes.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Leak pointfiles are generated now for leaks in the other hulls (1-3).</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>RIPENT</B></TD><TD class="textualCELL">Fixed a bug where the end of the entdata in imports was sometimes missing the last byte.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Incorporated configure and code patches for compiling and running on 64-bit architectures.</A></TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.4.2</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Fixed math precision problem from changeover to C++ in 2.4 which would cause some maps to have degenerate BSP trees (missing faces, random solid areas etc).</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Fixed math precision problem from changeover to C++ which caused spurious leaks in a very small number of maps.</A></TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.4.1</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Statically linking C and C++ runtime libraries, to remove the requirement of msvcp60.dll needing to be present and installed correctly on machines.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fix the automatic loading of 'mapname.rad' files failing to load in all possible cases.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Workaround for 'Socket Error 16' on Linux when running netvis servers in quick succession on the same port.</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.4</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Added the ability to define custom sized bounding boxes for the collision hulls through a command line switch called -hullfile.  The format is simply three lines containing three numbers of dimensions of the box in x y z format.  The default settings are included in a file called default.hull in the ZHLT distribution.  This option is only primarily of interest to mod authors and their mapping team.</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Malformed face normal errors now output world coordinates of the error</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Netvis clients inherit the -full setting the server uses</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Netvis clients now automatically download .bsp and .prt data from the server</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Netvis clients now download the data calculated during BasePortalVis from the server</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Improved efficiency of netvis clients to nearly optimal levels</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLVIS</B></TD><TD class="textualCELL">Merged in -full vis patch from Antony Suter <A HREF="mailto:antony@mira.net">&lt;antony@mira.net&gt;</A> This increases the quality of the vis calculations at the expense of a minor speed hit.  Anyone who has worked with Quake1 editing should remember this option.</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLVIS</B></TD><TD class="textualCELL">Optimized hlvis and improved its performance by around 20-30%</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Fixed a rare crash with -onlyents updates</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">The number of texture lights inside .rad files is now unlimited</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.3.1</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Fix bad surface extents workaround.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fix Intel C/C++ Compiler 4.5 optimizations which caused the tools to generate strange looking maps.</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fix BadSurfaceExtents message in hlrad to compensate for ORIGIN based brush models location.</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.3</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLVIS</B></TD><TD class="textualCELL">Merged in code from Antony Suter <A HREF="mailto:antony@mira.net">&lt;antony@mira.net&gt;</A> (aka Examiner) which improves vis performance by approximately 40%</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Allow more entities, by not counting static light entities the real Halflife engine limits.  Switchable/pulsing lights are still counted, howerver</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed trigger/clip textures consuming RAD resources and affecting the radiosity lighting pass</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Removed obsolete -hullfile and -glview options</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Worked around an error in Halflife (BadSurfaceExtents) which could occasionally occur only in software mode on a map.</A></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Created 'entities.void' 'mapname.void' '-void filename', which is a list of entity names to be allowed in the void without causing a leak.  Monster, item, and trigger entities should almost never be allowed in this list, but things like func_door_rotating (which occasionally needs its origin in the void), and multi_managers, etc can be placed in the void without problems</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Correctly not allow brush entities composed of only ORIGIN and CLIP textures which would slip through the error checking in hlcsg and cause hlbsp to crash</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.2.2</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed opaque brushes lighting incorrectly with origin-based entities (func_door_rotating, func_tracktrain etc) or with entities using light_origin</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed opaque brushes not casting shadows when combined with the light_origin</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.2.1</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed a cute little bug involving light_environments and entities blocking light</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.2.0</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fix rare 'DecompressVis' overflow</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">The -noskyclip option now also means to not discard the non-sky textured objects 'inside' a sky zone, as sometimes the skies sometimes come out solid always as a result of removing the faces</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Removed -watervis, will add light through water without hacking vis to do it at some point in the future</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Added -nomatrix command line option.  This option causes hlrad to not use a vismatrix cache at all.  -nomatrix is faster than -sparse especially on multiprocessor (4+ CPU) machines, or on machines where even -sparse mode uses too much memory.  However, if using a large number of opaque brush entities in the world, the nomatrix mode will be dramatically slower than the normal or sparse methods</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Dramatically reduced memory usage of transfers data</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Brush based entities can affect lighting by adding a key/value of <B>zhlt_lightflags</B><UL><LI>0 is default</LI><LI>1 is 'embedded fix'</LI><LI>2 is opaque (BLOCKS LIGHT!)</LI><LI>3 is both</LI></UL>For opaque brushes, it will be frequently necessary to place point lights inside the brush so that faces obscured by the brushes are properly lit (for example the trim adjacent to a func_door)</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed light streaking across edges of surfaces</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed bleed correction code pulling in lightmap pixels unnecessarily far distances in rare cases, when a simple and short nudge into the world would do the trick</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Completely fixed phong shading (smoothing) using bad data in some cases</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Removed the triangulation code (no more MAX_TRI_TRIS, MAX_TRI_POINTS, MAX_TRI_EDGES errors), and replaced it with a simpler and more correct looking algorithm.</TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Replaced patch subdivision code.  A chop of 64 will generate moderately more patches than before, and bounced lighting looks much better overall</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Removed -maxchop, as a result of reworking patch subdivision code</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Allow command line options after the map name in the command line</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Added -noinfo switch to not show extended configuration settings during run</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.1.3</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed smoothing glitch</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed burnt spots from degenerate smoothing condition</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed light_origin trick which was broken 2.1.2</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.1.2</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Added -texscale option.  This controls the chop value of texture light surfaces.  In the past this was set to the same as -chop.  The -texchop value is automatically divided by two for any -extra mode compiles</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Added -dscale option.  This controls the scaling of direct lighting in the world.  The default is 2.0 (which is technically a bug, it should be 1.0).  Setting this to zero can show your map with no direct lights, and just the bounced light information, which can be helpful for debugging lighting</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed light bleed code which was a bit on the buggy side in 2.1.0.  The -nobleedfix switch has been removed as most of the code was rewritten</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed 'Bad Light Error' which was caused by a change in 2.1.0 for the skyfix</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Eliminated most or all SwapTransfers unmatched warnings</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Fixed 'normal texture inside sky' culling which was added in 2.1.0 which was generating HOM in some cases</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.1.1</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed bogus command line parameter code in rad not identical to the code in csg, bsp, and vis</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed a global variable rename which broke the -maxchop switch</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.1.0</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Added alternate algorithm to reduce the size of the vismatrix.  It is slower to use, but uses a lot less memory.  It can also be used to break the 65535 lightmap limit imposed by the normal vismatrix.  The command line switch to use is -sparse</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Added -circus command line switch.  All pixels in the lightmaps which receive 0 lighting get set to a random and very bright color.  Handy for finding lighting anomalies and areas dependent on bounced lighting information</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed the dark spots where sky brushes meet world brushes.  The fix also reduces the number of necessary light_environment entities in a map to 1 (it is used globally for all SKY in a map now).  The older somewhat broken behavior (which tests line of sight to all surfaces and a light_environment) is still available, as the command line switch -noskyfix</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed light bleeding through thin walls (Can be disabled with -nobleedfix) </TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Brush entities can have a new key &quot;light_origin&quot; which points to a targetname of an entity.  The brush entity is moved to the location of the targeted entity for the purposes of lighting</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Fixed lighting of brush entities which have an origin ORIGIN</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Entries in lights.rad can now have C++ style // comments </TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">World brush faces on the interior of SKY brushes are now discarded, so as not to consume resources (texture info, lightmaps etc), and make it easier to see the map when noclip'ed outside the world</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Added code to detect when brushes overlap by 'too much'.  This feature is disabled by default and can be set with the -brushunion command line switch.  The value to specifiy is a percentage of volume a brush is overlapped by, from 0 to 100.  When starting out with this command, start with higher values and work your way down, or else you are likely to get spammed for several minutes with warnings</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Revamped command line option help</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">All tools display (and log) the user configurable settings when run</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.0.6</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLVIS</B></TD><TD class="textualCELL">Fixed an extremely subtle bug which would occasionally crash vis when it was trying to compress the vis data before exiting</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.0.5</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Added CLIP brushes to be allowable in entities.  As long as there is at least one normal brush included in the entity, CLIP's may be included too</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Fixed a crash which would occur occasionaly when an ORIGIN brush is placed in the world (ironically enough, the function printing the error message was causing it)</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Enabled some long-disabled code, the -incremental switch for hlrad, so that turnaround time for light tweaking can be reduced</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.0.4</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Fixed Quark texture alignment glitches caused by the new code to handle the Worldcraft 3.3 map format</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.0.3</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Somehow left out ORIGIN in the list of stuff to allow in entities in the new check in hlcsg</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Added extended command line help to netvis to explain how to run it</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.0.2</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Fixed progress display not updating until the very end</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Fixed netvis not requiring either one of -server or -connect command line parameters</TD></TR>
+        </TABLE>
+<TR><TD>
+<TR><TD class="headingCELL"><BR>Version 2.0.1</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Added -noskyclip parameter for those making mods which need it off for some things</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Cleaned up multithreading exit code which was probably causing corrupted bsp's to get written after vis completed in certain circumstances</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>NETVIS</B></TD><TD class="textualCELL">Added progress display to BasePortalVis part of netvis</TD></TR>
+        </TABLE>
+<TR><TD>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 2.0.0</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Support for a new version of Worldcraft (WC 3.3)</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLVIS</B></TD><TD class="textualCELL">A new program 'netvis' has been added to ZHLT.  This program is for distributed VIS compilation across multiple computers.  The code came from netvis for Quake1, and was heavily modified so it would work correctly and efficiently.  While the code is multithreaded, the portal calculations are not, and one client per processor will need to be fired up on multi-processor machines</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">-skyclip is now obsolete.  Clipping of skies, by automatically copying all SKY brushes with a duplicate CLIP brush in the same place, is now automatic and cannot be turned off.  The brush numbering problems that -skyclip used to create, are no longer a problem</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">HLCSG will more actively find brushes of the wrong type in the world or in entities (i.e. CLIP, HINT, etc in entities)</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Recompiled with __fastcall on default, and -O2 option with ICL now produces .exe's that won't crash (was previously using -O1).  Maybe faster, maybe not</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Cleaned house in the code, ran it all through indent, removed all remaining unused functions in the libraries, integrated the netvis code, started providing MS Visual Studio project files again</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>PERL UTILS</B></TD><TD class="textualCELL">Revamped the perl scripts to work in all cases, gave them consistent usage help and command lines.  Added a new script called 'dumpline.pl' which will dump an entity based on line number, which is frequently needed to find an entity that stops hlcsg with an 'line XXXX is incomplete!' message</TD></TR>
+        </TABLE>
+<TR><TD>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 1.6.2</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">Found one last unnaturally large object created on the stack, it is now allocated from the heap.  Unix compiles of ZHLT work better with 'sane' ulimits</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Replaced relatively vague 'Error: ParseEntity: { not found" into one that displays the entity number which had a problem</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL">Replaced relatively vague 'Error: parsing brush' with a message that displays entity/brush/face numbers as well as the bogus text</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Set MAX_MAP_PLANES back to 32767, it seems Halflife did some really weird things when running a map, by having it be higher</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Increased MAX_MAP_TEXINFO from the original limit 8192 to its maximum 32767</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Created '-dev #' command line switch for developer output, and migrated various messages from -verbose to it.  The # is a number from 0 to 6.<UL><LI>0 being off</LI><LI>1 shows major errors</LI><LI>2 shows warnings</LI><LI>3 shows informative messages</LI><LI>4 shows verbose fluff/lint messages</LI><LI>5 is spam mode</LI><LI>6 is mega-spam mode :)</LI></UL>-dev is for ZHLT developers and possibly users troubleshooting a ZHLT bug.<BR>-verbose is for map makers to show miscellaneous messages about the map compilation process</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">Added better error handling logic in the core threading functions for the Win32 platform</TD></TR>
+        </TABLE>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 1.6.1</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Fixed -bounce once and for all (fat fingered a constant just before shipping 1.6)</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>DOCS</B></TD><TD class="textualCELL"> Replaced clipnode.rmf sample map with clipnode.map so it can load in any editor</TD></TR>
+        </TABLE>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 1.6</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL"> Increased MAX_MAP_BRUSHES from 4096 to 8192</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL"> Increased MAX_MAP_PLANES from 32767 to 65535, and changed some data structures from short to unsigned short.  Halflife seems to tolerate it</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Increased MAX_TRI_POINTS from 3072 to 4096.  This made the tringulation_t structure jump from 35 to  70Mb, hopefully this won't cause anyone too much trouble (as it isnt allocated until after the vismatrix is freed)</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLVIS</B></TD><TD class="textualCELL"> Added buffer overflow errorchecking in CompressVis and DecompressVis</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Fixed unusally large -bounce's being allowed (or negative bounces)</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Fixed swaptransfer messages from printing their descriptions multiple times</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL"> Fixed 'outside world' messages from printing their descriptions multiple times</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Added total number of swaptransfer errors at end of run, for trivia</TD></TR>
+        </TABLE>
+</TD></TR>
+
+<TR><TD class="headingCELL"><BR>Version 1.5</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Fixed BSP warning accidentally removed and replaced with a vague generic message.  'NULL Pointer' caused by a CLIP textured brush based entity now correctly logs an error</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Cleaned up source code directory layout</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>DOCS</B></TD><TD class="textualCELL"> More documentation fixes</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>PACKAGE</B></TD><TD class="textualCELL"> Fixed Unix source package not having README and INSTALL text files</TD></TR>
+        </TABLE>
+</TD></TR>
+
+<TR><TD class="headingCELL"><BR>Version 1.41</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Fixed hlrad not using lights.rad from the directory hlrad.exe lives in</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Fixed maps occasionally coming out pitch black in HLRAD 1.4</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Made a cosmetic change to display the bounce # during the bounce phase of hlrad runs</TD></TR>
+        </TABLE>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 1.4</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Added support for the optional keys _fade and _falloff keys in light entities.
+                <UL>
+                <LI>_fade defaults to 1 if not set.  Values approaching zero cause light to travel further, values > 1 cause light to not travel as far.
+                <LI>_falloff defaults to 2 if not set.  The only other valid value is 1.  2 uses inverse square falloff, 1 uses plain 'inverse falloff'.  Light travels REALLY far without dissipating with _falloff 1
+                </UL>
+                </TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">HLRAD will refuse to run if there are no lights in a level</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> -fade and -falloff added to command line to hlrad.  Entities which do no have explicit values set in them will use the global values set by the command line.  The defaults are the same as above with the entities</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL"> SKY brushes can be clipped automatically if the -skyclip parameter is specified to hlcsg.  <I>Caveat: the brush numbers in error messages will be WRONG with respect to the .map file when -skyclip is in effect</I></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> The tools no longer require lights.rad, and will warn if there isn't one instead</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Added -nolog to all tools to generate 'pre 1.3' behavior (no logfile generation of any kind)</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Added -low and -high to all the tools.  This changes the proces priority from its default (normal) to a higher or lower value.  <I>Caveat: on unix only root can increase the priority level of processes, so usually only -low is of interest in that environment</I></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Started adding more explanitory help for error messages.  The most fatal/common ones have been done first.  The rest will have to wait for further versions of ZHLT</TD></TR>
+        </TABLE>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 1.31</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Fixed hlcsg -onlyents compiles, was deleting the .bsp always with hlcsg starting with ZHLT 1.3 (oops)</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL"> Fixed a documentation bug in setting up Worldcraft compile</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL"> Added startup banner to usage screens</TD></TR>
+        </TABLE>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 1.3</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL">
+        Create a 'fatal warning' type that flags the compile as failing at the end,
+        but allows processing to continue so that muliple warnings can be displayed
+        in a single run.
+        <br><br>
+        Examples include
+        <SPAN class="filespec">
+        <UL>
+         <LI>CanonicalVector: degenerate
+         <LI>(brush) outside world
+         <LI>coplanar brush faces
+         <LI>mixed contents
+        </UL></SPAN></TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Cleaned up the code and removed dead #ifdefs and unused functions.  Clarified globals and made as many functions static as possible</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Added simultaneous logging to display and logfile.  Logfile names are surprisingly called mapname.log.  Errors also get generated into a simplified mapname.err file</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Added error detection bailout.  When any of the tools generates an error, the mapname.err file is generated.  hlbsp, hlvis, and hlrad will refuse to run if this file exists.  This was added as a safety measure for the various compiler front ends and batch files out there which do not properly 'not run' the tools if one of them encounters a problem</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Merged in some changes from MUTILS which was based on ZHLT 1.0.  The system should now compile (and run) on Linux, Irix, and probably most other POSIX capable systems</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Tweaked progress indicators.  As a result of the MUTILS merge, the progress indicators have changed.  Unfortunately for Windows sytems Ihad to disable it by default for the large amount of updates tends to crash Worldcraft if you are using that as your compiler front-end.  If you want to see the new display (and you aren't using Worldcraft as a front-end) just add the new command line switch <B>-estimate</B> to each tool.  For the Unix versions, it is enabled by default and you should use -noesimate to go back to the old-ish style display</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL"> Bumped MAX_TRI_TRIS up 50%.   Aparently some people were running in to this one</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL"> Added code to cleanup stale files.   On startup, HLCSG now deletes mapname.p0, .p1, .p2, .p3, .pts, .prt, and .bsp.  This helps the other tools not ever run with stale data</TD></TR>
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL"> Added WADPATH environment variable.  The environment variable WADPATH may be used to point to a single directory (no trailing slash) for wad files.  This is primarily of interest to the people running the Unix/Linux/POSIX (whatever) port of ZHLT and need some way of getting hlcsg pointed to the wad files.  The directory names inside the "wad" attribute of the worldspawn entity will be preserved as they are, so you can easily compile maps exported from Worldcraft in unix, without having to tweak them first</TD></TR>
+        </TABLE>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 1.2</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLCSG</B></TD><TD class="textualCELL"> Promoted the inability for hlcsg to find a .wad file from a warning to an error (which caused bsp to crash usually)</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLBSP</B></TD><TD class="textualCELL">Added a command line switch "-maxnodesize n".  The default value is 1024.  A smaller value causes bsp to generate many more portals (making the bsp tree much more complex) which can sometimes help vis do a better job on its own without HINT brushes.  Larger values of course, do the opposite.  Larger values with well placed HINT brushes can keep the bsp tree simple yet highly efficient</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLBSP</B></TD><TD class="textualCELL">removed -draw option and dependency on tools for OpenGL</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL"> removed -draw option and dependency on tools for OpenGL</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL"> Texture names in the MAP files are converted to UPPERCASE at compile time.  Some non-Worldcraft editors occasionally emit lowercase texturenames in the .map files which is bad</TD></TR>
+        <TR><TD class="topicalCELL"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Command line switches are no longer case sensitive</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL"> 'plane with no normal' warning was promoted to an Error, to prevent hlbsp from crashing</TD></TR>
+        <TR><TD class="topicalCELL"><B>PACKAGE</B></TD><TD class="textualCELL"> Added installation instructions for Worldcraft, HLCC, and Q2Beaver</TD></TR>
+        <TR><TD class="topicalCELL"><B>PACKAGE</B></TD><TD class="textualCELL"> Added dumpbrush.pl and dumpent.pl scripts to the toolkit.  Basically you ask them to display brush (or entity) #n and they do it</TD></TR>
+        <TR><TD class="topicalCELL"><B>PACKAGE</B></TD><TD class="textualCELL"> Added numberbrush.pl scripts to the toolkit.  This script adds comments to .map files so you can find a brush (or entity) by number</TD></TR>
+        <TR><TD class="topicalCELL"><B>ALL TOOLS</B></TD><TD class="textualCELL"> Added a command line switch -texdata to all the tools.  The default is 4mb.  If you wish to use more than 4mb, add "-texinfo n" to the command line for <B>all four tools</B>; hlcsg, hlbsp, hlvis, hlrad; where n is a number in kilobytes.  <I>i.e. -texdata 8192 would set texture data to 8mb</I><BR>This approach is kind of hack-ish now and will get cleaned up later</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG/HLBSP</B></TD><TD class="textualCELL"> Added support for HINT brushes.  There is an excellent <A HREF="http://users.net66.com/~gdewan/hintdesc.html">tutorial</A> of how to use them on the net by Geoffrey DeWan.  To use hint a brush in Halflife, place zhlt.wad into your valve directory, and add it to the list of wads in your editor.  The tools will always treat zhlt.wad as if it were -wadincluded so there is no danger of people getting stuck with the game crashing error 'unable to open valve/zhlt.wad'.<BR>
+                <UL>HINT textures have the following 'gotchas':
+                <LI>Every face on a hint brush MUST have the HINT texture on it.  Treat it just like a sky brush, where the SKY texture is to be applied to all sides.
+                <LI>It is safe for a hint brush to touch or extend into the 'void'.
+                <LI>Hint brushes, while creating more vis portals will create more polygons (potentially MANY more if you are not careful) and can make r_speeds worse or ineffective.  I.e. You add more polygons splitting brushes than you save by hiding an area.
+                </UL></TD></TR>
+        <TR><TD class="topicalCELL"><B>PACKAGE</B></TD><TD class="textualCELL">Added zhlt.wad which has one texture, the HINT texture.  You should put this wad into your 'valve' directory, and add it to your editor</TD></TR>
+        <TR><TD class="topicalCELL"><B>ALL TOOLS</B></TD><TD class="textualCELL">The logic in the code which limited the length of an entity attribute had 3 values in various stages of compiling, 512, 1024, and 4096 bytes.  This in effect limited it to 512, since it was the most restrictive of the 3. All of them have been changed to 4096 now.  This change primarily fixes people who have long pathnames to their wad files, as well as many wadfiles in their list</TD></TR>
+        <TR><TD class="topicalCELL"><B>ALL TOOLS</B></TD><TD class="textualCELL">Extended entity text data from 128k to 512k.  Halflife seemed ok with this on my test map, but remember it makes the game use more memory</TD></TR>
+        </TABLE>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 1.1</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLBSP</B></TD><TD class="textualCELL">Fixed a crashbug which was caused by having a CLIP texture on an entity.  Ideally qcsg should detect this . . </TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL">Merged in Tim Smith's changes to CSG for use with the QuArK editor which stores its map files with raw floating point numbers</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL">-wadinclude now remembers what you specified on the command line for -onlyents recompiles.  However a 'clean build' will erase the temp file used to remember, so full builds will still require <I>&nbsp;-wadinclude [file.wad]&nbsp;</I></TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL">Altered <I>&nbsp;-wadinclude [file.wad]&nbsp;</I> to take partial matches instead of full path.  Ex. use -wadinclude file.wad</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL">-wadinclude is no longer case sensitive</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL">Be careful with the changes to -wadinclude.  It does a basic substring match so if you do <I>&nbsp;-wadinclude halflife&nbsp;</I>  and your Halflife directory is say <span class="filespec">&nbsp;D:\Games\Halflife&nbsp;</span> it will match all wad files since it finds the string <I>halflife</I> somewhere in the path to the file</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL">Changed MAX_MAP_MIPTEX errors into asserts with friendlier descriptions</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG (1.1a)</B></TD><TD class="textualCELL">Fixed texture alignment for Quark users.  Thanks again to Tim Smith for getting me the 'missing' file</TD></TR>
+        <TR><TD class="topicalCELL"><B>PACKAGE</B></TD><TD class="textualCELL"> Added stripnulents.pl and tfcabbrev.pl scripts to the toolkit<BR>
+                <UL>
+                <LI><B>stripnulents.pl</B> removes unused entity attributes (almost all with the value of "0", plus some troublesome TFC ones from before when the FGD files were fixed)<BR>
+                <LI><B>tfcabbrev.pl</B> can convert a map's TFC entities to and from the abbreviated format. (Ex: g_a  =&gt;  goal_activation)<BR>
+                <LI>Instructions to use these scripts are contained inside the scripts, at the top.  Just look at them in notepad or something.
+                <LI><I>To use these you need to install a version of Perl onto your machine.  <A HREF="http://www.activestate.com/ActivePerl">ActiveState</A> has the most up to date port of perl for Windows.</I>
+                </UL></TD></TR>                
+        </TABLE>
+</TD></TR>
+<TR><TD class="headingCELL"><BR>Version 1.0</TD></TR>
+<TR><TD>
+        <TABLE width="100%">
+        <TR><TD class="topicalCELL" width="120"><B>HLRAD</B></TD><TD class="textualCELL">fixed a bug which caused 'transfer &lt; 0' errors, basically the algorithm which generates the vismatrix didn't have unsigned types everywhere and overflowed to negative array indexes numbers.  The end result : division by zero later in the compile during MakeScales causing 'transfer &lt; 0'</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLRAD</B></TD><TD class="textualCELL">Changed the 'transfer &lt; 0' to be a severe warning in the event it attempts a division by zero.  If it happens there will be quite a few messages during the compile, but the map will be playable.  However areas will be 'fugly' and have random splotches of bright and dark textures.  I've called it the 'sycamore' effect since it kinda looks like that . . . REAL 'transfer &lt; 0' errors not caused by division by zero attempts will still error out as normal</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL">fixed -wadinclude to strip the .wad from the worldspawn "wad" tag so the BSP would not cause Halflife to crash when played without the .wad file.  HOWEVER if you run hlcsg -onlyents at a later time, the .map file will write in the original value for the "wad" tag and will 'break' the BSP.  Solution: Edit the .map, change the worldspawn entity's "wad" listing (it is one of the first few lines in the file) before doing -onlyents updates</TD></TR>
+        <TR><TD class="topicalCELL"><B>HLCSG</B></TD><TD class="textualCELL">Added a texture usage display to hlcsg runs, so you always know how much texture memory your map is trying to use</TD></TR>
+        <TR><TD class="topicalCELL"><B>ALL TOOLS</B></TD><TD class="textualCELL">Increased the texture memory limitations from 2mb to 4mb (This is the source of MAX_MAP_MIPTEX errors in qcsg)</TD></TR>
+        <TR><TD class="topicalCELL"><B>ALL TOOLS</B></TD><TD class="textualCELL">Increased the max lightdata from 2mb to 4mb.  It was hard to have large patch counts (&gt;45000) with complex lighting</TD></TR>
+        <TR><TD class="topicalCELL"><B>ALL TOOLS</B></TD><TD class="textualCELL">Added -chart command line paramter to print out the bsp lump (memory) usage that normally qrad only displays when its done. Especially handywith to use with hlcsg in -onlyents mode</TD></TR>
+        </TABLE>
+</TD></TR>
+</TABLE>
+   
+<BR>
+<H6>I can be reached via email at <A HREF="mailto:zoner@gearboxsoftware.com">zoner@gearboxsoftware.com</A></H6>
+
+</BODY>
+</HTML>

@@ -1,0 +1,53 @@
+<HTML>
+<HEAD>
+<TITLE>ZHLT Introduction</TITLE>
+<link rel="stylesheet" type="text/css" href="zhlt.css">
+</HEAD>
+<BODY>
+<H1>ZHLT Introduction</H1>
+<H2>What is ZHLT?</H2>
+<P>ZHLT is Zoner's Halflife Tools.  They are a modified version of the map compiling tools for Halflife.
+Enhancements included much improved lighting quality, faster vis times, better error messages, and a network vis
+program for those in need of a compile farm to compile maps.  There are many other enhancements, listed in
+<A href="ZonersHalflifeTools.html">ZonersHalflifeTools.html</A></P>
+<H2>How are the tools used</H2>
+<P>The tools are 4 command-line (no GUI!) programs convert a map file into a bsp file.  A basic understanding of
+what a 'Command Prompt' is and how to use it is assumed.  However there are some front ends (including Worldcraft
+itself) which can help hide it and make them slightly easier to use.  The Four tools are:</P>
+<UL>
+<LI>HLCSG: Does constructive solid geometry calculations to the map and makes 4 hull files for HLBSP to use.
+<LI>HLBSP: Generates the BSP trees for the map and creates a runnable BSP.
+<LI>HLVIS: Generates visibility data for the map and helps speed up its rendering.
+<LI>HLRAD: Generates lighting data for the map and makes it look good.
+</UL>
+<P>Since there are four tools, and they can each get errors, there is a system in place to cause the later tools
+from running if the previous ones have a problem.  The tools always log what they display in the 'Command Prompt'
+to a file which matches the mapname.  For example, in compiling BoogaWooga12.map, a file called BoogaWooga12.log would be created.
+If there is any kind of problem compiling, this log file should be checked for the cause of the error.  For most errors
+a description of the problem, the various ways it is likely to be caused, and the ways to fix it will be listed.  Some 
+of the more serious problems and problems with long or detailed descriptions are also documented in <A href="ZHLTProblems.html">ZHLTProblems.html</A></P>
+<P>Being complex programs, some of the tools have a lot of options to play with.  The file <A href="ZHLTReference.html">ZHLTReference.html</A>
+has a detailed listing of what they all.  For the most part all the interesting options are in HLRAD, some of which include
+changing the global gamma settings for the lighting, ambient light levels, and quality levels.</P>
+<P>There are also couple of perl scripts too in the ZHLT directory.  These scripts are pretty much self-describing utility scripts which have been
+created over time to do minor tasks (number brushes and entities in .map files, switch tfc .map's from abbreviated to long names). 
+Unless you have a knowledge of running Perl scripts you shouldn't worry about them too much, as they are provided mostly for people comfortable with the Command Prompt.
+<H2>Setting up ZHLT in Editors</H2>
+<P>Setup of ZHLT is nearly identical to how Valve's original versions should be configured.  The ZHLT program names
+were changed slightly so they could co-exist easily.  Basically in any setup all that needs to be done is follow the normal setup instructions, except
+replacing qcsg.exe with hlcsg.exe, qbsp2.exe with hlbsp.exe, vis.exe with hlvis.exe, and qrad.exe with hlrad.exe.  Most editors should
+have a walk-through for setting up compile tools.  Only the name changes for the programs should be necessary to get everything working initially.</P>
+<H2>Example ZHLT batch file</H2>
+<P>The following is an example of a batch file to a final compile for maps.</P>
+<SPAN class="CONSOLE">
+@echo off<BR>
+@rem Drive letter should match where the one Halflife is on so ZHLT can find the wad files<BR>
+c:<BR>
+@rem OR the environment variable WADROOT can be set to tell ZHLT exactly where they are<BR>
+set WADROOT=c:\games\halflife<BR>
+hlcsg "%1"<BR>
+hlbsp "%1"<BR>
+hlvis -full "%1"<BR>
+hlrad -dscale 1 -extra "%1"<BR>
+</SPAN>
+</HTML>

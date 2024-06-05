@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<TITLE>Zoner's Halflife Tools Warning Summaries</TITLE>
+<link rel="stylesheet" type="text/css" href="zhlt.css">
+</HEAD>
+<BODY>
+<H1>Zoner's Halflife Tools Warning Summaries</H1>
+This 'reference' is just for WARNINGS.  A seperate reference for ERRORS is being worked on and will probably be in ZHLT 1.4
+
+<TABLE width="100%">
+<TR><TD class="headingCELL"><BR>Common</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>blockmem.c</TD> <TD class="sharedtext">Attempting to allocate 0 bytes</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>blockmem.c</TD> <TD class="sharedtext">Freeing a null pointer</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>blockmem.c</TD> <TD class="sharedtext">Could not translate pointer into handle</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>cmdlib.c</TD>   <TD class="sharedtext">SystemTimeToFileTime failed</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>cmdlib.c</TD>   <TD class="sharedtext">safe_strncat passed empty count</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>filelib.c</TD>  <TD class="sharedtext">Invalid file [%s] found.  File will be rebuilt!</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+</TABLE>
+
+<TABLE width="100%">
+<TR><TD class="headingCELL"><BR>HLCSG</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>map.c</TD>        <TD class="sharedtext">degenerate QuArK-style brush texture</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>map.c</TD>        <TD class="sharedtext">Entity %i, Brush %i: origin brushes not allowed in world</TD></TR>
+<TR><TD class="textualcell">This is caused by having an brush with the ORIGIN texture not part of any entity.  The brush will be ignored by the tools.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>textures.c</TD>   <TD class="sharedtext">fseek to %d in wadfile %s failed\n", wadinfo.infotableofs, pszWadFile);</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>textures.c</TD>   <TD class="sharedtext"> ::: Unterminated texture name : wad[%s] texture[%d] 'name'[%s]</TD></TR>
+<TR><TD class="textualcell">The wad file listed is corrupt.  This was determined because the field for the name of a texture was longer than the limit, which could either be just random garbage, or other problem.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>textures.c</TD>   <TD class="sharedtext"> ::: Larger than expected texture (%d bytes)  Wad:wad[%s] Texture[%d:%s]</TD></TR>
+<TR><TD class="textualcell">The WAD files store the size of each texture (plus some of its mipmap levels).  If this value is larger than the largest texture (256x256+ its mipmaps) this is a sign the wadfile is corrupt or has non-standard textures.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>textures.c</TD>   <TD class="sharedtext">::FindTexture() texture %s not found in BSP's wad file list!</TD></TR>
+<TR><TD class="textualcell">Pretty self-explanitory, a texture could not be found in any of the wad files.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>textures.c</TD>   <TD class="sharedtext">fseek to %d failed</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>textures.c</TD>   <TD class="sharedtext">::LoadLump() texture %s not found in BSP's wad file list!</TD></TR>
+<TR><TD class="textualcell">Pretty self-explanitory, a texture could not be found in any of the wad files.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>textures.c</TD>   <TD class="sharedtext">no wadfile specified</TD></TR>
+<TR><TD class="textualcell">The .map file did not contain a "wad" or "_wad" attribute listing all the wadfiles it expects to use.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>wadinclude.c</TD> <TD class="sharedtext">WadInclude file %s does not exist</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+</TABLE>
+
+<TABLE width="100%">
+<TR><TD class="headingCELL"><BR>HLVIS</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>vis.c</TD><TD class="sharedtext">Leaf portals saw into leaf</TD></TR>
+<TR><TD class="textualcell"><A href="http://www.gamedesign.net/quake2/tutorials/errors/qvis3.shtml">Read up</A>, it is for Quake2 tools but the meaning problem is the same</TD></TR>
+</TABLE>
+
+<TABLE width="100%">
+<TR><TD class="headingCELL"><BR>HLBSP</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>outside.c</TD><TD class="sharedtext">g_hullnum %i: No entities in empty space -- no filling performed"</TD></TR>
+<TR><TD class="textualcell">There is a point entity in the 'void'.  All entities are required to be 'inside'</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>outside.c</TD><TD class="sharedtext">LEAK LEAK LEAK</TD></TR>
+<TR class="textualcell"><TD><A href="http://info.gamedesign.net/designtuts/Leak/Leak-1.htm">Fix your leak</A> or you will be unable to run <b>hlrad</b> properly</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qbsp.c</TD><TD class="sharedtext">Max subdivide size is %i, '-subdivide %i' ignored</TD></TR>
+<TR><TD class="textualcell">The -subidivide command line paramter was passed a value larger than the maximum possible value, and subsequently set to the maximum value.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qbsp.c</TD><TD class="sharedtext">Min subdivide size is %i, '-subdivide %i' ignored</TD></TR>
+<TR><TD class="textualcell">The -subidivide command line paramter was passed a value smaller than the minimum possible value, and subsequently set to the minimum value.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>solidbsp.c</TD><TD class="sharedtext">::ChoosePlaneFromList() surface fragmentation undesireability exceeded WORST_VALUE</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>solidbsp.c</TD><TD class="sharedtext">MakeNodePortal:new portal was clipped away from node@(%.0f,%.0f,%.0f)-(%.0f,%.0f,%.0f)",</TD></TR>
+<TR><TD class="textualcell">A vis portal was created but ended up not being used, probably worth fixing as the side effects can vary from minor to strange.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>surfaces.c</TD><TD class="sharedtext">SubdivideFace: didn't split the %d-sided polygon @(%.0f,%.0f,%.0f)", </TD></TR>
+<TR><TD class="textualcell">The brush at the coordinates listed was fragmented (or perhaps designed) to have many verticies on a single face. Some of the other brushes intersecting this one tried to split it beyond the vertex limit.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>tjunc.c</TD><TD class="sharedtext">CanonicalVector: degenerate</TD></TR>
+<TR><TD class="textualcell">This warning should include some coordinates.  Go there, and simplify whatever complex objects are in the area.</TD></TR>
+</TABLE>
+
+<TABLE width="100%">
+<TR><TD class="headingCELL"><BR>HLRAD</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>lightmap.c</TD><TD class="sharedtext">light at (%i %i %i) has missing target</TD></TR>
+<TR><TD class="textualcell">A light_spot sytle light is missing a target to point at.  It will point to the center of the map (0,0,0) without this information.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>lightmap.c</TD><TD class="sharedtext">Too many direct light styles on a face(%f,%f,%f)</TD></TR>
+<TR><TD class="textualcell">A few dynamic lights in an area are trying to light up the same surfaces.  This limit is 4.  Any light with a targetname (whether it was meant to be switchable or not), and any light set to 'pulsating' etc counts against a dynamic light in the area.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">ignoring bad texlight '%s' in %s</TD></TR>
+<TR><TD class="textualcell">The .rad file listed has a bogus entry.  The format is <B>texturename red green blue brightness</B></TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">Duplication of texlight '%s' in file '%s'!</TD></TR>
+<TR><TD class="textualcell">The .rad file listed has multiple entries for the same texture.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">Overriding '%s' from '%s' with '%s'!</TD></TR>
+<TR><TD class="textualcell">Multiple .rad files had entries for the same texture, with different values..  This is just a warning signifying this has happened, and showing which file ended up having priority.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">Redundant '%s' def in '%s' AND '%s'!</TD></TR>
+<TR><TD class="textualcell">Multiple .rad files have entries for the same texture, with the same value.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">transfer ~= 0 : scale=(%f) dist=(%f)</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">SwapTransfers: unmatched (light patch with no surface area)</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">Missing transfer count!  Save file will now be rebuilt.</TD></TR>
+<TR><TD class="textualcell">The files generated with a previous run of -dump with hlrad could not be recovered and hlrad had to reconstruct the data.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">Missing patch count!  Save file will now be rebuilt.</TD></TR>
+<TR><TD class="textualcell">The files generated with a previous run of -dump with hlrad could not be recovered and hlrad had to reconstruct the data.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">Incorrect transfer patch count found!  Save file will now be rebuilt.</TD></TR>
+<TR><TD class="textualcell">The files generated with a previous run of -dump with hlrad could not be recovered and hlrad had to reconstruct the data.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>qrad.c</TD><TD class="sharedtext">No vis information, direct lighting only.</TD></TR>
+<TR><TD class="textualcell">HLRAD was run without HLVIS being run first.  Only direct lighitng can be done, which is equivalent to running <B>-bounce&nbsp;0</B> when there is vis data normally.  This warning commonly occurs when compiling from within Worldcraft in normal mode instead of expert mode, as it does vis after rad for some inane reason.</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>vismat.c</TD><TD class="sharedtext">in CheckVisBit(), p1 > num_patches</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+<TR><TD class="topicalCELL" width="140" rowspan=2>vismat.c</TD><TD class="sharedtext">in CheckVisBit(), p2 > num_patches</TD></TR>
+<TR class="textualcell"><TD>Send <A HREF="mailto:sean@dimensionalrift.com">email</A> to the author if this occurs</TD></TR>
+</TABLE>
+   
+<BR>
+<H6>I can be reached via email at <A HREF="mailto:sean@dimensionalrift.com">sean@dimensionalrift.com</A></H6>
+
+</BODY>
+</HTML>

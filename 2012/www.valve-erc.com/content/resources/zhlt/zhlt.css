@@ -1,0 +1,43 @@
+body {
+background-color: #000000;
+color: #FFFFFF;
+font-family: "Arial"
+}
+A:link {
+color: #FFFFFF;
+}
+A:visited {
+color: #FFFFFF;
+}
+A:active {
+color: #00FF00;
+}
+A:hover {
+color: #55CC99;
+}
+P {
+text-indent: 2em
+}
+.topicalCELL {
+background-color: #373777;
+color: #FFFFFF;
+}
+.textualCELL {
+background-color : #444444;
+color: #FFFFFF;
+}
+.sharedtext {
+background-color : #222244;
+color: #FFFFFF;
+}
+.headingCELL {
+background-color: #000000;
+color: #FFFFFF;
+font-size : 20pt;
+}
+.filespec {
+font-family: "Courier";
+}
+.CONSOLE {
+font-family: "Courier";
+}
