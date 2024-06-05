@@ -1,0 +1,124 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<title>Using Vtex on the command-line</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Using Vtex on the command-line</h1>
+  
+<p>The Vtex texture can be executed via the a command prompt to use advanced features. You can provide additional parameters to create a basic .VMT when the texture is compiled, as well as other options.</p>
+<p>The syntax for <span class="code2">vtex.exe</span> is as follows:</p>
+
+<p class="code">vtex [-quiet] [-nopause] [-mkdir] [-shader ShaderName] [-vmtparam Param Value] texture1.tga texture2.tga ...</p>
+
+<h2><a name="VtexBasic"></a>Basic Vtex usage </h2>
+
+<p>The Windows environment variable &quot;<span class="code2">%sourcesdk%</span>&quot; can be utilized to locate <span class="code2">vtex.exe</span> easily in a command-line statement. This variable contains the location of the Source SDK installation directory.</p>
+<p>For example, to compile a Half-Life 2 material called &quot;<span class="code2">sample_material.tga</span>&quot; in the directory &quot;<span class="code2">sourcesdk_content/hl2/materialsrc/metal</span>&quot;, you would open a command prompt, change to the directory to &quot;<span class="code2">sourcesdk_content/hl2/materialsrc/metal</span>&quot; and type this at the command-line:</p>
+
+<p class="code">"%sourcesdk%\bin\vtex" sample_material.tga</p>
+
+<p>The compiled .VTF file would be compiled to this folder (assuming you had set <strong>Half-Life 2</strong> as your current game directory):</p>
+
+<p class="code">SteamApps\<em>username</em>\half-life 2\hl2\materials\metal</p>
+
+<p><strong>Note: </strong>It is very important that you set the <strong>Current Game</strong> in either the <strong>SDK Launcher</strong> or <strong>VConfig</strong> to the correct game directory <em>before</em> you open a command prompt to compile textures. Changing the <strong>Current Game</strong> will not affect any command prompt windows that are already open. This is due to how Windows uses environment variables.</p>
+
+<h2><a name="VtexCommands"></a>Vtex commands </h2>
+
+<h3>-mkdir</h3>
+
+<p>You can add the <span class="code2">-mkdir</span> command to vtex, and it will add the destination directory if it does not exist. For example, if you had a .TGA at <span class="code2">/sourcesdk_content/hl2/materialsrc/sample/sample_material.tga</span> you would type this at the command-line:</p>
+
+<p class="code">"%sourcesdk%\bin\vtex" -mkdir sample_material.tga</p>
+
+<p>This would create a new directory called "<span class="code2">sample</span>" in your<span class="code2"> Half-Life 2/hl2/materials</span> directory, if it didn't already exist, and then place the compiled .VTF file in that new location. If the directory already exists, the <span class="code2">-mkdir</span> parameter is ignored.</p>
+
+<h3>-shader</h3>
+
+<p>You can use the <span class="code2">-shader &lt;shadername&gt;</span> command to have Vtex create a .VMT for the new material with the shader specified. For example, to create a basic <span class="code2">LightmappedGeneric</span> material, use the -shader command like this:</p>
+
+<p class="code">"%sourcesdk%\bin\vtex" -shader LightmappedGeneric sample_material.tga</p>
+
+<p>This would compile the material sample_material.vtf in <span class="code2">half-life 2/hl2/materials/metal</span> as well as create a new material file <span class="code2">sample_material.vmt</span> in the same location, using the <span class="code2">LightmappedGeneric</span> shader, like this:</p>
+
+<pre class="code">
+"LightmappedGeneric"
+{
+	"$baseTexture" "sample/lightmappedgeneric"
+}
+</pre>
+
+<h3>-vmtparam</h3>
+
+<p>You can use the <span class="code2">-vmtparam &lt;parameter&gt; &lt;value&gt; </span>command to additional material parameters to the created .VMT file. If a .VMT already exists in the same location, any new parameters will not be added. For example, to make a material translucent, you would type the following:</p>
+
+<p class="code">"%sourcesdk%\bin\vtex" -shader LightmappedGeneric -vmtparam $translucent 1 sample_material.tga</p>
+
+<p>Which would create the following <span class="code2">sample_material.vmt</span>:</p>
+
+<pre class="code">
+&quot;LightmappedGeneric&quot;
+{
+	"$baseTexture" "sample/lightmappedgeneric"
+	&quot;$translucent&quot; 1
+}
+</pre>
+
+<p>You can add multiple <span class="code2">-vmtparam</span> statements in the same Vtex command, like this:</p>
+
+<p class="code">&quot;%sourcesdk%\bin\vtex&quot; -shader LightmappedGeneric -vmtparam &quot;$bumpmap&quot; &quot;sdk/bumpspecular_normal&quot; -vmtparam &quot;$envmap&quot; &quot;env_cubemap&quot; sample_material.tga</p>
+
+<p>This would create the following <span class="code2">sample_material.vmt</span> specifying parameters for a bumpmapped specular material:</p>
+
+<pre class="code">
+"LightmappedGeneric"
+{
+	"$baseTexture" "sample/sample_material"
+	"$bumpmap" "sdk/bumpspecular_normal"
+	"$envmap" "env_cubemap"
+}
+</pre>
+
+<h3>-quiet</h3>
+
+<p>When added, this commands will cause Vtex to do its work without producing any output to the console and will not pause when finished.</p>
+
+<h3>-nopause</h3>
+
+<p>Removes the &quot;<span class="code2">Hit a key to continue</span>&quot; message that appears when Vtex has finished working.</p>
+
+<h2><a name="VtexWildcards"></a>Wildcards</h2>
+
+<p>Command-line <em>wildcards</em> can also be used with Vtex. This command-line would compile all .TGA files in the current directory:</p>
+
+<p class="code">&quot;%sourcesdk%\bin\vtex&quot; *.tga</p>
+
+<p>This command-line would compile all .TGA files in the current directory with names than begin with "sample":</p>
+
+<p class="code">&quot;%sourcesdk%\bin\vtex&quot; sample*.tga</p>
+
+<p>In this case, the files "<span class="code2">sample_metal</span>" and "<span class="code2">sample3</span>" would be compiled, but not "<span class="code2">samp_metal</span>" or "<span class="code2">sampl_2</span>".</p>
+
+<h2><a name="VtexChaining"></a>Chaining</h2>
+
+<p>Vtex can compile multiple materials from the same command-line. Simply add the name of each .tga after the first, like this: </p>
+
+<p class="code">"%sourcesdk%\bin\vtex" sample_material1.tga sample_material2.tga sample_material3.tga</p>
+
+<p>If a .VMT is generated on the command-line using the <span class="code2">-shader</span> command, a unique .VMT will be created for each .TGA in the chain, all with the same parameters specified by the <span class="code2">-shader</span> and <span class="code2">-vmtparam</span> commands. If you need more individual control of the shader parameters of each .TGA, use a batch (.BAT) file to run vtex multiple times instead. </p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

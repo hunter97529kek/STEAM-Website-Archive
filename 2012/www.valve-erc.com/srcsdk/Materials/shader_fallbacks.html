@@ -1,0 +1,446 @@
+<html>
+<head>
+	<title>Half-Life 2 Shader Fallbacks</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="content">
+
+<h1>Half-Life 2 Shader Fallbacks</h1>
+
+<p>The following a list of the shader fallbacks for the materials shipped with Half-Life 2. For a description of how shader fallbacks are used, see the <a href="../Levels/performance_and_visibility.html#MaterialPerf">Material choices and rendering performance</a> in <strong>Controlling Geometry Visibility and Compile Times</strong>.</p>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td><p><strong>LightmappedGeneric</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		<table cellpadding="4">
+	  <tr>
+		<td width="220" valign="top"><p class="code2">LightmappedGeneric_dx9</p></td>
+		<td width="600"><p>dx9</p></td>
+	  </tr>
+	  <tr>
+		<td valign="top"><p class="code2" >LightmappedGeneric_dx8</p></td>
+		<td><p>dx8.0/dx8.1</p></td>
+	  </tr>
+	  <tr>
+		<td valign="top"><p class="code2">LightmappedGeneric_NoBump_DX8</p></td>
+		<td><p>dx8.0/dx8.1, but only used when <span class="code2">mat_reducefillrate 1</span> is set. Note that this fallback doesn't actually cause the shader code to do anything different, it's only there to allow a .VMT to specify different shader parameters or a fallback material when <span class="code2">mat_reducefillrate 1</span> is set.</p></td>
+	  </tr>
+	  <tr>
+		<td valign="top"><p class="code2">LightmappedGeneric_dx6</p></td>
+		<td><p>dx6/dx7</p></td>
+	  </tr>
+	</table>
+	</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td><p><strong>VertexLitGeneric</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		<table cellpadding="4">
+	  <tr>
+		<td width="220" valign="top"><p class="code2">VertexLitGeneric_dx9</p></td>
+		<td width="600"><p>dx9</p></td>
+	  </tr>
+	  <tr>
+		<td valign="top"><p class="code2" >VertexLitGeneric_dx8</p></td>
+		<td><p>dx8.0/dx8.1</p></td>
+	  </tr>
+	  <tr>
+		<td valign="top"><p class="code2">VertexLitGeneric_dx7</p></td>
+		<td><p>dx7</p></td>
+	  </tr>
+	  <tr>
+		<td valign="top"><p class="code2">VertexLitGeneric_dx6</p></td>
+		<td><p>dx6</p></td>
+	  </tr>
+	</table>
+	</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td><p><strong>UnlitGeneric</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		<table cellpadding="4">
+	  <tr>
+		<td width="220" valign="top"><p class="code2">UnlitGeneric_dx9</p></td>
+		<td width="600"><p>dx9</p></td>
+	  </tr>
+	  <tr>
+		<td valign="top"><p class="code2" >UnlitGeneric_dx8</p></td>
+		<td><p>dx8.0/dx8.1</p></td>
+	  </tr>
+	  <tr>
+		<td valign="top"><p class="code2">UnlitGeneric_dx6</p></td>
+		<td><p>dx6/dx7</p></td>
+	  </tr>
+	</table>
+	</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>Refract</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">Refract_dx90</p></td>
+				<td width="600"><p>dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >Refract_dx80</p></td>
+				<td><p>dx8.0/dx8.1</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2">Refract_dx60</p></td>
+				<td><p>dx6/dx7: refraction isn't supported under dx6 and dx7, this fallback shader is only defined to allow you to use the <span class="code2">$fallbackmaterial</span> feature to cause the material system to use a different material under dx6 and dx7.</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2">UnlitGeneric_dx6</p></td>
+				<td><p>dx6/dx7: If you neglect to define a fallback shader, unlit generic is used.</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>ShatteredGlass</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">ShatteredGlass</p></td>
+				<td width="600"><p>dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >ShatteredGlass_dx8</p></td>
+				<td><p>dx8.0/dx8.1</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2">ShatteredGlass_dx7</p></td>
+				<td><p>dx7</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2">Wireframe</p></td>
+				<td><p>dx6: Shattered glass isn't supported under dx6.</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>Water</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">Water_dx90</p></td>
+				<td width="600"><p>dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >Water_dx81</p></td>
+				<td><p>dx8.1</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >Water_dx80</p></td>
+				<td><p>dx8.0</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2">Water_dx60</p></td>
+				<td><p>dx7/dx6: this fallback shader is only defined to allow you to use the <span class="code2">$fallbackmaterial</span> feature to cause the material system to use a different material under dx6 and dx7.</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2">LightmappedGeneric_dx6</p></td>
+				<td><p>dx7/dx6: This is used if you neglect to define a fallback shader.</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>WorldTwoTextureBlend</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">WorldTwoTextureBlend</p></td>
+				<td width="600"><p>dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >WorldTwoTextureBlend_dx8</p></td>
+				<td><p>dx8.0/dx8.1</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2">WorldTwoTextureBlend_dx6</p></td>
+				<td><p>dx6/dx7</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>WorldVertexTransition</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">WorldVertexTransition_dx9</p></td>
+				<td width="600"><p>dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >WorldVertexTransition_dx8</p></td>
+				<td><p>dx8.0/dx8.1</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2">WorldVertexTransition_dx6</p></td>
+				<td><p>dx6/dx7</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>WorldVertexAlpha</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">WorldVertexAlpha</p></td>
+				<td width="600"><p>dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >WorldVertexAlpha_dx8</p></td>
+				<td><p>dx8.0/dx8.1: Note this shader has no fallbacks to dx7 or below.</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>Cable</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">Cable</p></td>
+				<td width="600"><p>dx8.0/dx8.1/dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >UnlitGeneric_DX6</p></td>
+				<td><p>dx6/dx7</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>Eyes</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">Eyes</p></td>
+				<td width="600"><p>dx8.0/dx8.1/dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >Eyes_dx6</p></td>
+				<td><p>dx6/dx7</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>Modulate</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">Modulate</p></td>
+				<td width="600"><p>dx8.0/dx8.1/dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >Modulate_dx6</p></td>
+				<td><p>dx6/dx7</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>MonitorScreen</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">MonitorScreen</p></td>
+				<td width="600"><p>dx8.0/dx8.1/dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >LightmappedGeneric_dx6</p></td>
+				<td><p>dx6/dx7</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>Predator</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">Predator_dx80</p></td>
+				<td width="600"><p>dx8.0/dx8.1/dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >Predator_dx60</p></td>
+				<td><p>dx6/dx7: this fallback shader is only defined to allow you to use the <span class="code2">$fallbackmaterial</span> feature to cause the material system to use a different material under dx6 and dx7.</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >UnlitGeneric_dx6</p></td>
+				<td><p>dx6/dx7: This is used if you neglect to define a fallback shader.</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>Sprite</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">Sprite_dx8</p></td>
+				<td width="600"><p>dx8.0/dx8.1/dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >Sprite_dx6</p></td>
+				<td><p>dx6/dx7</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>UnlitTwoTexture</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">UnlitTwoTexture</p></td>
+				<td width="600"><p>dx8.0/dx8.1/dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >UnlitTwoTexture_dx6</p></td>
+				<td><p>dx6/dx7</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>WriteZ</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">WriteZ</p></td>
+				<td width="600"><p>dx8.0/dx8.1/dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >WriteZ_dx6</p></td>
+				<td><p>dx6/dx7</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table><br>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+		<td><p><strong>WindowImposter</strong></p></td>
+	</tr>
+	<tr class="codeLite">
+		<td>
+			<table cellpadding="4">
+			<tr>
+				<td width="220" valign="top"><p class="code2">WindowImposter_dx80</p></td>
+				<td width="600"><p>dx8.0/dx8.1/dx9</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >WindowImposter_dx60</p></td>
+				<td><p>dx6/dx7: this fallback shader is only defined to allow you to use the <span class="code2">$fallbackmaterial</span> feature to cause the material system to use a different material under dx6 and dx7.</p></td>
+			</tr>
+			<tr>
+				<td valign="top"><p class="code2" >UnlitGeneric_dx6</p></td>
+				<td><p>dx6/dx7: This is used if you neglect to define a fallback shader</p></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

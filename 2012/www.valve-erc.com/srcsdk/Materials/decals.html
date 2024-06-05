@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Creating Decals</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Creating Decals</h1>
+<p>When the player shoots his or her weapon into a wall, the marks left by the bullet impacts are called &quot;decals&quot;. These are most easily thought of as materials that are applied to a surface and remain there as an indelible mark on the world. Posters, scorch marks, and stenciled letters can all be created using this type of graphic. Decals will <em>clip</em> their extents to whatever surface they are placed on to. For example, a decal applied to a staircase would cascade down on to each stair surface instead of hanging out into space. You can also think of this as how a stencil would apply a mark to the world.</p>
+<p>Creating decals is fairly straightforward: they are simply materials generally having an <em>alpha channel mask</em> of some sort, and also often using the <em>mod2x</em> shader. Before reading this document, please refer to the <a href="materials_creation.html">Creating Materials</a> document for the basics of material creation. </p>
+<h2>Simple Decals</h2>
+<p>The most simple type of decal is one that simply acts like a true decal or stencil: source art (<em>See Fig 1a</em>) is clipped and projected on to the world within some mask, specified via the materials alpha channel (<em>See Fig 1b</em>). The result is similar to <em>Fig 1c</em>. </p>
+<table border="0" width="100%">
+<tr>
+<td>
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/decal04.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Fig 1a - Source color channels</td>
+	</tr>
+</table>
+</td>
+<td>
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/decal05.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Fig 1b - Source alpha channel</td>
+	</tr>
+</table>
+</td>
+<td>
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/decal06.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Fig 1c - Decal in the world</td>
+	</tr>
+</table>
+</td>
+</tr></table>
+<p>You must also define a .VMT file for the decal material, so that it can properly be interpreted by the renderer. This .VMT would look like:</p>
+<pre class="code">&quot;LightmappedGeneric&quot;
+{
+    "$basetexture" "decals/mydecal"
+    "$decal" 1
+    "$decalscale" 0.10
+    "$translucent" 1
+}
+</pre>
+<p>It's important the &quot;<span class="code2">$decal</span>&quot; parameter is included. Without this parameter, the material will not clipped or projected onto the world properly.</p>
+<p>The &quot;<span class="code2">$basetexture</span>&quot; parameter should specify the source .VTF texture file to be used for the decal.</p>
+<p>In this example the key "<span class="code2">$decalscale</span>" is set to a value of "0.1", meaning that the decal is rendered at 1/10th scale inside of the engine.  If the source texture for this decal is 128 pixels, it will be 12.8 inches in size in the engine (or about a foot in length). </p>
+<p>The &quot;$<span class="code2">translucent</span>&quot; parameter specifies that the material should use the alpha channel of the source .VTF to mask transparent sections of the material. </p>
+<p>Once the VMT has been specified, the decal may be placed in Hammer via the <strong>Overlay</strong> or <strong>Decal</strong> tool, or in code via the decal code. For decals placed in code that are meant to be applied to models (such as blood), the <span class="code2">VertexLitGeneric</span> shader should be used instead of <span class="code2">LightmappedGeneric</span>. <span class="code2">LightmappedGeneric</span> is used for decals applied to world geometry. </p>
+<h2>Using Modulation</h2>
+<p>For decals intended to mimic the look of pock marks or dents in a surface, the <em>mod2x</em> material shader is especially suitable. This shader lightens any destination pixels for every source pixel that is over mid-range gray (128). Likewise, it will darken any destination pixels for every source pixel that is below mid-range gray. This effect can be used to give the impression of depth when applied to a surface (<em>See Fig 2c) </em>.</p>
+<p>To begin, create a source image who's color channel will be used for the modulation's source values (<em>See Fig 2a</em>). Again, light values will lighten pixels they're drawn over, while dark values will darken the destination pixels. Mid-gray values will be treated as translucent. </p>
+<p>Next, create an alpha channel that defines a mask for the decal. Because modulation cannot have an exact middle value currently, the mask is necessary to prevent &quot;bordering&quot; from occurring around the decal (<em>See Fig 2b</em>).</p>
+<table border="0" width="100%">
+<tr>
+<td>
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/decal01.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Fig 2a - Source color channels</td>
+	</tr>
+</table>
+</td>
+<td>
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/decal02.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Fig 2b - Source alpha channel</td>
+	</tr>
+</table>
+</td>
+<td>
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/decal03.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Fig 2c - Decal in the world</td>
+	</tr>
+</table>
+</td>
+</tr></table>
+<p>Finally, you must create a VMT file to properly define this material as a modulated decal:</p>
+<pre class="code">&quot;Decal<em>Modulate</em>&quot;
+{
+    "$basetexture" "decals/mydecal"
+    "$decalscale" 0.10
+}
+</pre>
+
+<p>Note that neither the <span class="code2">&quot;$translucent</span>&quot; or <span class="code2">&quot;$decal</span>&quot; parameters are needed. Again, the decal is now ready for use within the engine. </p>
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>
