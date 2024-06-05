@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Entity I/O</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Entity I/O </h1>
+
+<p>One of the most important changes to map making for the Source engine has been Entity I/O. Whereas older versions of the engine relied on the <span class="code2">target</span> and <span class="code2">targetname</span> keyfields to send simple impulses to an entity, the entity I/O system allows for complex communication between entities. This is done using entity <em>inputs</em> and <em>outputs</em>, that are joined by <em>connections</em>. Using this simple method, entities can easily trigger events based on state changes and work in tandem with other entities in a more atomic, logical and powerful way than previously possible.</p>
+
+<h2>Overview </h2>
+
+<p>Entities have two methods for communication: sending an <em>output</em> to another entity, or receiving an <em>input</em> from another entity. One entity may send an output when it is killed to another entity's input which causes it to change color. That same output could also be used to trigger another entity's spawning input. The outputs are matched to the inputs via a <em>connection</em>, which controls what extra data is relayed to the receiver, how much of a delay there is before the output is received, and whether the output should be allowed to be sent again later. Outputs can be linked to any input and vice versa. This allows complex and powerful interactions between entities. </p>
+
+<p>As an example, a <span class="code2">logic_timer</span> entity may send an <span class="code2">OnTimer</span> output, which triggers when the time condition is met for the entity. That output might be hooked to the <span class="code2">Show</span> input on an <span class="code2">env_sprite</span>, causing it to become visible when the timer has reached its desired time. You could also hook the <span class="code2">OnTimer</span> output for the <span class="code2">logic_timer</span> to a <span class="code2">SparkOnce</span> input on an <span class="code2">env_spark</span> to cause it to emit sparks. By using the connection properties, you could also cause the output to be triggered after a two second delay, or to trigger once but never again.</p>
+
+<p>For users more familiar with the original Half-Life method of entity communication, the <span class="code2">targetname</span> and <span class="code2">target</span> fields are now obsolete and the entity I/O system is a superset of that functionality. Instead of a <span class="code2">trigger_multiple</span> entity only firing its <span class="code2">target</span> entity, it may now use any number of its outputs to do the same, including: <span class="code2">OnStartTouch</span>, <span class="code2">OnEndTouch</span>, <span class="code2">OnTouch</span>, etc. These outputs may be connected to an arbitrary number of entities all at once with unique delays per output, making <em>multi-managers </em>obsolete as well. Likewise, the <span class="code2">killtarget</span> field is now replaced by connecting an output to the <span class="code2">Kill</span> input of another entity.</p>
+
+<h2>Outputs</h2>
+
+<p>Outputs are events that are fired when an entity's state changes. This could be a timer reaching its end, a button being pressed or a door coming to a close. Any number of outputs can be specified by a programmer internally in an entity to trigger on any number of criteria. Specifying outputs is done in the <strong>Outputs</strong> tab in an entity's properties. The <strong>Ouputs</strong> tab of the <strong>Object Properties</strong> dialog displays all the outputs that are connected from this entity to other entities. </p>
+
+<table border=0 width="100%"><tr>
+	<td><img src="images/output01.jpg" width="464" height="500"></td>
+	<td width="24"></td>
+	<td align="left" valign="center">
+	  <p><strong>1. </strong>Name of the output to be triggered.</p>
+	  <p><strong>2. </strong>Name of the entity to receive the output (click an entity with Eye Dropper tool to paste its name here).</p>
+	  <p><strong>3. </strong>Input that will receive the output on the target entity.</p>
+	  <p><strong>4. </strong>Parameter override to use if data is accepted by the target input. Often this is a number used by the input function (see Inputs section below). </p>
+	  <p><strong>5. </strong>Amount to delay sending the output (in seconds). 1/10th of a second is expressed as &quot;0.1&quot; seconds. </p>
+	  <p><strong>6. </strong>Whether to only fire the output once and never again. </p>
+	</td>
+	</tr>
+	</table>
+	<h2><br>
+	  Inputs</h2>
+	 <table border="0" width="100%"><tr>
+	 <td><img src="images/input01.jpg"></td>
+	 <td width="24"></td>
+	 <td align="left" valign="top">
+	<p>Inputs connect to outputs of any type. Here we see the <strong>Inputs</strong> tab on the <strong>Object Properties</strong> dialog. It shows all of the outputs that are connected from other entities to this entity.</p>
+	<p>Because any output can connect to any input, there are a multitude of combinations that can be used to make complex interaction occur. Timers can orchestrate a countdown sequence using blinking sprites, sounds and special effects all without any need for special entities. By clicking the <strong>Mark</strong> button or double-clicking on an entry in the list, the user is able to go to the entity sending the output to the input in question. </p>
+	<p>If a connection is displayed in red, it is invalid. This means that either the output does not exist in the source entity, or the input is not present in the destination entity. Invalid connections are benign but should be fixed before map compilation because the <strong>Check For Problems</strong> menu command will report them as an error.</p>
+	
+	</td>
+	</tr>
+</table>    
+
+<h2>Debugging</h2>
+<p>Because the nature of how entities communicate has become more complex and powerful, so too has the debugging capabilities of the engine to help you track down problems. If a chain of I/O logic is not working as expected, the tools below will aid greatly in solving the error.</p>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>ent_developer </td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">By setting this console variable to a value of &quot;2&quot;, you'll receive a detailed log of how the entities are interacting via the entity I/O system. This is useful for seeing the exact chain of events taking place in complex interactions. </p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>ent_messages_draw </td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Setting this console variable to a value of &quot;1&quot; will display visual information about how entities are communicating with one another. This is very similar to using the <em>ent_developer</em> console variable, but can sometimes be more immediately intuitive to the viewer. </p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>ent_fire (<em>entity name, input name, input value</em>)</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">This console command allows you to manually fire inputs on an entity from the console. This can be very useful for testing settings for entities in realtime. To fire the &quot;Open&quot; input for an entity named &quot;testentity&quot; with an input parameter of &quot;3&quot;, you would type: <em>ent_fire testentity open 3</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>ent_pause</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">This command pauses entities in the map. If entered again, the entities will resume their normal behavior. This is most useful when use with the <em>ent_step</em> command, described below.</p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>ent_step</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">When used with the <em>ent_pause</em> console command, this command allows the user to slowly step through an entity's chain of execution for input and output. Any number of steps can be iterated through at one time, as specified by a value entered after the command (i.e. <em>&quot;ent_step 3&quot;</em> would execute three steps at once). </p>
+	</tr>
+</table>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

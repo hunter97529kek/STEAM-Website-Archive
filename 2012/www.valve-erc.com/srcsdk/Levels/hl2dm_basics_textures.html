@@ -1,0 +1,246 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+	<title>Your First Half-Life 2 Deathmatch Room</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Your First Half-Life 2: Deathmatch Room</h1>
+
+<p>Now we'll change the brick walls of our room into something more appropriate.</p>
+
+<h2>Applying Textures</h2>
+
+<p>Click the <strong>Browse</strong> button in the <strong>Texture Bar</strong> on the right side of the Hammer window.</p>
+<p>This will open the <strong>Texture Browser</strong>. </p>
+
+<table>
+<tr>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_021_pickbrowse.jpg" width="648" height="504"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Click the Browse button to open the Texture Browser. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>The <strong>Texture Browser</strong> lets you view and select textures to apply to objects in your map.</p>
+	<p>Pick <strong>128x128</strong> from the <strong>Size</strong> drop-down list at the bottom-left of the <strong>Texture Browser</strong> window, if it's not already selected.</p>
+<p>This will reduce the size of the texture samples, so we can see more at once. </p></td>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><a href="images/hl2dm_map/hl2dm_022_pick128.jpg" target="_blank"><img src="images/hl2dm_map/hl2dm_022_pick128_sm.jpg" width="562" height="442" border="0"></a></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">You can change the size of the texture preview to make it easier to see more textures at once. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>Double-click the wall texture shown in the image (<span class="code2">brick/brickwall017b</span>).</p>
+	<p>This will select the texture for use, and close the <strong>Texture Browser</strong>.</p></td>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><a href="images/hl2dm_map/hl2dm_024_picktexture.jpg" target="_blank"><img src="images/hl2dm_map/hl2dm_024_picktexture_sm.jpg" width="562" height="442" border="0"></a></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Double-click a texture to select it. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>In the <strong>3D View</strong>, left-click one of the walls of the hollow room. This will select it, turning it red like in this image.</p>
+<p><strong>Note:</strong> If the camera view is showing a wireframe image (like <a href="images/hl2dm_map/hl2dm_025_wireframe.jpg" target="_blank">this</a>) instead of solid textures like in the image on the right, go the <strong>View</strong> menu and choose <a href="../Hammer/html/Menu_View.html" target="_blank">3D Textured Polygons</a> to switch to the textured view.</p>
+</td>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_025_selectwall.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Click a brush in the 3D View to select it. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>Click the <strong>Apply Current Texture</strong> icon from the panel on the left side of the Hammer window.</p>
+	<p>Clicking this button applies the texture we picked in the <strong>Texture Browser</strong> to the current selection.</p></td>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_026_pickapply.jpg" width="404" height="606"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Use the Apply Current Texture icon to put textures on brushes.</td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<p>Select the next wall brush by left-clicking it in the <strong>3D View</strong>, then click the <strong>Apply Current Texture</strong> button to assign the wall texture to it, too. </p>
+
+<table>
+<tr>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_027_selectwall.jpg" width="604" height="634"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Click in the 3D View to select the next wall piece.</td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>You'll now need to move the camera to be able to apply the wall texture to the other two walls of the room.</p>
+	<p>You can move the camera using the <strong>Camera Tool</strong> like you learned earlier, or you can use another method, called &quot;freelook&quot; mode.</p>
+	<p>To enter freelook mode, press the &quot;Z&quot; key. The mouse now controls the direction of the camera &#8212; move the mouse left and right to change the direction. Press the &quot;W&quot; key to move the camera forward, and the &quot;S&quot; key to move the camera backward. Press the &quot;Z&quot; key again to exit freelook mode. </p>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_029_pickcamera.jpg" width="452" height="386"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Use the Apply Current Texture icon to put textures on the selection.</td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>Move the camera so that it faces the walls that haven't been textured yet. </p>
+<p>Select each of the walls with the <strong>Selection Tool</strong>, and use the <strong>Apply Current Texture</strong> icon to assign the wall texture, just like the other two walls. </p></td>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_031_selectwall.jpg" width="566" height="590"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Use freelook mode to change the camera viewpoint, the switch back the Selection Tool and select the wall. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>Now we'll texture the ceiling, so it looks more like a ceiling.</p>
+	<p>Click the <strong>Browse </strong>button the bring up the <strong>Texture Browser</strong> again.</p></td>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_045_pickbrowse.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Click Browse to bring up the Texture Browser again. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table width="100%">
+<tr>
+	<td valign="top">
+	<p>In the text box next to where it says &quot;<strong>Filter</strong>:&quot;, type in &quot;ceiling&quot;, as shown in the image.</p>
+	<p>This will filter the list of textures so that only textures with &quot;ceiling&quot; in their name will be shown in the <strong>Texture Browser </strong>window. </p></td>
+	<td>
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><a href="images/hl2dm_map/hl2dm_050_filterceiling.jpg" target="_blank"><img src="images/hl2dm_map/hl2dm_050_filterceiling_sm.jpg" width="562" height="442" border="0"></a></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Type in a text to only show materials with that text in their name. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>Double click the texture called &quot;<span class="code2">concrete\concreteceiling02a</span>&quot;, as shown in this image. The texture will be selected and the browser will close. </p>
+	</td>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><a href="images/hl2dm_map/hl2dm_051_picktexture.jpg" target="_blank"><img src="images/hl2dm_map/hl2dm_051_picktexture_sm.jpg" width="562" height="442" border="0"></a></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Double-click the ceiling texture to select it. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>Now, click the ceiling in the <strong>3D View</strong> to select it.</p>
+	<p>Next, click the <strong>Apply Current Texture</strong> icon the assign the texture to the ceiling.</p></td>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_052_pickapply.jpg" width="545" height="559"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Select the ceiling with the Selection Tool, then use the Apply Current Texture icon to put textures on the ceiling.</td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table>
+
+<h3>Next: <a href="hl2dm_basics_entities.html">Adding Entities</a></h3>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

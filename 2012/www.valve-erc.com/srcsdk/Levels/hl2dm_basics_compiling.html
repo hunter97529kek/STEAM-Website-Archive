@@ -1,0 +1,131 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+	<title>Your First Half-Life 2 Deathmatch Room</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Your First Half-Life 2: Deathmatch Room</h1>
+
+<p>The final stage of making a level is saving and compiling it. A map must be compiled to run it in the Source Engine.</p>
+
+<h2>Saving and Compiling the Map </h2>
+
+<table width="100%">
+<tr>
+	<td valign="top">
+	<p>First, let's save the map.</p>
+	<p>Choose <strong>Save As...</strong> from the <strong>File Menu. </strong></p></td>
+	<td>
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_089_saveas.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Choose Save As... to save the map. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table width="100%">
+<tr>
+	<td width="50%" valign="top">
+	<p>Set the name of the map in the <strong>Save As...</strong> dialog.</p>
+<p>Type &quot;<span class="code2">dm_myroom</span>&quot; into the <strong>File Name</strong> field  .</p>
+<p>Then click the <strong>Save</strong> button to save the map to disk. </p>
+	<p>Hammer maps are saved in the .VMF file format.</p></td>
+	<td width="50%">
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_090_setname.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Type in a name for the map, then Click the Save button. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table width="100%">
+<tr>
+	<td valign="top">
+	<p>Before playing the map in the game, a map must be <em>compiled</em>. </p>
+	<p>When a map is compiled, it is converted from the raw .VMF file into the .BSP format used by the game engine. The geometry is processed and the proper lighting and shadows are calculated.</p>
+	<p>Pick <strong>Run Map... </strong> from the <strong>File Menu</strong>. </p></td>
+	<td>
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_092_pickrunmap.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Click the Run Map icon to compile your map. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+	<p>The <strong>Run Map</strong> dialog sets some basic compile parameters.</p>
+	<ol>
+		<li>Make sure that <strong>Normal </strong>is set for the settings for <strong>BSP</strong>, <strong>VIS</strong>, and <strong>RAD</strong>.<br><br></li>
+		<li>Under the <strong>Additional game parameters</strong>, type:<br><br>
+			<span class="code">-dev -console +sv_lan 1 </span><br><br>
+			See the <a href="../faq.html#faqGameParams">Source SDK FAQ </a> if you wish to learn more about these settings.<br><br></li>
+		<li>Now click the <strong>OK</strong> button to start the map compile process.</li>
+	</ol>
+
+<table>
+<tr>
+	<td valign="top">
+	</td>
+	<td>
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_094_setmapparam.gif"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Change the Run Map parameters to match these settings, then click OK. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+	<p>The <strong>Compile Process Window</strong> will show the progress of the compile.</p>
+	<p>When the compilation is done, <strong>Half-Life 2: Deathmatch</strong> will automatically launch, and load your map in the engine. </p>
+	<p>Here's a  shot of the compiled map in-game. Not much to look at yet, but it has the basic pieces you need to get started making your own maps.</p>
+
+<table width="100%">
+<tr>
+	<td>
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_096_engine.jpg" width="640" height="480"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">The final room, compiled and running in the game. Beautiful! </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table>
+
+<p>Read the <a href="../index.html">Source SDK Documentation</a> for more information on how to create levels for the Source Engine.</p>
+<p>&nbsp; </p>
+<h3><a href="hl2dm_basics.html">Back to Start</a></h3>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

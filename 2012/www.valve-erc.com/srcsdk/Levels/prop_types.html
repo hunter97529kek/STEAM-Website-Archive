@@ -1,0 +1,324 @@
+<html>
+<head>
+	<title>Overview of Prop Types</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="content">
+
+<h1>Overview of Prop Types</h1>
+
+<p>The word <em>prop</em> in the Source is generally synonymous with polygon models. There are various prop entity categories, each representing models with specific functions. Each one is chosen for a specific reason and has individual trade-offs in features and performance. The following table lists the main prop types placed by level designers, and their overall characteristics:</p>
+
+<table class="table">
+  <tr>
+    <td class="cell"><p><b>Model entity</b></p></td>
+    <td class="cell"><p><b>Properties</b></p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_detail</p></td>
+    <td class="cell"><p>Detail geometry - static models that do not move. Do not contain any physics properties or collision data. Cannot break. Do not cast shadows. Can be automatically placed by assigning a detail type to a material. Generally not placed individually by level designers. The least expensive geometry to render. These may  not even be rendered on low-end machines.<br>
+        <br>
+            <strong>Examples</strong>: Grass, rocks, plants.</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_static</p></td>
+    <td class="cell"><p>Static geometry - models that do not move. Does not contain physics properties other than collision, and cannot break. Cannot have any joints or animation. Casts lightmap shadows. Inexpensive geometry to render.<br>
+        <br>
+        <strong>Examples</strong>: pipes, light fixtures, rocks, telephone poles.</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_physics</p></td>
+    <td class="cell"><p>Models with built-in physical properties. Moves and collides using the rigid-body physics system. Can be constrained to other physics objects using hinges or other constraints. It can also be configured to break when it takes enough damage. Casts dynamics shadows. Expensive to move and render.<br>
+        <br>
+            <strong>Examples</strong>: barrels, small debris, furniture.</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_ragdoll</p></td>
+    <td class="cell"><p>Physics props with ragdoll physics skeletons. Have all the properties of physics props and can also use the rigid body ragdoll physics system to have multiple colliding or bending parts. Very expensive to move and render.<br>
+        <br>
+            <strong>Examples</strong>: Corpses, multi-piece cardboard boxes, mattresses.</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_dynamic</p></td>
+    <td class="cell"><p>Models that can be placed in hierarchy and can have joints and play animations. Can also be configured to break when taking enough damage. Can be hierarchically attached to other objects. Can cast dynamic shadows. More expensive than static geometry, less expensive than physics geometry.<br>
+        <br>
+            <strong>Examples</strong>: Robotic arms, machinery, models animated in cut scenes.</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_physics_multiplayer</p></td>
+    <td class="cell"><p>Physics props using a simplified physics collision system designed for multiplayer games. Have less networking overhead than standard physics props, necessary for the bandwidth-limited environment of multiplayer games.</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_physics_override</p></td>
+    <td class="cell"><p>Special prop type used to override the properties built into the model. Has identical cost of a <span class="code2">prop_physics</span>.</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_dynamic_override</p></td>
+    <td class="cell"><p>Special prop type used to convert a model that is designed to be used as a prop_static, and giving it the properties of a <span class="code2">prop_dynamic</span>. Has identical cost of a <span class="code2">prop_dynamic</span>.</p></td>
+  </tr>
+</table><br>
+
+<p>See <span class="code2">prop_static, prop_dynamic, prop_physics, prop_physics_multiplayer, prop_physics_override</span>, and <span class="code2">prop_dynamic_override</span> in the entity documentation for more details.</p>
+<p>See <span class="code2" style="code2">maps\sdk_prop_types.vmf</span> for examples of some of the prop types in use.</p>
+
+<h2>Prop types in further detail</h2>
+
+<p>This section has more detail on the differences in the prop types. The following table shows some ways in which the prop types are different:</p>
+<table class="table">
+  <tr>
+    <td class="cell"><p><b>model entity</b></p></td>
+    <td class="cell"><p><b>Number in level</b></p></td>
+    <td class="cell"><p><b>Always Rendered</b></p></td>
+    <td class="cell"><p><b>Collision</b></p></td>
+    <td class="cell"><p><b>Lighting</b></p></td>
+    <td class="cell"><p><b>Casts Shadows</b></p></td>
+    <td class="cell"><p><b>Physics</b></p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_detail</p></td>
+    <td class="cell"><p>10,000's</p></td>
+    <td class="cell"><p>No</p></td>
+    <td class="cell"><p>No</p></td>
+    <td class="cell"><p>Point</p></td>
+    <td class="cell"><p>No</p></td>
+    <td class="cell"><p>Static<br>
+      No physics<br>
+    No Hierarchy<br>
+    No animation</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_static</p></td>
+    <td class="cell"><p>1,000's</p></td>
+    <td class="cell"><p>Yes</p></td>
+    <td class="cell"><p>Yes</p></td>
+    <td class="cell"><p>Vertex</p></td>
+    <td class="cell"><p>Static (lightmap)</p></td>
+    <td class="cell"><p>Static<br>
+      No physics<br>
+      No hierarchy<br>
+    No animation</p>
+    </td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_dynamic</p></td>
+    <td class="cell"><p>100's</p></td>
+    <td class="cell"><p>Yes</p></td>
+    <td class="cell"><p>Yes</p></td>
+    <td class="cell"><p>Vertex</p></td>
+    <td class="cell"><p>Dynamic (projected) </p>
+      </td>
+    <td class="cell"><p>Hierarchy + animation</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_physics</p></td>
+    <td class="cell"><p>10's-100's </p></td>
+    <td class="cell"><p>Yes</p></td>
+    <td class="cell"><p>Yes</p></td>
+    <td class="cell"><p>Vertex</p></td>
+    <td class="cell"><p>Dynamic (projected) </p></td>
+    <td class="cell"><p>Hierarchy + animation + physics</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">prop_ragdoll</p></td>
+    <td class="cell"><p>less than 10</p></td>
+    <td class="cell"><p>Yes</p></td>
+    <td class="cell"><p>Yes</p></td>
+    <td class="cell"><p>Vertex</p></td>
+    <td class="cell"><p>Dynamic (projected) </p></td>
+    <td class="cell"><p>Hierarchy + animation + ragdoll physics</p></td>
+  </tr>
+</table>
+
+<p><b>Entries in the table explained:</b></p>
+
+<p>
+<b>Number in level:</b> Typical amounts to populate a level and retain acceptable performance.<br>
+<b>Always rendered:</b> Is the prop type always drawn, regardless of how far away you are from the object?<br>
+<b>Collision:</b> Does this prop type has the capability to collide with other objects?<br>
+<b>Lighting: </b>Lighting method used for lighting/shadows cast upon the object.<br>
+<b>Cast Shadows: </b>Does this prop type cast lightmap shadows, or does it use  dynamic projected shadows?<br>
+<b>Physics </b>Methods this prop type interacts with the physics and animation systems.
+</p>
+
+<h2>Characteristics of prop_detail:</h2>
+
+<ul class="bulletlist">
+	<li>Can have 10's of thousands of them in a level.</li>
+	<li>Can be .MDLs or sprites. Sprites are much faster to render than .MDLs.</li>
+	<li>Can be placed inside the Hammer editor or by adding a material property %detailtype to a .vmt file which causes vbsp to automatically generate detail props over particular materials (described below).</li>
+	<li>Can never collide with them.</li>
+	<li>Are lit with a constant color (for optimization purposes).</li>
+	<li>Don&rsquo;t affect lightmaps in the world.</li>
+	<li>Automatically fade out when they exceed a particular distance from the player (controlled by the console variables cl_detaildist and cl_detailfade).</li>
+	<li>Will probably not ever be rendered on low-end hardware.</li>
+	<li>Must use models compiled with $staticprop in their .qc file.</li>
+	<li>Have no network overhead + very low memory usage.</li>
+	<li>Is <b>not</b> a real entity, has no inputs or outputs.</li>
+	<li>May not have animations.</li>
+	<li>Can <b>not</b> be hierarchically attached to other entities.</li>
+	<li>From a visibility standpoint, they are assumed to be points.</li>
+</ul>
+
+<h2>Characteristics of prop_static:</h2>
+
+<ul class="bulletlist">
+	<li>Can have thousands of them in a level.</li>
+	<li>Can be placed inside the Hammer editor.</li>
+	<li>Can have collision associated with them.</li>
+	<li>Will affect lightmaps in the world &ndash; can cast lightmap shadows.</li>
+	<li>Will be vertex lit like standard studio models.</li>
+	<li>Will use LOD system.</li>
+	<li>User selectable as to whether the prop is rendered on low end hardware.</li>
+	<li>Fade distances can be set in Hammer editor.</li>
+	<li>Must use models compiled with $staticprop in their .qc file.</li>
+	<li>Have no network overhead + very low memory usage.</li>
+	<li>Is <b>not</b> a real entity, has no inputs or outputs.</li>
+	<li>May not have animations or joints.</li>
+	<li>Can <b>not</b> be hierarchically attached to other entities.</li>
+	<li>Optimal from a visibility standpoint, it uses the convex hull of the object.</li>
+</ul>
+
+<h2>Characteristics of prop_dynamic:</h2>
+
+<ul class="bulletlist">
+	<li>Can have hundreds of them in a level.</li>
+	<li>Can be placed inside the Hammer editor.</li>
+	<li>Can have collision associated with them.</li>
+	<li>Will <b>not</b> affect lightmaps in the world, but they do cast dynamic shadows.</li>
+	<li>Will be vertex lit like standard studio models.</li>
+	<li>Will use LOD system.</li>
+	<li>Will exist on low-end hardware.</li>
+	<li>Fade distances can be set in Hammer editor.</li>
+	<li>May use models that are not compiled with $staticprop.</li>
+	<li>May have animations.</li>
+	<li>Have low (but non-zero) network overhead + higher memory usage (as much as any entity).</li>
+	<li>Is a real entity with inputs and outputs.</li>
+	<li>Can be hierarchically attached to other entities.</li>
+	<li>Optimal from a visibility standpoint, it uses the convex hull of the object.</li>
+	<li>From a visibility standpoint, they are assumed to be boxes.</li>
+</ul>
+
+<h2>Characteristics of prop_physics:</h2>
+
+<ul class="bulletlist">
+	<li>Can have tens to hundreds of them in a level, depending on complexity.</li>
+	<li>Can be placed inside the Hammer editor.</li>
+	<li>Must have collision associated with them.</li>
+	<li>Will <b>not</b> affect lightmaps in the world, but they do cast dynamic shadows.</li>
+	<li>Will be vertex lit like standard studio models.</li>
+	<li>Will use LOD system.</li>
+	<li>Fade distances can be set in Hammer editor.</li>
+	<li>Are faded earlier on low-end hardware unless settings changed.</li>
+	<li>May use models that are not compiled with $staticprop.</li>
+	<li>May have animations.</li>
+	<li>Have low (but non-zero) network overhead + higher memory usage (as much as any entity).</li>
+	<li>Is a real entity with inputs and outputs.</li>
+	<li>Can <b>not </b>be directly hierarchically attached to other entities.</li>
+	<li>Can be constrained to other entities by various physics constraints entities.</li>
+	<li>Optimal from a visibility standpoint, it uses the convex hull of the object.</li>
+	<li>From a visibility standpoint, they are assumed to be boxes.</li>
+	<li>Additional characteristics?</li>
+</ul>
+
+<h2>Characteristics of prop_ragdoll:</h2>
+
+<ul class="bulletlist">
+	<li>Same as <span class="code2">prop_physics</span>, but can use skeletons for ragdoll physics.</li>
+    <li>Has very high network overhead.</li>
+</ul>
+
+<h2>Automatically Emitting prop_details on a Material</h2>
+
+<p>Models of type prop_detail can be set to be randomly emitted from surfaces based upon the material assigned to the surface. The file <span class="code2">detail.vbsp</span> describes <em>detail prop groups</em>. Each detail prop group specifies which prop_detail models are emitted from that group. A material can indicate which detail prop group is assigned to it by adding this line to the .vmt file:</p>
+
+<p class="code"> %detailtype = &quot;detail_group_name&quot; </p>
+
+<p>Where <span class="code2">detail_group_name</span> is the one of the detail prop group entries in <span class="code2">detail.vbsp</span>.</p>
+
+<p>Here's an simple example of a detail prop group, as defined in <span class="code2">detail.vbsp</span>:</p>
+<pre class="code">   swamp_grass_and_rocks 
+   { 
+      &quot;density&quot; &quot;800.0&quot; 
+      Group1 
+      { 
+        &quot;alpha&quot; &quot;1.0&quot; 
+        Model1 
+        { 
+           &quot;model&quot; &quot;models/junk/rock1.mdl&quot; 
+           &quot;amount&quot; &quot;0.3&quot; 
+        } 
+        Model2 
+        { 
+           &quot;model&quot; &quot;models/junk/rock2.mdl&quot; 
+           &quot;amount&quot; &quot;0.3&quot; 
+        }    
+      } 
+      
+      Group2 
+      { 
+        &quot;alpha&quot; &quot;0.0&quot; 
+        Model1 
+        { 
+           &quot;model&quot; &quot;models/foliage/Grass_tuft_003a.mdl&quot; 
+           &quot;amount&quot; &quot;0.1&quot; 
+        } 
+        Model2
+        { 
+           &quot;model&quot; &quot;models/foliage/Grass_tuft_004b.mdl&quot;
+           &quot;amount&quot; &quot;0.3&quot;
+        } 
+      } 
+   } 
+</pre>
+<p>&quot;<span class="code2">Density</span>&quot; describes how many points to randomly generate on all surfaces that have materials that use this detail prop group. Larger numbers will generate more detail props.</p>
+
+<p>Then, you can specify as many groups of detail props as you like. Materials on non-displacement surfaces will only use one group, but displacement surfaces may use multiple groups. Each group specifies a list of the models that will be randomly emitted. The <span class="code2"> model</span> fields above describe which studio model to use, and the &quot;<span class="code2">amount</span>&quot; field describes how many to emit relative to the other models in the list. For advanced users: If the amounts of all the models within a single group add up to less than 1, then the system will actually emit less than the maximum number of models described by &quot;<span class="code2">density</span>&quot;.</p>
+
+<p>The &quot;<span class="code2">alpha</span>&quot; field is only used for displacement surfaces. When a displacement surface is using a material that blends between two textures, the alpha describes how much of each texture to use. The detail system looks at that alpha to choose which group to select models from. For example, lets say you've got a displacement with two textures on it, one is road (<span class="code2">alpha = 1</span> for the road) and the other is grass (<span class="code2">alpha = 0</span> for the grass). In the example above, it would emit rocks on the road and grass tufts on the grass, since the group with <span class="code2">&quot;alpha&quot; &quot;1.0&quot;</span> contains rock models and the group with <span class="code2">&quot;alpha&quot; &quot;0.0&quot;</span> contains grass models. Note that you can make as many groups as you want; for example, if you were to add a group with <span class="code2">&quot;alpha&quot; &quot;0.5&quot;</span>, this would create detail props using that group's models wherever the displacement is blending halfway between the rocks and grass. </p>
+
+<p>Using the detail prop system with .MDLs can actually be fairly expensive owing to a high per-model overhead that currently exists in DirectX. To avoid this, you may also use sprites with the detail prop system, which doesn't have this overhead and is consequently at least 10x faster than using .MDLs. Here's how to specify a detail model group that uses detail sprites:</p>
+
+<pre class="code">
+Group1
+{
+	&quot;alpha&quot; &quot;1&quot;
+	Model1
+	{
+		&quot;sprite&quot; &quot;288 0 128 128 512&quot; 
+		&quot;spritesize&quot; &quot;0.5 0.0 19 25&quot;
+		&quot;spriterandomscale&quot; &quot;0.2&quot;
+		&quot;amount&quot; &quot;0.2&quot;
+		&quot;detailOrientation&quot; &quot;2&quot;
+	}
+	Model2
+	{
+		&quot;sprite&quot; &quot;0 0 128 128 512&quot;
+		&quot;spritesize&quot; &quot;0.5 0.0 23 30&quot;
+		&quot;spriterandomscale&quot; &quot;0.2&quot;
+		&quot;amount&quot; &quot;0.1&quot;
+		&quot;detailOrientation&quot; &quot;2&quot;
+		}
+}
+</pre>
+
+<p>The textures for detail sprites must all be placed in sub-regions of the texture &quot;<span class="code2">detailsprite.vtf</span>&quot;.</p>
+
+<p>The first two numbers in the &quot;<span class="code2">sprite</span>&quot; field shown above specify the (X, Y) coordinate of the upper left corner of the sprite as it lies within the <span class="code2">detailsprite.vtf</span> texture. The next two numbers specify the width and height of the sprite. The final number is the size of the detailsprite.vtf texture in pixels.</p>
+
+<p>The first two numbers in the &quot;<span class="code2">spritesize</span>&quot; line specifies the rotational center of the detail sprite in normalized coordinates: (0,0) specifies the lower left, and (1,1) specifies the upper right. In the example above, the rotational center of the sprite is halfway along the lower edge of the sprite. The final two numbers in the &quot;<span class="code2">spritesize</span>&quot; line indicate the width and height of the sprite in world units when it gets drawn.</p>
+
+<p>&quot;<span class="code2">spriterandomscale</span>&quot; specifies a random amount to scale the width and height of the detail sprite (in the example, the sprite will be between 80% and 120% of the size indicated in the &quot;<span class="code2">spritesize</span>&quot; line).</p>
+
+<p>Finally, &quot;<span class="code2">detailOrientation</span>&quot; specifies how the detail sprite will move. A value of 0 indicates that it will not rotate; 1 means that it will always face the camera, and 2 means it will rotate around its Z-axis to try to face the camera as best it can. </p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

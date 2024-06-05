@@ -1,0 +1,121 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+	<title>Leaks Explained</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Leaks Explained</h1>
+
+<p>Levels created with the Source Engine must be completely internally sealed. No part of the interior of the level, the &quot;world&quot;, must connect with the outside, the &quot;void&quot;. When there is any kind of gap to the void, a <strong>leak</strong> is generated when the map is compiled by <span class="code2">vbsp</span>. When a leak occurs, the tools cannot know which part of the level is inside, and what part is outside, and <span class="code2">vvis</span> cannot be run.</p>
+
+<p>This example shows a map with an obvious gap in the geometry, leading to the void. This will generate a leak error message when it is compiled: </p>
+
+<table><tr><td>
+<table class="tableCaption" cellpadding="0">
+    <tr>
+        <td><img src="images/leak_example.jpg"></td>
+    </tr>
+    <tr>
+        <td class="tdCaption">A gap in geometry that leads to the void will cause leaks.</td>
+    </tr>
+</table>
+</td></tr>
+</table>
+
+
+<p>When a map  like this is compiled, with a gap to the void, <span class="code2">vbsp</span> generates an error similar to this:</p>
+
+<pre class="code">
+ProcessBlock_Thread: 0...1...2...3...4...5...6...7...8...9...10 (0)
+**** leaked ****
+Entity light (-1607.69 -1094.12 -183.00) leaked!
+</pre>
+
+<p>With this error message, <span class="code2">vbsp</span> is telling you that there has been a leak in the level, and the first entity it found when attempting to get into the level from the void (in this case, a light entity). It also gives you the location of that entity, expressed in X, Y, and Z world unit coordinates.</p>
+
+<h2>Effects of Leaks  </h2>
+
+<p>A leak in a level has a number of bad effects. First, the <span class="code2">vbsp</span> process will report the leak, and it will not produce a <strong>portal</strong> file (&lt;mapname&gt;.prt). The portal file is used by the <span class="code2">vvis</span> process to perform its visibility calculations. Since there is no portal file, <span class="code2">vvis</span> will not run at all. When <span class="code2">vvis</span> doesn't run, it doesn't produce the files necessary for the <span class="code2">vrad</span> process to calculate its light bounces. Due to this, the <span class="code2">vrad</span> process will only perform direct lighting - no light bounces.</p>
+<p>The most serious effect by far is that the <span class="code2">vvis</span> process will not run when a leak is present. When the level is run in the game, the rendering engine will not have any visibility info available with which to limit itself, so it will attempt to draw the entire level. This will most certainly lead to high polygon counts and may lead to sections of the map to render incorrectly or not at all.</p>
+
+<h2>Other Causes of Leaks</h2>
+
+<p>Besides gaps in outside geometry, there are other map errors that can cause <span class="code2">vbsp</span> to generate a leak error. For any of these errors, see the following section for information on finding the source of the leak and fixing it.</p>
+<p>One common mistake is the accidental placement of an entity outside the interior level space. This can happen if you place an entity outside in the void area while you're working on it, then forget to delete it when you're finished. This can also occur if you attempt to seal the map with an brush entity, such as a <span class="code2">func_door</span>. Since brush entities do not block visibility, this will create the same condition as if there were a gap in their place. All entities <SPAN style="FONT-STYLE: italic">must</SPAN> be inside valid level space, or the map will generate a leak.</p>
+
+<table class="tableCaption" cellpadding="0">
+    <tr>
+        <td><img src="images/leak_entities.jpg"></td>
+    </tr>
+    <tr>
+        <td class="tdCaption">Placing any entity in the void will cause a leak.</td>
+    </tr>
+</table>
+
+<p>Leak error messages can also be generated when an areaportal does not properly seal the two areas it connects. See the section on areaportals in the <a href="performance_and_visibility.html#Areaportals">Performance and Visibility</a> document for more information. Finding leaks with areaportals uses a similar method as geometry gap leaks. </p>
+
+<table class="tableCaption" cellpadding="0">
+    <tr>
+        <td><img src="images/leak_areaportal.jpg"></td>
+    </tr>
+    <tr>
+        <td class="tdCaption">Areaportals that do not seal areas will cause leaks.</td>
+    </tr>
+</table>
+
+<P>One more cause of leaks is if you try to seal a map using other types of non-solid geometry, such as displacements (terrain), water, or <span class="code2">func_detail</span> brushes. None of these non-solid brush types will block visibility and seal the world. Attempting to use them in this way will generate a leak. You can fix this type of leak by adding a solid brush behind them to seal the map. Using a brush with the <span class="code2">tools/toolsnodraw</span> material will seal the map, but not add any additional rendering cost, so it's a great way to seal the map behind non-solid geometry. </P>
+
+<table class="tableCaption" cellpadding="0">
+    <tr>
+        <td><img src="images/leak_disp.jpg"></td>
+    </tr>
+    <tr>
+        <td class="tdCaption">Seal areas behind non-solid geometry to prevent leaks.</td>
+    </tr>
+</table>
+
+<h2><a name="FindingLeaks"></a>Finding Leaks </h2>
+
+<p>Sometimes these gaps aren't quite as obvious as the above example. They can be as little as one unit wide and still cause a leak. The compile tools provide you with a <strong>pointfile</strong> to help you locate the leak. A pointfile is a file generated by <span class="code2">vbsp</span> that draws a line between the void of the map to the entity it found during the leak check. After receiving a leak error in <span class="code2">vbsp</span>, a <span class="code2">&lt;mapname&gt;.lin</span> file will be created in the same directory as your .vmf map file.</p>
+
+<h3><a name="LoadingPointfile"></a>Loading a Pointfile</h3>
+<p>The pointfile can be loaded into the <strong>Hammer Editor</strong> to show you precisely where the leak is inside the level. To load a pointfile for the level, use the <a href="../Hammer/html/Menu_Map.html#LoadPointfile">Load Pointfile</a> command in the <strong>Map</strong> menu. </p>
+
+<p>Here is the pointfile loaded into the previous example. Notice that the red line appears in both the 3D and 2D views, and is traced back the the entity through the gap:</p>
+
+<table class="tableCaption" cellpadding="0">
+    <tr>
+        <td><img src="images/leak_pointfile.jpg"></td>
+    </tr>
+    <tr>
+        <td class="tdCaption">The <strong>Load Pointfile</strong> command shows the path to the leak in the Hammer viewports.</td>
+    </tr>
+</table>
+
+
+<p>Using this visual aid, you can find the source of the leak by following the red line to the outside of the level. It's best to start at the entity specified in the <span class="code2">vbsp</span> error message, and then follow the line until you find the gap in the geometry. Close the gap and recompile the level to see if you have fixed the leak.</p>
+
+<h3>Finding the Endpoint </h3>
+
+<p>If you're having trouble locating the start entity, you can use the <a href="../Hammer/html/Go_To_Coord.html">Go to Coordinates</a> command on the <strong>View</strong> menu to find the entity and the start of the pointfile line. Simply enter the coordinates given by <span class="code2">vbsp</span> for the entity location, and the 2D and 3D views will be centered on that location. Follow the line to find your leak. </p>
+
+<p>Another method to find the source of the leak is to zoom out in one or more of the 2D views. After <a href="../Hammer/html/Menu_Map.html#LoadPointfile">loading the pointfile</a>, zoom out until you see the red line. Follow the line until you reach the entity at the one of the endpoints. Then select the entity, and choose <a href="../Hammer/html/Menu_View.html#Center3D">Center 3D Views on Selection</a> from the <strong>View </strong>menu. Now you can follow the pointfile line to find the leak. </p>
+
+<h2>Conclusion: An Ounce of Prevention</h2>
+
+<p>Using the pointfile tools makes finding leaks relatively painless, but one of the most important ways to fix leaks is by preventing them in the first place. Taking your time when building, and making sure brushes are snapped properly to the grid can go along way towards eliminating leaks before they occur. The cleaner and more organized you build your geometry, the more likely you are to be able to spot leaks when they occur, or even prevent them from happening in the first place. You can also help prevent lots of extra work by compiling your level as you go along, instead of building your whole level before trying to compile it. Finding one leak at a time, while the map is only partially complete, is a lot easier and faster than finding a lot of leaks in a complete map that is full of geometry.</p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

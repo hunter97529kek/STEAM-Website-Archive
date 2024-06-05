@@ -1,0 +1,84 @@
+<html>
+<head>
+	<title>Making 3D Skyboxes</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="content">
+
+<h1>Making a 3D Skybox</h1>
+
+<p>Adding a 3D skybox can be a powerful addition to the visual treatment of a level. The 3D skybox is extra area constructed by the level designer that is outside the bounds of the gameplay portion of the map. 3D skyboxes are non-interactive – the player and other entities cannot move into the 3D skybox space.</p>
+
+<h2>Benefits and limitations</h2>
+
+<p>Standard skyboxes are simple 2D images, mapped onto a cube so they surround the level. 3D skyboxes are full 3D geometry, and properly parallax as the player moves through the level. Since they are rendered in real time, they scale with the video card resolution and also support real-time shader effects not possible in 2D skyboxes.</p>
+
+<p>The main benefit of using a 3D skybox is that it allows the level designer to make the map look much larger than is possible with the standard world geometry. The largest map that can be made without a 3D skybox is 32768 units on each side. Using a 3D skybox, the map can be 16 times that amount.</p>
+
+<p>Maps of this size are possible because 3D skyboxes are created in the Hammer editor at 1/16 the scale of standard maps. At run time, the engine scales them back up to match the scale of the rest of the map. Not only does this save space in the editor views, it also is much less expensive to compile and render.</p>
+
+<p>Due to their scale, 3D skyboxes have much lower lightmap and texture resolution. This makes 3D skybox geometry less expensive performance-wise than standard world geometry.</p>
+
+<h2>3D skyboxes have these characteristics:</h2>
+
+<ul class="bulletlist">
+<li>Are constructed in 1/16 scale in the Hammer editor and then rendered at 16 times size in the engine to match the world geometry.</li>
+	<li>Are non-interactive – players and other world entities cannot enter 3D skyboxes.</li>
+	<li>Have lower lightmap and texture resolution because of the scale at which they are created.</li>
+	<li>Can be constructed with brushes, displacements, static and dynamic props, lights, brush entities, and point entities (such as <span class="code2">env_sprite</span>).</li>
+	<li>Can <b>not</b> contain <span class="code2">prop_physics</span> and other physics entities, <span class="code2">info_player_start</span>, NPCs or monsters.</li>
+	<li>Any models that are placed in the 3D skybox must be authored at 1/16 scale.</li>
+	<li>Support materials with shader effects such as normal mapping, water, environment mapping, proxies, etc.</li>
+	<li>Must have they their own lighting sources. For example, the <span class="code2">light_environment</span> in the non-skybox section will not affect the 3D skybox lighting.</li>
+	<li>Use the <span class="code2">sky_camera entity</span> to control how they line up with the non-skybox world geometry.</li>
+	<li>3D skyboxes have their own fog parameters, adjustable in the <span class="code2">sky_camera</span> entity.</li>
+</ul>
+
+<h2>Construction of 3D skyboxes</h2>
+
+<p>The most efficient way of creating a 3D skybox that matches or “lines up” with the your current map is to use some of the geometry in the main part of the level. Follow these steps after you’ve created your main level geometry:</p>
+
+<ol class="numberedlist">
+	<li>Add a <span class="code2">sky_camera</span> entity at the world origin ( coordinates 0 , 0 , 0 ) , the center of the map grid. The <span class="code2">sky_camera</span> is a reference point used by the renderer to align the 3D skybox with the main part of the map. In other words, it acts as a marker telling the renderer how the 3D skybox's origin and the world's origin relate to one another. You can think of this process as being similar to selecting all the 3D skybox geometry and then aligning the <span class="code2">sky_camera</span> entity in that selection with the world's origin (0,0,0). The geometry is <em>translated</em> back to that position in the world. This is the same concept used when the skybox is rendered in the engine. </li>
+	
+	<li>Select some distinct parts of the level that you can use a guideline for scale and position in the 3D skybox. Common elements to select for this purpose would be some of the larger structures, as well as the walls, cliffs, hills, etc. that define the edges of the map. Make sure you also have the <span class="code2">sky_camera</span> you created selected as well. <b>Note</b>: It is important <b>not</b> to select any model entities, only brushes. Models cannot be used as reference geometry, because models cannot be scaled down in the Hammer editor.</li>
+	
+	<li>Choose <b>Copy</b> from the <b>Edit</b> menu, or hit CTRL-C.</li>
+	
+	<li>Choose <b>Paste Special</b> from the <b>Edit</b> menu. Set the <b>Number of copies to paste</b> to <b>1</b>, and all other values to <b>0</b>. Hit <b>OK</b>. This makes a duplicate of the geometry you had selected.</li>
+	
+	<li>Leaving geometry selected, choose <b>Transform</b> from the <b>Tools</b> menu. Select the radio button next to <b>Scale</b>. Type in a value of <b>.0625</b> for X, Y and Z. This is the decimal equivalent to 1/16 – the scale of the 3D skybox. Click <b>OK</b>.</li>
+	
+	<li>You now have a 1/16 scale version of your reference geometry. Now drag (move) it to another part of the map where you wish build your 3D skybox. It doesn’t matter where it is as long as it’s not touching any part of the main level geometry area.</li>
+	
+	<li>Delete the <span class="code2">sky_camera</span> entity from the normal world map area you started from. <strong>Only the sky_camera entity in the 3D skybox should remain.</strong> </li>
+	<li>Build your 3D skybox geometry around the reference geometry, using it as a guide. You can build skybox geometry that meets the reference geometry seamlessly. You can use brush and displacement geometry. Models can also be placed, but since the 3D skybox is at 1/16 scale, any models must also be at 1/16 scale. The model <span class="code2">hl2\models\props_skybox\coast01.mdl</span> is a sample model in 1/16 scale.<br>
+	
+	<p><b>Tip</b>: Try positioning the 3D view camera near the height of the player. This will give you a good idea of how the 3D skybox will look when it’s rendered in the engine.</p></li>
+	
+	<li>Add a hollow cube of brushes around your reference geometry and assign the <span class="code2">tools\toolsskybox</span> material to it. The standard 2D cubic skybox will appear on these surfaces. The 3D skybox area must be sealed with these brushes.</li>
+	
+	<li>Add a <span class="code2">light_environment</span> to the 3D skybox. You may want to copy and paste the one from the main part of the level, so the lighting matches.</li>
+	
+	<li>When you’re done, delete or hide all of the reference geometry <b>except</b> for the <span class="code2">sky_camera</span> entity. You may find that it work best to add the reference geometry to it’s own visgroup so that it can be toggled on and off or re-placed. Just make sure you turn it off before you save and compile the level, or it will be compiled into the 3D skybox.</li>
+</ol>
+
+<h2>Testing</h2>
+
+<p>If you properly sealed your 3D skybox, you can now compile the map and check out your new 3D skybox in the engine.</p>
+<p>See <span class="code2">maps\sdk_3d_skybox.vmf</span> for an example of a 3D skybox.</p>
+
+<h2>Sample maps referenced in this document</h2>
+
+<p class="code2">maps\sdk_3d_skybox.vmf</p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

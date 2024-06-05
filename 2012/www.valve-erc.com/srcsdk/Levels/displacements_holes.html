@@ -1,0 +1,355 @@
+<html>
+<head>
+	<title>Creating Holes in Displacements</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="content">
+
+<h1>Creating Holes in Displacements</h1>
+
+<p>Sometimes you need to create a hold or gap in displacement surfaces for various reasons. Due to the requirements of displacements, there is no automatic way to accomplish this. Instead, you can use a combination of vertex editing and clipping to achieve the result. The method differs depending on whether you're starting from scratch, or if a displacement already exists where you need a hole.</p>
+
+<h2>Creating a Set of Displacement Surfaces with a Hole </h2>
+
+<p>The best method to create holes in displacement surfaces is to create the hole when the displacements are first created.</p>
+<p>Follow these steps to create a set of displacements with a square hole in the center:</p>
+
+<ol>
+	<li>Create a new brush with the <a href="../Hammer/html/Tool_Block.htm">Block Tool</a>. The brush should be  the size of the  displacement you wish to create:<br><br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_01.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Create a brush the size of the displacement. </td>
+		</tr>
+	</table><br>
+
+	<li>Use the <a href="../Hammer/html/Tool_Clipping.htm">Clip Tool</a> in the <strong>Top 2D View</strong> to cut the brush in the vertical direction. This split will be the <em>left side</em> of the hole:
+	<p>Note: Press the <strong>Clip Tool</strong> icon until both sides of the brush are highlighted in white.</p>
+    <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_02.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Using the Clip Tool to create the left side of the hole. </td>
+		</tr>
+	</table><br>
+
+	<li>Use the <strong>Clip Tool</strong> to cut the brush three more times -- cut the brush on the right side first.<br>
+	    <br>
+	    Then select the center piece with the <strong>Selection Tool</strong>.<br>
+	    <br>
+	    Switch back to the <strong>Clip Tool</strong> and clip the center brush two times horizontally, to create a square in the middle. The end result should look something like this:<br>
+    <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_03.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Cut the brush for the other sides of the hole. </td>
+		</tr>
+	</table><br>
+
+	<li>Using the <strong>Selection Tool</strong>, select the brush square in the middle that was a result of the clips you made. Press the <strong>Delete</strong> key to delete the brush, leaving a hole in the center of the brushes:<br>
+    <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_04.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Select the center brush and delete it. </td>
+		</tr>
+	</table><br>
+
+	<li>Select the two side brushes with the <strong>Selection Tool</strong>:<br><br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_05.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Select the side brushes. </td>
+		</tr>
+	</table><br>
+
+	<li>Select the <a href="../Hammer/html/Tool_VertexEdit.htm">Vertex Edit</a> tool to go into <strong>Vertex Editing Mode</strong>:<br>
+    <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_06.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Switch to Vertex Editing Mode . </td>
+		</tr>
+	</table><br>
+
+	<li>In the <strong>Top 2D View</strong>, select the corner point, and drag it towards the center square, as shown:<br><br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_07.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Move a corner point towards the corner of the hole. </td>
+		</tr>
+	</table><br>
+
+	<li>Repeat the same operation for the other three corners -- drag them toward the four center points as shown:<br><br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_08.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Move the other corner points to match. </td>
+		</tr>
+	</table><br>
+
+	<li>While still in <strong>Vertex Edit Mode</strong>, select one of the remaining two brushes. Hold down CTRL and select the other one as well. Your selection should match this image:<br>
+	  <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_09.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Select the other two brushes using CTRL-left-click. </td>
+		</tr>
+	</table><br>
+
+	<li>Drag the outer vertices of these brushes to line up with the four outer corners, to match the following image:<br>
+	  <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_10.jpg" width="706" height="308"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Vertex edit the brushes to fit the outer edges. </td>
+		</tr>
+	</table><br>
+
+	<li>Switch to the <a href="../Hammer/html/Toolbar_Map_Tools.html#FaceEditTool">Texture Application Tool</a>, and select all of the top faces of the brushes by left-clicking one of them in the <strong>3D View</strong>, then holding down CTRL and left-clicking the remaining faces. Only select the tops of the brushes, as shown here:<br>
+    <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_11.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Select all the top faces in Face Edit Mode . </td>
+		</tr>
+	</table><br>
+
+	<li>Switch to the <a href="../Hammer/html/Face_Edit_Disps.html">Displacement</a> tab in the <strong>Face Edit</strong> dialog box. Press the Create button to create the displacements on the selection faces. You should now have a set of displacements with a hole cut in the center:<br>
+    <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_hole_12.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Create the displacements using the brushes you've edited. </td>
+		</tr>
+	</table><br>
+</ol>
+
+<p>These displacements can now be freely painted or transformed. Because the four outside edges are not split, these displacements can be sewn to and surrounding geometry seamlessly. </p>
+
+<h2>Using Clipping to Add Holes to Existing Displacement Geometry</h2>
+
+<p>Creating a hole where you have already have displacements is done utilizing the clip tool in combination with vertex editing. This method is not as straightforward as making a hole by creating new displacements, but it will preserve some of the shape of any existing surfaces.</p>
+
+<p>Follow these steps to make a hole in the center of an existing displacement surface:</p>
+
+<ol>
+	<li>Select the displacement you wish to create a hole in with the <a href="../Hammer/html/Tool_Selection.htm"><strong>Selection Tool</strong></a>:<br>
+    <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_cut_hole_01.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">The target displacement. </td>
+		</tr>
+	</table><br>
+
+	<li>Use the <a href="../Hammer/html/Tool_Clipping.htm">Clip Tool</a> to cut the displacement in the vertical direction. This split will be the <em>left side</em> of the hole:<br>
+    <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_cut_hole_02.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Using the Clip Tool to create the left side of the hole. </td>
+		</tr>
+	</table><br>
+
+	<li>Use the <strong>Clip Tool</strong> to cut the brush three more times -- Cut the displacement on the right side, as well as two times horizontally, to create a square in the middle:<br>
+	  <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_cut_hole_06.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Cut the brush for the other sides of the hole. </td>
+		</tr>
+	</table><br>
+
+	<li>Using the <strong>Selection Tool</strong>, select the displacement square in the middle that was a result of the clips you made. Press the <strong>Delete</strong> key to delete the displacement, leaving a hole in the center:<br>
+    <br></li>
+
+	<table>
+	<tr>
+		<td>
+		<table class="tableCaption" cellpadding="0">
+			<tr>
+				<td><img src="images/disp_cut_hole_09.jpg"></td>
+			</tr>
+			<tr>
+				<td class="tdCaption">Select the center brush and delete it. </td>
+			</tr>
+		</table>
+		</td>
+		
+		<td>
+		<table class="tableCaption" cellpadding="0">
+			<tr>
+				<td><img src="images/disp_cut_hole_10.jpg"></td>
+			</tr>
+			<tr>
+				<td class="tdCaption">The center displacement has been deleted, leaving a hole. </td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	</table><br>
+
+	<li>We're not finished yet, because the displacement still needs to be fixed up so it can Sew properly to neighboring surfaces.<br>
+	  Switch to the <strong>Clip Tool</strong> and select the displacement on the rights side. In the <strong>Top 2D View</strong>, use the clip tool to trim off the corner piece of the displacement.<br>
+	  <br>
+	  Make sure the clip snaps to corners on the grid, or the displacement will get destroyed: <br>
+	  <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_cut_hole_11.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Use the Clip Tool to trim the displacement towards the hole. </td>
+		</tr>
+	</table><br>
+
+	<li>Repeat the same operation for the other corner of the displacement, as well as the displacement on the left side -- clip each of the corners to create the edges as shown:<br>
+	  <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_cut_hole_14.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Clip the the edges on the left and right side. </td>
+		</tr>
+	</table><br>
+
+	<li>Switch to the <a href="../Hammer/html/Tool_VertexEdit.htm">Vertex Edit Tool</a>. Select one of the remaining two top and bottom displacements. Hold down CTRL and select the other one as well. Your selection should match this image:<br>
+    <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_cut_hole_17.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Select the other two displacements using CTRL-left-click. </td>
+		</tr>
+	</table><br>
+
+	<li>Drag the outer vertices of these two displacements to line up with the four outer corners, to match the following image:<br>
+	  <br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_cut_hole_19.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Vertex edit the displacements to fit the outer edges. </td>
+		</tr>
+	</table><br>
+
+	<li>Switch to the <strong>Face Edit Tool,</strong> click the <strong>Displacement</strong> tab of the <strong>Face Edit</strong> dialog. Select all of the displacement surfaces  by left-clicking one of them in the <strong>3D View</strong>, then holding down CTRL and left-clicking the remaining faces. Only select the four displacements.<br><br>
+    Notice how the displacements edges do not line up, due to the clipping that was done:<br><br></li>
+
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_cut_hole_23.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Select all the displacements in Face Edit Mode . </td>
+		</tr>
+	</table><br>
+
+	<li>Click the <strong>Sew</strong> button. The displacements should connect to each other like this: <br>
+	  <br></li>
+
+		<table class="tableCaption" cellpadding="0">
+			<tr>
+				<td><img src="images/disp_cut_hole_24.jpg"></td>
+			</tr>
+			<tr>
+				<td class="tdCaption">The final displacements with a hole, after the Sew operation. </td>
+			</tr>
+		</table>
+	</table>
+</ol>
+
+
+<p>These displacements can now be freely painted or transformed. Because the four outside edges are not split, these displacements can be sewn to and surrounding geometry seamlessly.<br>
+  <br>
+  The following images demonstrate how the displacement geometry created in the previous steps can be attached to other displacements:</p>
+
+<table>
+	<tr>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+			<tr>
+				<td><img src="images/disp_cut_hole_26.jpg"></td>
+			</tr>
+			<tr>
+				<td class="tdCaption">The displacement can be sewn to surrounding displacements.</td>
+			</tr>
+		</table>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+			<tr>
+				<td><img src="images/disp_cut_hole_25.jpg"></td>
+			</tr>
+			<tr>
+				<td class="tdCaption">The edges of the center displacement match, allowing for sewing. </td>
+			</tr>
+		</table>
+	</td>
+	</tr>
+</table>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

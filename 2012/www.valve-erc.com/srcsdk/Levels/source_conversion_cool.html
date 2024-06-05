@@ -1,0 +1,98 @@
+<html>
+
+<head>
+<title>Source Mapping: New Features of Source</title>
+<link rel="stylesheet" type="text/css" href="../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>New Features of Source</h1>
+
+<p>
+There are a number of new features and capabilities of the Source engine which 
+the Half-Life 1 mapper may wish to take advantage of.  This is not intended as
+a complete list of all new features, but should be enough to get you interested
+in exploring some of the new capabilities of the Source engine.
+</p>
+
+<p>
+For more reading on other aspects of map conversion, see <a href='source_conversion.html'>Source
+Mapping for Half-Life 1 Mappers</a>.
+</p>
+
+<h2>Fire and Smoke</h2>
+<blockquote>
+<p>
+There are two new entities which are excellent for creating fire and smoke
+effects.  They are <span class=code2>env_fire</span> and <span class=code2>env_smoke</span>.
+They should be pretty self explanatory to use and create.  If you aren't sure of what 
+values to set, just use the default values you get when creating a new instance of these
+entities in Hammer.
+</p>
+</blockquote>
+
+<h2>Steam and Fog</h2>
+<blockquote>
+<p>
+To give your map fog, place an <span class=code2>env_fog_controller</span> entity in the
+map.  Setting it's parameters control how "thick" the fog is in your map.
+</p>
+<p>
+To create a steam jet (like you'd have in a broken pipe), create an <span class=code2>env_steam</span>
+entity.  Point it the direction you want the steam jet to go, and trigger it to create a blast of steam.
+</p>
+</blockquote>
+
+<h2>Rain and Snow</h2>
+<blockquote>
+<p>
+To create rain or snow, place a <span class=code2>func_precipitation</span> brush entity
+covering the area where you want to have precipitation.  Set it's attributes to 
+the density and type of precipitation you want.
+</p>
+</blockquote>
+
+<h2>Ropes and Wires</h2>
+<blockquote>
+<p>
+To create hanging wires and ropes in your map (such as power lines), place a 
+<span class=code2>move_rope</span> entity at both ends of where the line should be.
+Give one of them a name, and set the "Next Keyframe" value in the other to this name.  
+You should see a line representing the wire/rope in Hammer's 3d view.
+</p>
+</blockquote>
+
+<h2>Dust and Splashes</h2>
+<blockquote>
+<p>
+To create a floating dust mote effect, make a <span class=code2>func_dustmotes</span> 
+brush entity.  The space in the entity will be filled with small floating dust motes.  Very effective
+where you are simulating sunlight shining in a window for example.
+</p>
+<p>
+To make a splash happen in water, place a <span class=code2>env_splash</span> point
+entity over the water surface where you want the splash to happen.  When triggered, the
+entity creates a "splash" effect on the water's surface.
+</p>
+
+</blockquote>
+
+<h2>Physics Objects</h2>
+<blockquote>
+<p>
+If you want to make a brush based object be a "physics" object, make it a 
+<span class=code2>func_physbox</span>.
+</p>
+</blockquote>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

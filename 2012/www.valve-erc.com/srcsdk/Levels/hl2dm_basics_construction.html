@@ -1,0 +1,185 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+	<title>A Basic HL2DM Room</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Making a Basic Half-Life 2: Deathmatch Room</h1>
+
+<p>We'll start off by showing you how to create the most basic geometry &#8212; the brush object. Brushes are the basic building block for all levels built in the Source Engine.</p>
+
+<h2>Basic Construction and Navigation</h2>
+<table>
+<tr>
+	<td width="382" valign="top">
+	<p>To build your first level geometry, select the <strong>Block Tool</strong>, from the list of icons on the left side of the Hammer window. The tools are selected by single-left-clicking on the icon. </p>
+	</td>
+	<td width="465" >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_006_pickblock.jpg" width="331" height="376"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Select the Block Tool by left-clicking on it. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<p>Now you're ready to create your first brush geometry.</p>
+
+<table>
+<tr>
+	<td valign="top">
+	<p> In the <strong>Top 2D View </strong>(the upper-right window pane), click and drag to create a box, as shown in this image.</p>
+	</td>
+	<td>
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_007_drawblock.jpg" width="570" height="606"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Clicking and dragging to create a brush. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<p>Now that you've set the shape of the brush, we're now ready to create it.</p>
+
+<table>
+<tr>
+	<td valign="top">
+	<p>Right-mouse click in the center of the brush to get the <strong>Create Object</strong> menu, then left-click the menu to create the brush. </p>
+	</td>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_009_createbrush.gif" width="598" height="433"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Creating the brush object. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td width="50%" valign="top">
+	<p>Click the <strong>Selection Tool</strong>. The <strong>Selection Tool</strong> is used to (surprise) select different objects in the map, as well as move and resize them.  </p>
+	</td>
+	<td width="50%" >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_013_pickselect.jpg" width="336" height="387"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Switch to the Selection Tool to select objects. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<p>Now we'll increase the height of the brush we've made.</p>
+	<p>Click and drag  the square edge handle in the <strong>Side 2D View</strong> (the lower-right window pane).</p>
+	
+<table>
+<tr>
+	<td width="50%" valign="top">
+	<p>The cursor should change to the move handle cursor <img src="images/hl2dm_map/hl2dm_verticalcursor.gif" width="9" height="21" hspace="3" vspace="0"> when you have the correct handle. </p>
+	<p>Drag the height so that it is <strong>128</strong>, as shown in this image. If you make a mistake, simply grab the handle and try again. </p></td>
+	<td width="50%">
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_008_raiseheight.gif" width="569" height="672"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Changing the height of the brush. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<table>
+<tr>
+	<td width="50%" valign="top">
+	<p>Next we'll create a Camera, which will help us navigate in the <strong>3D View </strong>to see what we've created. Select the <strong>Camera Tool</strong> from the left side of the Hammer window. </p>
+	</td>
+	<td width="50%" >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_010_pickcamera.jpg" width="299" height="392"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Select the Camera Tool </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<p>Now you're ready to create the Camera.</p>
+
+<p>In the <strong>Top 2D View</strong>, click and drag to create the Camera, as shown in this image. </p>
+
+<table>
+<tr>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_011_createcamera.jpg" width="650" height="610"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Create a camera by dragging its position. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+<p>You can use the <strong>Magnify Tool</strong> to change the zoom level in the 2D viewports. First select the <strong>Magnify Tool</strong> from the icon bar. Now left-click in a 2D viewport to increase the magnification, and right-click to zoom back out. </p>
+
+<table>
+<tr>
+	<td width="50%" valign="top">
+	<p>When you're done with the <strong>Magnify Tool</strong>, switch back to the <strong>Selection Tool</strong>.</p>
+	<p>&nbsp; </p>
+	<p><strong>Hint: </strong>The wheel on the mouse can also be used to change the zoom level in all of the viewports.</p>
+	</td>
+	<td width="50%" >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/hl2dm_map/hl2dm_012_pickmagnify.jpg" width="310" height="389"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">The Magnify tool. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table><br><br>
+
+
+<h3>Next: <a href="hl2dm_basics_creating_room.html">Creating a Room</a></h3>
+
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

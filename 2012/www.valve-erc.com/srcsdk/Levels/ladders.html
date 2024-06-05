@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Creating Ladders</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Ladders</h1>
+<p>Because the environments of Half-Life 2 became more complex than their successors, the demand for a better system of navigating ladders also arose. In previous iterations of the engine, ladders were simply a surface property that could be applied to brush surfaces. This process has become slightly more complicated to provide better control for the level designer and player alike. For Counter-Strike: Source, ladders are still created using a special material or the <span class="code2">func_ladder</span> entity, as described in <a href="counter-strike_source_maps.html">Making levels for Counter-Strike: Source</a>. </p>
+
+<h2>func_useableladder</h2>
+
+<p>To create a ladder you must define the volume in which the player will move through space while on the ladder. This includes a starting and end position. The volume is described via the <span class="code2">func_useableladder</span> entity. The entity has two positions: a starting point and an ending point (<em>See Fig. 1a</em>) . These can be typed into the key-value fields, or more typically the ladder can be defined by using the visual ladder tool, visible when the entity is selected (<em>See Fig. 1b) </em>. Using this tool you can drag the start and end point of the ladder into appropriate positions in the 2D view. The ladder's start and ending point may be of arbitrary orientation and length (<em>See Fig. 1c</em>). Simply pull the endpoints where you want them and the player will move between these points while on the ladder.</p>
+
+<table width="100%">
+<tr>
+	<td>
+	<table cellpadding="0" class="tableCaption">
+		<tr><td><img src="images/ladder01.jpg"></td></tr>
+		<tr><td class="tdCaption">Fig. 1a - Ladder points</td></tr>
+	</table>
+	</td>
+	
+	<td>
+	<table cellpadding="0" class="tableCaption">
+		<tr><td><img src="images/ladder02.jpg"></td></tr>
+		<tr><td class="tdCaption">Fig. 1b - Changing orientation</td></tr>
+	</table>
+	</td>
+	
+	<td valign="bottom">
+	<table cellpadding="0" class="tableCaption">
+		<tr><td align="left" valign="top"><img src="images/ladder03.jpg"></td></tr>
+		<tr><td class="tdCaption">Fig. 1c - Slanted ladder points</td></tr>
+	</table>
+	</td>
+</tr>
+</table>
+
+
+<p>The ladder's volume must be clear of obstructions. If a solid brush surfaces passes through the space you define, the ladder may not be climbable. </p>
+
+<table class="tableCaption">
+<tr><td>
+	<table cellpadding="0" class="tableCaption">
+		<tr>
+			<td align="left" valign="top"><img src="images/ladder04.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Fig. 1d - Dismounts</td>
+		</tr>
+	</table>
+</td>
+<td width="3%"></td>
+<td valign="top">
+	<p>Along with the volume of movement, the ladder also needs &quot;dismount&quot; points (<em>See Fig. 1d</em>). These points are defined using the <span class="code2">info_ladderdismount</span> entity. These are markers in space that define where a player can exit a ladder from. They are most easily thought of as hints to good positions to place the player in. When a player reaches the top or bottom of a ladder, the code attempts to find the nearest dismount point to where the player is standing and in the direction the player is looking. If there is a dismount point within a certain threshold tolerance, the player will automatically dismount the ladder and move onto that dismount point. The entity has a keyvalue field called <em>LadderName</em> which holds the name of the ladder it is used by. Like the ladder volume, the dismount points must be free of obstruction and allow the player to stand at their position without intersecting solid world geometry.</p>
+	
+	<p> Generally these are best placed around the base of the ladder from center, left and right. </p>
+</td></tr>
+</table>
+
+<h2>Testing</h2>
+<p>Once the <span class="code2">func_useableladder</span> entity and its <span class="code2">info_ladderdismount</span> points have been placed, you can compile your map and test them. Using the <span class="code2">sv_showladders</span> console command, you can cause the engine to draw debugging information about the ladder system (Note: You'll have to restart a map if one is already running when you enable this console command). This information will show you the start and end points of the ladder, as well as the dismount points (<em>See Fig. 2a</em>).  </p>
+<p>If any of these entities is not setup properly (commonly due to interpentration with solid world geometry or the prop model of the ladder itself), it will display this. (<em>See Fig. 2b</em>).<br>
+</p>
+
+
+<table width="100%">
+<tr><td>
+	<table cellpadding="0" class="tableCaption">
+		<tr>
+		<td><img src="images/ladder05.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Fig. 2a - In-game visualization </td>
+		</tr>
+	</table>
+	</td><td valign="bottom">
+	<table cellpadding="0" class="tableCaption">
+		<tr>
+		<td><img src="images/ladder06.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Fig. 2b - End point stuck in floor </td>
+		</tr>
+	</table>
+</td></tr>
+</table>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

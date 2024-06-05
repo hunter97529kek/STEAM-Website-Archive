@@ -1,0 +1,363 @@
+<html>
+<head>
+	<title>Displacement Geometry</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="content">
+
+<h1>Displacement Geometry</h1>
+
+<p>Displacement geometry are brush surfaces that have been converted to a triangle mesh of faces that can be freely distorted and sculpted into various shapes. The primary function for displacement surfaces is to create terrain -- hills, valleys, trenches, slopes, etc.</p>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/displacement_01.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">A simple displacement surface. </td>
+	</tr>
+</table>
+
+<h2>Benefits and limitations</h2>
+
+<p>Displacement geometry is rendered in batches,  and can render very quickly. Per face, displacements render faster than standard brush geometry. After they have been created, displacement surfaces can be altered using the Paint Geometry tools to &quot;sculpt&quot; are variety of different shapes, well beyond what can be created with brushes. Additionally, the alpha channel data for vertices of displacement can be painted in order to blend between two textures on the displacement. This can be used to create transitions between dirt and rock, for example. This vertex data can also be used to determine where detail props and sprites appear on the displacement (i.e. grass sprites on the dirt sections).</p>
+<p>Displacement surfaces are limited in some important ways. First off, displacement surfaces are always four-sided, they cannot be created with more or less than four sides. Displacement  are also static in the game -- they cannot be moved, animated, or attached to any entity in the engine. Displacements do not seal the map from the void, and displacements on the edge of the map must have a brush that seals the world behind them. Some of the other limitations and characteristics are described below. </p>
+<h2>Characteristics of Displacement Surfaces:</h2>
+
+<ul class="bulletlist">
+<li>Are triangle meshes that can be deformed with paint tools.</li>
+  <li>Have three sizes/levels of resolution. </li>
+  <li>Are lightmapped and self-shadowing.</li>
+  <li>Are generated using a brush face as a base -- the brush is discarded when compiled. </li>
+  <li>Multiple displacement surfaces can be added onto one brush.</li>
+  <li>Have collisions generated automatically. </li>
+  <li>Can <em>only</em> be generated on brush faces with 4 sides (quadrilateral).</li>
+  <li>Do not block visibility or seal the map.</li>
+  <li>Cannot be tied to or included in any entity.</li>
+  <li>Are static -- cannot be moved in-game.  </li>
+  <li>Are one-sided -- are only visible from one direction (the positive normal direction).</li>
+  <li>Do not block shadows if light passes through the non-visible side. </li>
+  <li>Can use vertex alpha materials to blend between 2 different textures per displacement. </li>
+  <li>The location of detail props on displacements can be tied to the vertex alpha data. </li>
+  <li>Can be rotated, scaled, sheared, clipped, and vertex edited similar to brushes.</li>
+</ul>
+
+<h2>Construction of Displacement Surfaces </h2>
+
+<p>Displacements are created by using one of the faces on a brush solid as a base face. Once the displacement surface has been created, the brush face used a the base face is discarded. Additionally, if a brush solid contains <em>any</em> displacement surfaces, all of the non-displacement sides are discarded when the map is compiled and run in the engine. In other words, once you convert a brush solid to include displacements, the brush solid is non longer a solid object and is removed when you run the map.</p>
+
+<p>The following images illustrate this characteristic:</p>
+
+<table>
+<tr>
+	<td>
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/displacement_sides_01.png"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">The Base brush face before a displacement is added. </td>
+		</tr>
+	</table>
+	</td>
+	
+	<td>
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/displacement_sides_02.png"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">The sides of the brush shown here will not be rendered. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table>
+
+<h2>Basic Displacement Creation</h2>
+
+<p>How to create and paint a displacement surface:</p>
+<ol>
+	<li>Create a brush with the <a href="../Hammer/html/Tool_Block.htm">Block Tool</a> that will be used a the base for the created displacement surface.<br><br></li>
+	<li>Click the <a href="../Hammer/html/Toolbar_Map_Tools.html#FaceEditTool">Texture Application</a> tool to bring up the <b>Face Edit </b>dialog, and select the <a href="../Hammer/html/Face_Edit_Disps.html">Displacement</a> tab.<br><br></li>
+	<li>In the 3D view, left-click on a brush face to select it. CTRL-click to add or remove faces from the current selection.<br><br></li>
+	<li>Click <strong>Create</strong> in the Displacement tab. Enter a value from 2 to 4 for the displacement density and click <strong>OK</strong>. <br><br></li>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/displacement_02.png" width="300" height="258"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Displacements can be 3 different Scale values.</td>
+	</tr>
+</table><br>
+
+
+	<li>Select the <strong>Paint Geometry</strong> tool on the <strong>Displacement</strong> tab. The <strong>Paint Geometry</strong> panel will open. <br><br></li>
+	<li>In the 3D View, Left-click on a displacement to raise a section, and right-click to lower it. Use the <strong>Radius</strong> slider in the <strong>Paint Geometry </strong>panel to control the size of the painting sphere.<br><br></li>
+</ol>
+
+<h3>Displacement Options</h3>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td width="35"><img src="../Hammer/images/interface/mo-disp_mask.png" width="23" height="22"></td>
+		<td width="695"><p>Use the <a href="../Hammer/html/Toolbar_Map_Operations.html#DispMask">Displacement Mask</a> button on the<strong> Map Operations</strong> toolbar to toggle the display and selection of the non-displacement sides of brush.</p></td>
+	</tr>
+</table>
+
+<p>You can also have more than one displacement surface for each brush. As long as a brush side has 4 edges, you can make a displacement surface out of it:</p>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/displacement_multiple.png"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Brushes can have multiple sides with displacements on them. </td>
+	</tr>
+</table>
+
+<p>See <a href="../Hammer/html/Face_Edit_Disps.html">Face Edit, Displacements</a> for a description of all the ways you can paint the geometry on a displacement.</p>
+
+<h2>Sewing Displacements</h2>
+
+<p>The <strong>Sew</strong> command on the <strong>Displacement</strong> tab can be used to connect the edges of two or more selected displacement surfaces. You can sew displacement surfaces in any of the following circumstances:</p>
+<ul>
+	<li>Any two displacements whose <strong>base face </strong>brush surfaces share a common edge with coincident endpoints.</li>
+	<li>A displacement surface to a non-displacement brush face, if the base face of the two share a common edge with coincident endpoints.</li>
+	<li>A displacement surface to another displacement surface where a shared edge is <em>exactly</em> half the width of the other (called a T-junction).</li>
+</ul>
+
+<p>You can sew displacements with different resolution settings &#8212; the vertices of the higher resolution displacement will be moved to match the vertices of the lower resolution displacement.</p>
+
+<p>Examples of circumstances where the <strong>Sew</strong> command can be used:</p>
+
+<table width="100%">
+    <tr>
+    <td height="316">
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_sew_01.png" width="345" height="270"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Adjacent displacements with base faces that share an edge.</strong></td>
+		</tr>
+		</table>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_sew_02.png"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Displacements with different resolutions.</strong></td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+	<tr>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_sew_03.png"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Displacement with a base face that shares an edge with a brush.</strong></td>
+		</tr>
+		</table>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/disp_sew_04.png"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Displacements that share an edge at the exact midpoint.</strong></td>
+		</tr>
+		</table>
+	</td>
+    </tr>
+</table>
+
+<p>Surfaces cannot be sewn together if the base faces of the displacements do not share a common edge:</p>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/disp_sew_05.png"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption"><strong>Surfaces that don't share a common edge cannot be connected.</strong></td>
+	</tr>
+</table>
+
+<h2>Other Methods of Altering Displacement Geometry</h2>
+
+<p>Besides the displacement painting tools, some the standard brush manipulation tools work on displacement surfaces. It works well to control the contours of the displacement with the paint tools, and do larger manipulations with the following tools. </p>
+
+<h3>Transformations</h3>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td width="52" height="49"><img src="../Hammer/images/interface/mt-selection.png"></td>
+		<td width="683"><p>Displacements can be freely moved, scaled, rotated and sheared with the <a href="../Hammer/html/Tool_Selection.htm">Selection Tool</a>, just like standard brushes. The transformation is done to the base brush face, and the displacement follows.</p></td>
+	</tr>
+</table>
+
+<h3>Clipping</h3>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td width="52" height="49"><img src="../Hammer/images/interface/mt-clipping.png"></td>
+		<td width="683"><p>The <a href="../Hammer/html/Tool_Clipping.htm">Clip Tool</a> can also be used to clip displacement surfaces. This can be used to trim off unneeded sections of the displacement surface, or to divide a displacement into two pieces without changing its shape. <strong>Note: </strong>The result of a clip operation <strong>must</strong> be a four-sided shape to be a valid displacement. </p></td>
+	</tr>
+</table>
+
+<p>The following example shows how the <strong>Clip Tool</strong> can be used to trim a displacement surface:</p>
+<table width="100%">
+    <tr>
+    <td height="316">
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/displacement_clip_01.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Displacement surface before clipping operation.</strong></td>
+		</tr>
+		</table>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/displacement_clip_02.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Using the clip tool to draw a clip line in the 2D view previews the result.</strong></td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+	<tr>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/displacement_clip_03.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>The result of the clip operation.</strong></td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+</table>
+
+<h3>Vertex Manipulation</h3>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td width="52" height="49"><img src="../Hammer/images/interface/mt-vertex.png"></td>
+		<td width="683"><p>The <a href="../Hammer/html/Tool_VertexEdit.htm">Vertex Tool</a>  can also be used to clip displacement surfaces. Vertex editing works well to shift the corners of the displacement to meet important edges, or to raise whole section of terrain without having to paint it by hand.</p></td>
+	</tr>
+</table>
+
+<p>There are some important restrictions when vertex editing displacements:</p>
+<ul>
+	<li>Vertex editing is done on the base face, not the displacement itself.</li>
+	<li>Collapsing or adding vertices is not allowed, and will destroy displacements attached to the base faces.</li>
+	<li>The end result of the vertex editing must be a convex (planar) surface. Making a non-planar surface will destroy attached displacements.</li>
+</ul>
+<p>The following example shows how the <strong>Vertex Tool</strong> can be used to raise a section of displacements:</p>
+<table width="100%">
+    <tr>
+    <td height="316">
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/displacement_vertex_01.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>A set of four displacement surfaces, selected to do a vertex editing.</strong></td>
+		</tr>
+		</table>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/displacement_vertex_02.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Entering Vertex Edit mode shows the vertices of the base brush faces.</strong></td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+	<tr>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/displacement_vertex_03.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>Selecting a set of end vertices and raising them together. </strong></td>
+		</tr>
+		</table>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/displacement_vertex_04.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption"><strong>The result of the vertex editing operation.</strong></td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+</table>
+
+<h3>Creating Holes in Displacements </h3>
+
+<p>Sometimes you need to create a hold or gap in displacement surfaces for various reasons. See <a href="displacements_holes.html">Creating Holes in Displacements</a> for information on how to create holes in displacement geometry.</p>
+
+<h2>Blended Displacement Materials (Alpha Channel Painting)</h2>
+<p>The <a href="../Hammer/html/Face_Edit_Disps.html#PaintAlpha">Paint Alpha</a> tools allow you to blend between two different textures on a displacement surface by painting the <em>alpha channel</em>. The alpha channel contains data about the transparency of the two textures assigned to the surface. This can be used to create transitions in the texturing, like grass to dirt, sand to rock, etc. To do alpha channel material blending, special blend materials are made specifically for this purpose that contain the necessary shader. Only these materials can be used for blending. If one of the standard (non-blended) materials are used, the <strong>Paint Alpha</strong> tools will have no visible effect.</p>
+
+<p>To add a blended material to a displacement surface and paint the alpha channel data to blend the textures:</p>
+
+<ol>
+	<li>Choose the <strong>Texture Application Tool</strong> to open the <a href="../Hammer/html/Face_Edit_Mats.html">Face Edit</a> dialog box.<br><br></li>
+	<li>Click in the <strong>3D View</strong> to select a displacement face you wish to add a blend material to.<br><br></li>
+	<li>Click the <strong>Browse</strong> button on the <strong>Material</strong> tab of the <strong>Face Edit</strong> dialog box.<br>
+	  <br></li>
+	<li>When the <a href="../Hammer/html/Texture_Browser.html">Texture Browser</a> appears, type &quot;<span class="code2">blend</span>&quot; into the <strong>filter</strong> field at the bottom of the <strong>Texture Browser</strong>.<br><br></li>
+	<li>Double-left-click to select one of the blended materials and close the <strong>Texture Browser</strong>. <br>
+    <br></li>
+	<li>Click the <strong>Apply</strong> button on the <strong>Face Edit</strong> dialog to apply the material to the displacement surface.<br><br></li>
+	<li>Click the <a href="../Hammer/html/Face_Edit_Disps.html">Displacement</a> tab on the <strong>Face Edit</strong> dialog.<br>
+    <br></li>
+	<li>Click the <strong>Paint Alpha</strong> button on the <strong>Displacement</strong> tab to open the <strong>Paint Alpha</strong> tools.<br><br></li>
+    <li>Type <span class="code2">100</span> into  the <strong>Value</strong> slider field. Make sure that <strong>Raise/Lower </strong>is selected under <strong>Effect</strong>.<br>
+        <br>
+        <strong>Note</strong>: Lower numbers in the <strong>Value</strong> field paint the alpha channel data at a slower pace, higher numbers paint the data faster. <br>
+      <br></li>
+    <li>Left-click on one of the vertices of the displacement in the <strong>3D View</strong> to add alpha channel data. Right-click on the displacement to remove data. <br>
+      <br></li>
+</ol>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/disp_paint_alpha_01.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption"><strong>The green box is the center of the Paint Alpha paint brush.</strong></td>
+	</tr>
+</table>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

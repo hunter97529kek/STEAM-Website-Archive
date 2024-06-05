@@ -1,0 +1,121 @@
+<html>
+
+<head>
+	<title>Optimizing and Checking Your Map</title>
+	<link rel="stylesheet" type="text/css" href="../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+	
+<h1>Optimizing and Checking Your Map</h1>
+<p>
+Once you get your map built, you may want to check on it's performance in the engine and see how
+you can optimize it (if you need to at all). This document describes some of developer features of the Source engine that let you evaluate performance. </p>
+
+<h2>Useful Console Commands</h2>
+<blockquote>
+<p>
+One useful feature of the console in Source:  there is a help command!  For a brief 
+bit of help on any command, type <span class=code2>help</span> followed by the
+command text.  Also, if you need any help finding a command, you can use the new
+<span class=code2>find</span> command.  For example if you type 
+<span class=code2>find mat</span> you will get a list of all the 
+console commands with the text "<span class=code2>mat</span>" in the
+command text.  For more information on using the console, see <a href='../console/developer_console.html'>
+The Developer Console</a>.
+</p>
+<p>
+One other point: you will want to enable the console to access it in the game.  Go to 
+<b>Options/Keyboard/Advanced...</b> and there is a checkbox there to enable the console.
+</p>
+
+<h3>sv_cheats 0/1</h3>
+<p>
+This is the same as in Half-Life 1.  It turns off and on the use of "cheat"
+console commands.  You will need to activate cheats with <span class=code2>sv_cheats 1</span>
+before using some of the commands listed below.
+</p>
+
+<h3>+showbudget</h3>
+<p>
+The first thing you'll want to do is bind some key (or mouse button) to 
+<span class=code2>+showbudget</span>  
+What does <span class=code2>+showbudget</span> do?  It 
+displays a breakdown of how the engine is spending it's time drawing each 
+frame on the screen.  You'll see how long it's spending time drawing world 
+brushes, entity brushes, prop models, displacement surfaces, 3d skybox, ropes, 
+and other items.  Now, with this information, you can optimize your map with 
+good information.  With what <span class=code2>+showbudget</span> shows you, 
+you will know exactly what to optimize.  Is your worldbrush load high?  
+Then you know you need to simplify or improve vis blocking.  Are static 
+prop models overloading your view?  Then you'll need to work on them, etc.
+</p>
+
+<h3>mat_wireframe 0/1</h3>
+<p>
+This toggles off and on the display of wireframe detail for all brush and
+model objects in view.  It is useful for showing you how your map's brushwork
+has been split up by the engine.  It is also useful to show you just what is
+being drawn in any given view.  
+</p>
+<p>
+You will need to activate cheats with <span class=code2>sv_cheats 1</span> to use 
+this command.
+</p>
+
+<h3>mat_leafvis 0/1</h3>
+<p>
+This command turns off and on display of a wireframe box around the current leaf.  For
+more information on using this command to debug visibility issues in your map, see
+<a href='performance_and_visibility.html'>Controlling Geometry Visibility and Compile Times</a>.
+</p>
+
+<h3>mat_bumpmap 0/1</h3>
+<p>
+This console command toggles off and on the display of bumpmap effects
+by the engine.  If you want to see how much impact on framerate bumpmap
+display has, toggle the effect on and off and view the changes (if any)
+with <span class=code2>+showbudget</span>.
+</p>
+<p>
+You will need to activate cheats with <span class=code2>sv_cheats 1</span> to use 
+this command.
+</p>
+
+<h3>mat_specular 0/1</h3>
+<p>
+Similar to the <span class=code2>mat_bumpmap</span> command, this toggles on
+and off specular reflection in the engine.
+</p>
+<p>
+You will need to activate cheats with <span class=code2>sv_cheats 1</span> to use 
+this command.
+</p>
+
+<h3>ent_messages_draw 0/1</h3>
+<p>
+Turns on and off display all entity input/output activity.  As each entity is activated by input or output,
+the action is drawn at the entity's location, and a line drawn between entities as they target
+other entities.  
+Can be useful for tracing and debugging entity actions in the game.
+</p>
+
+<h3>developer 1/2</h3>
+<p>
+Turns on debugging output to the screen listing all entity triggers and activity.
+Can be useful for tracing and debugging entity actions in the game.
+</p>
+
+</blockquote>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

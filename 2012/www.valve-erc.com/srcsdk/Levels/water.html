@@ -1,0 +1,88 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<title>Adding Water to a Level</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+  <h1>Adding Water to a Level </h1>
+
+  <p>Water is a very complex shader inside of the Source engine: it is animated, reflective, fogged, refractive, and bump mapped. With this complexity come rules and restrictions on how it is placed and what sort of water is used in different situations.</p>
+
+  <h2><b>“Expensive” Water</b></h2>
+
+  <p>This sort of water is the best looking, but also carries the most cost. This shader will reflect the world around it, refract and fog the world beneath it (based on the line integral through the water volume), and animate a bump mapped texture on the surface.&nbsp;While the results are photo-realistic, the cost can sometimes be too prohibitive for complex scenes.</p>
+
+  <h2><b>“Cheap” Water</b></h2>
+
+  <p>For situations where a more simplistic water solution is called for (normally for performance reasons), “cheap” water may be used.&nbsp;This version of water does not reflect the world around it, making it less realistic, but also much cheaper.&nbsp;Expensive water will “fallback” to cheap water on video cards that are unable to support the features necessary for it to render properly.&nbsp;It will also fallback to this material if the user overrides the visual quality setting for water’s appearance in the Video options in-game.</p>
+
+  <h2>Requirements</h2>
+
+  <p>To make it perform efficiently, water also has a collection of rules regarding its placement and usage inside of a map:</p>
+  
+  <ul>
+	<li>There may be only one water level height in a PVS if the water is expensive.</li>
+	<li>“Expensive” and “cheap” water may not be used simultaneously in the same PVS.</li>
+	<li>The water’s surface should never slope in the Z-axis; it should always be parallel to the horizon line in a map.</li>
+	<li>Water is created by applying a water material to the top-most surface of a brush, while covering the remaining faces with the <span class="code2">tools\toolsnodraw</span> material.</li>
+	<li>The <span class="code2">water_lod_control</span> entity controls the distance at which expensive water transitions into cheap water.</li>
+    <li>An <span class="code2">env_cubemap</span> entity must be present for the water surface to render properly on sub-DX9 hardware. </li>
+  </ul>
+
+<p><strong>Note:</strong> Water is <strong>not</strong> a brush entity, and should not be attached an entity. Water brushes included in any brush entity will not render correctly.</p>
+
+  <h2>Construction</h2>
+
+  <p>To add a water volume to your level, follow these steps:</p>
+
+  <ol>
+	<li>Create a brush the size of the water volume using the <a href="../Hammer/html/Tool_Block.htm">Block Tool</a>.<br><br></li>
+	<li>Open the <strong>Texture Browser</strong> by clicking the <strong>Browse</strong> button on the <a href="../Hammer/html/Toolbar_Textures.html">Texture Bar</a>.<br><br></li>
+	
+	<li>Double-click the <span class="code2">tools\toolsnodraw</span> material in the Texture Browser.<br><br></li>
+	
+	<li>With your water brush selected, click the <a href="../Hammer/html/Toolbar_Map_Tools.html#ApplyCurrent">Apply Current Texture</a> button to assign the <span class="code2">toolsnodraw</span> material to the whole brush.<br><br></li>
+	<li>Select the <a href="../Hammer/html/Toolbar_Map_Tools.html#FaceEditTool">Texture Application</a> tool, which opens the <strong>Face Edit</strong> mode.<br><br></li>
+    <li>Left-Click the top face of the water brush in the 3D view to select it.<br><br></li>
+    <li>Click <strong>Browse</strong> to bring up the <strong>Texture Browser</strong> again.<br><br></li>
+    <li>Type &quot;water&quot;, without the quotes, into the <strong>filter</strong> field. This will show you all materials with &quot;water&quot; in their name. <br><br></li>
+    <li>Select a water material to apply by double-clicking it. One water material to try is <span class="code2">nature/water_canals_water2</span>.<br><br></li>
+    
+    <li>Click the <strong>Apply</strong> button on the <strong>Face Edit</strong> panel.<br><br></li>
+    <li>The brush should have water correctly applied. Compile and run your map to test it.</li>
+  </ol>
+
+<h2>Cubemaps and Water</h2>
+
+<p>Cubemaps are  important to use with water surfaces. On lower than DX9 level video cards, it is not possible to render the real-time reflective water shader. For these cards, an <span class="code2">env_cubemap</span> entity provides the pre-calculated environment map use to render water on sub-DX9 cards.</p>
+<p>Adding a <span class="code2">env_cubemap</span> to water surfaces:</p>
+<ol>
+    <li>Add an env_cubemap entity using the <a href="../Hammer/html/Tool_Entity.htm">Entity Tool</a>.</li><br><br>
+    <li>Place the <span class="code2">env_cubemap</span> above the top surface of the water, near the center.</li><br><br>
+    <li> Double-click the env_cubemap in the 3D view to bring up the <a href="../Hammer/html/Object_Properties.html">Object Properties</a> dialog.</li><br><br>
+    <li>Click on the <strong>Brush faces</strong> key in the <strong>Object Properties</strong>.</li><br><br>
+    <li>Click the <strong>Pick...</strong> button. The mouse cursor will change to the eye dropper icon.</li><br><br>
+    <li>Click the top water face to select it with the eyedropper. The face will highlight in red, to show it has been associated with the <span class="code2">env_cubemap</span> entity. </li>
+    <br><br>
+    <li>Close the <strong>Object properties</strong> dialog.</li><br><br>
+    <li>Compile and run your map. After the map is loaded, open the developers console and type &quot;<span class="code2">buildcubemaps</span>&quot;. The engine will calculate an environment map for each <span class="code2">env_cubemap</span> entity, and save the data into the <span class="code2">.bsp</span> file.</li>
+</ol>
+
+<h2>Creating Water Materials</h2>
+  
+  <p>See <a href="../Materials/water.html">Creating Water Materials</a> for information on how to create your own water materials. </p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

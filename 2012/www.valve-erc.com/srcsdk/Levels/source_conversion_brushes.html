@@ -1,0 +1,173 @@
+<html>
+
+<head>
+<title>Source Mapping:  Converting Brushwork</title>
+<link rel="stylesheet" type="text/css" href="../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Converting Brushwork</h1>
+<p>
+This section will help you out with converting brushwork in your old Half-Life 1
+map to the Source engine, or help you get started with Source based mapping if 
+you are familiar with Half-Life 1 mapping.  
+</p>
+
+<p>
+For more reading on other aspects of map conversion, see <a href='source_conversion.html'>Source
+Mapping for Half-Life 1 Mappers</a>.
+</p>
+
+<h2>World Brushes</h2>
+<blockquote>
+<p>
+All your world brushes should be fine without any changes.  
+</p>
+</blockquote>
+
+<h2>Basic Brush Entities</h2>
+<blockquote>
+<p>
+Let's start with the two core brush entities you're probably familiar with in
+Half-Life 1:  <span class=code2>func_wall</span> and <span class=code2>func_illusionary</span>.
+</p>
+
+<h3>func_wall</h3>
+<p>
+In a nutshell, if the 
+<span class=code2>func_wall</span>
+doesn't have a name or any kind of special rendering property, 
+just convert it to a 
+<span class=code2>func_detail</span>. The <span class=code2>func_detail</span>
+entity is new in Source.  It is basically a <span class=code2>func_wall</span>
+which has no special render properties or any other properties.  Like any
+brush entity, they do not block visibility.
+
+There is one exception about <span class=code2>func_detail</span>
+and render modes.  If you are using a Half-Life 1 rendermode SOLID
+(an old "{" texture) 
+then go ahead and convert the brush to a
+<span class=code2>func_detail</span>.
+It will automatically be rendered as it should be.  
+</p>
+
+<p>
+If you have func_wall entities with names because you are targeting them
+with an <span class=code2>env_render</span> for example, make the
+brush a <span class=code2>func_brush</span>.  Because you are probably
+doing something a bit more complex, you may wish to explore the new
+capabilities of Source and find some other way to get the same
+effect you are using.
+</p>
+
+<h3>func_illusionary</h3>
+<p>
+These haven't changed in Source, so you should be able to just leave your 
+existing ones as-is.:w
+</p>
+</blockquote>
+
+<h2>Rotating Doors and Other Entities with Origins</h2>
+<blockquote>
+<p>
+In Source, you no longer need to place an <span class=code2>ORIGIN</span> texture brush 
+tied to brush entitys needing an origin.  Instead, all brush entities now have an origin
+<i>point</i> associated with them.  You can see the origin point as a small "+" symbol
+on the brush in Hammer's 2d views.  To move the origin, click on the "+" and drag it to a new location.  
+You may want to zoom in a bit to better be able to select the point.
+Place this origin point where you want the rotation axis to be for your object.  So if you have a brush based
+<span class=code2>func_door_rotating</span>, put the origin on the side of the door 
+you want it to rotate about.
+</p>
+</blockquote>
+
+<h2>Trigger Brush Entities</h2>
+<blockquote>
+<p>
+Brush based trigger entities the remain the same as in Half-Life 1, with a few 
+difference.  There is still a <span class=code2>trigger_once</span> and 
+<span class=code2>trigger_multiple</span> entity in Source.
+
+When converting, texture all your trigger entities with the new <span class=code2>tools/toolstrigger</span>.
+
+The bigges change with triggers is how trigger entities target things.  Targeting entities in
+Source is rather different than in Half-Life 1, but much more powerful and useful to the
+mapper.  
+For more information on targeting and triggering, see 
+<a href='source_conversion_entities.html'>Converting Entities</a>.
+</p>
+</blockquote>
+
+<h2>Ladders</h2>
+<blockquote>
+<p>
+If you have any <span class=code2>func_ladder</span> entities in your map, you should texture them
+with the new <span class=code2>tools/toolsinvisibleladder</span> material.  Other than that, you won't
+need to change anything.
+</p>
+</blockquote>
+
+<h2>Water</h2>
+<blockquote>
+<p>
+If you have water in your map (<span class=code2>func_water</span> or otherwise), 
+convert all the brushes into world brushes.  Then texture them with a water texture from 
+a Source.  Paint all the sides of the water brush not visible with <span class=code2>tools/toolsnodraw</span>
+material.  There are a few special rules for using water in maps, which are covered
+in <a href='water.html'>Adding Water to a Level</a>.
+</p>
+
+<p>
+One warning:  you can't make water brushes anything but horizontal in Source.  
+So if you've got water brushes at an angle, you are out of luck.  You'll have 
+to find some other way to create the effect you want.
+</p>
+</blockquote>
+
+<h2>Special Materials and Textures</h2>
+<blockquote>
+<p>
+There are a few new materials available in Source which you will want to get familiar with.
+Below is a list of basic materials you may be familiar with that you need to convert.  There
+are additional special materials available in Source however we're only covering the ones
+with equivalents in Half-Life 1.
+</p>
+
+<h3>tools/toolsclip</h3>
+<p>
+This is the same clip texture you are used to in Half-Life 1.  It has the same behaviour
+as you are used to.  Replace all your old <span class=code2>CLIP</span> textures with
+<span class=code2>tools/toolsclip</span>.
+</p>
+
+<h3>tools/toolsnodraw</h3>
+<p>
+If you are familiar with the NULL texture from Half-Life 1 mapping, then you will
+understand this new material.  Basically, any face textured with this new material
+will not be drawn.  It can be used to texture faces of brushes you know the player will
+never see.  Since nothing is drawn on these faces, they won't add to the load
+on the engine to draw them.
+Replace all your old <span class=code2>NULL</span> textures with
+using the old <span class=code2>SKY</span> texture to create textures that 
+don't draw, also replace it with <span class=code2>tools/toolsnodraw</span>.
+</p>
+
+<h3>tools/toolsskybox</h3>
+<p>
+This is the same as the old <span class=2>SKY</span> texture.  Replace all your 
+<span class=code2>SKY</span> texture with the new 
+<span class=code2>tools/toolsskybox</span> material.
+</p>
+</blockquote>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

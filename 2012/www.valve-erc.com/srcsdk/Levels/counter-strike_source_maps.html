@@ -1,0 +1,203 @@
+<html>
+<head>
+	<title>Making levels for Counter-Strike: Source</title>
+	<link rel="stylesheet" type="text/css" href="../srcsdk.css">
+</head>
+<body>
+
+<div class="content">
+
+<h1>Making levels for Counter-Strike: Source</h1>
+
+<p>This document describes the basics entities needed to make levels for Counter-Strike: Source. It assumes you already have knowledge of basic Hammer functions and CS:S gameplay. See the <a href="../Hammer/index.html">Hammer User's Guide</a> for information on basic Hammer functions such as geometry creation and entity placement.</p>
+
+<a name="CSBasicEnts"></a><h2>Basic CS:S entities</h2>
+
+<table class="table" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="30%" class="cell"><p class="code2">info_player_terrorist</p></td>
+      <td width="70%" class="cell"><p>Start points for the terrorist team. One of these needs to be placed for each team member. 20 start points is typical. Should be placed at least 128 units apart.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class="code2">info_player_counterterrorist </p></td>
+      <td class="cell"><p>Start points for the counter-terrorist team. One of these needs to be placed for each team member. 20 start points is typical. Should be placed at least 128 units apart.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class="code2">func_buyzone</p></td>
+      <td class="cell"><p>A brush entity that defines the area where the team can purchase equipment. Should have the <span class="code2">tools/toolstrigger</span> material applied to all sides, completely cover the spawn area, and be set for the correct team.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class="code2">prop_physics_multiplayer</p></td>
+      <td class="cell"><p>Models that have physics properties (i.e., barrels, debris, etc). Must not be intersecting any other geometry where it&#8217;s placed. prop_physics_multiplayer entities use a simplified physics model designed for networked multiplayer games. See <a href="prop_types.html">Overview of Prop Types</a> for more information on the various types of prop entities. </p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class="code2">func_ladder</p></td>
+      <td class="cell"><p>A brush entity that makes a climbable surface (a ladder). Allows players to climb up and down the brush faces. Often applied with a texture that looks like a ladder (for example, the material <span class="code2">metal/metalladder001a</span>).</p>
+        <p>Alternatively, ladders can be created using the <span class="code2">tools/toolsinvisibleladder </span>material. In this case, simply assign the <span class="code2">toolsinvisibleladder</span> material to all sides of the brush. This makes an invisible ladder surface, and usually used in conjunction with a prop (model) ladder. </p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class="code2">point_viewcontrol</p></td>
+      <td class="cell"><p>Point entity use for camera locations when players join the game. Should be set to look at another point entity, typically an info_target.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class="code2">info_no_dynamic_shadow</p></td>
+      <td class="cell"><p>Point entity to stop player shadows from being applied to a particular set of brush faces. Sometimes needed when player shadows get cast on ceilings when players walk above. Open the entity properties, click the Pick&#8230; button, and then click to add a face to prevent that surface from getting shadows. Hold down CTRL to for additional faces, then click the Pick&#8230; button again when you're done.</p></td>
+    </tr>
+</table>
+
+<a name="CDDefusionEnts"></a><h2>Bomb Defusion gameplay entities</h2>
+
+<table class="table" cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="cell"><p class="code2">func_bombtarget</p></td>
+        <td class="cell"><p>Brush entity that determines where the bomb can be planted. When the bomb is planted then explodes inside the area, the <span class="code2">BombExplode</span> outputs are fired. The game handles all of the bomb planting and scoring logic &#8211; the <span class="code2">BombExplode</span> outputs are purely to add visual and damage effects.</p></td>
+      </tr>
+      <tr>
+        <td class="cell"><p class="code2">env_explosion</p></td>
+        <td class="cell"><p>Point entity for explosion effects when a bomb explodes. Creates a fireball sprite effect and will also effect physics models. Can also apply damage. A single <span class="code2">env_explosion</span> is typically placed at the center of the bomb site, triggered from the <span class="code2">BombExplode</span> outputs on the <span class="code2">func_bombtarget</span>.</p></td>
+      </tr>
+      <tr>
+        <td class="cell"><p class="code2">env_fire</p></td>
+        <td class="cell"><p>Point entity for secondary fire effects when a bomb explodes. Can also apply damage. Several <span class="code2">env_fire</span> entities are typically scattered around the bomb site, triggered from the <span class="code2">BombExplode</span> outputs on the <span class="code2">func_bombtarget</span>.</p></td>
+      </tr>
+      <tr>
+        <td class="cell"><p class="code2">ambient_generic</p></td>
+        <td class="cell"><p>Point entity that plays a .wav sound from the entity location. Can be used to play burning fire sound after the bomb explodes.</p></td>
+      </tr>
+    
+</table>
+
+<a name="CSHostageEnts"></a><h2>Hostage Rescue gameplay entities</h2>
+
+<table class="table" cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="cell"><p class="code2">hostage_entity</p></td>
+      <td class="cell"><p>Point entity that is placed for each hostage to be rescued in the map. A hostage NPC will spawn at this point. There are usually four hostages placed in each hostage rescue map.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class="code2">func_hostage_rescue</p></td>
+      <td class="cell"><p>Brush entity that defines the area where hostages are rescued. Hostages that get led into this area will be marked as rescued. </p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class="code2">info_node</p></td>
+      <td class="cell"><p>Point entity used for navigation of the hostage NPCs. <span class="code2">info_node</span> entities need to be placed in all areas where the hostages need to move. Paths are drawn between each node point. One node needs to be visible by the next node point to connect properly.</p></td>
+    </tr>
+</table>
+
+<a name="CSDecals"></a><h2>CS:S gameplay decals</h2>
+
+<p>Here is a list of some of the special materials that are
+used to mark gameplay areas in CS:S maps. They can be used as <a href="../Hammer/html/Tool_Decal.htm">Decals</a> or
+<a href="../Hammer/html/Tool_Overlay.htm">Overlays</a>.</p>
+
+<table class="table" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="28%" class="cell"><p>Bomb target decals</p></td>
+      <td width="72%" class="cell"><p>decals/target</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p>Directional decals</p></td>
+      <td class="cell"><p>decals/sitea<br>
+          decals/siteb<br>
+          decals/arrowlf<br>
+          decals/arrowrt<br>
+          decals/arrowuplf<br>
+          decals/arrowuprt<br>
+          cstrike/{sitea<br>
+          cstrike/{siteb<br>
+        </p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p>Hostage rescue point decal</p></td>
+      <td class="cell"><p>decals/hrpoint</p></td>
+    </tr>
+</table>
+
+<a name="CSRoundResets"></a><h2>Counter-Strike Round Restarts</h2>
+
+<p>At the end of each Counter-Strike: Source gameplay round, when end-of-round game conditions are met, the game resets itself for the next round. When this happens, most of the entities in the map reset to their original state, just as if the map was just loaded. However, the following list of entities are <em>not</em> reset, and continue in the same state in the all consecutive rounds:</p>
+<ul class="code2">
+	<li>env_soundscape</li>
+	<li>env_soundscape_proxy</li>
+	<li>env_soundscape_triggerable</li>
+	<li>env_sprite</li>
+	<li>env_sun</li>
+	<li>env_wind</li>
+	<li>env_fog_controller</li>
+	<li>func_brush</li>
+	<li>func_wall</li>
+	<li>func_buyzone</li>
+	<li>func_illusionary</li>
+	<li>func_hostage_rescue</li>
+	<li>func_bomb_target</li>
+	<li>infodecal</li>
+	<li>info_projecteddecal</li>
+	<li>info_node</li>
+	<li>info_target</li>
+	<li>info_node_hint</li>
+	<li>info_player_counterterrorist</li>
+	<li>info_player_terrorist</li>
+	<li>keyframe_rope</li>
+	<li>move_rope</li>
+	<li>info_ladder</li>
+	<li>point_viewcontrol</li>
+	<li>shadow_control</li>
+	<li>sky_camera</li>
+	<li>trigger_soundscape</li>
+	<li>worldspawn</li>
+</ul>
+<p>All other entities are reset to their original state at the beginning of the next round, and all pending outputs are cancelled.</p>
+<p>You can use a <span class="code2">logic_auto</span> point entity to trigger additional events to occur at the start of the  round. The <span class="code2">OnMapSpawn</span> output of the <span class="code2">logic_auto</span> will be fired when the map is first loaded, and at the beginning of the each round thereafter, after the reset. For example, in the map cs_havana, at the start of each round, a <span class="code2">logic_auto</span> has an <span class="code2">OnMapSpawn </span>output to a <span class="code2">logic_case</span> entity that randomly sets the routes open to the players each round. The <span class="code2">logic_case</span> enables and disables a series of <span class="code2">func_wall</span> brush entities that determines which routes are open and closed. For more information on how to use outputs, see <a href="entityio.html">Entity I/O</a>. </p>
+<a name="CSOtherEnts"></a><h2>Other important components</h2>
+
+<p>There are other entities and materials that are commonly
+used in Counter-Strike: Source maps. Here is a list of some of the most prominent ones. Note that you can also  click the <strong>Help</strong> button in the <strong>Object Properties</strong> dialog in Hammer for more information on the currently selected entity.</p>
+
+<table class="table" cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="cell"><p class=code2>
+	  trigger_multiple<br>
+      trigger_once</p></td>
+      <td class="cell"><p>Brush entities used to activate events, set soundscapes, etc.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class=code2>
+	  filter_activator_name <br>
+      filter_activator_team</p> </td>
+      <td class="cell"><p>Point entities that are used to determine what entities or players can activate a trigger.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p>Clip brushes &#8211; brushes with the <span class="code2">tools\toolsclip</span> material applied to all sides. </p></td>
+      <td class="cell"><p>Used to block off areas from players. Also blocks grenades.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p>Player clip brushes &#8211; brushes with the <span class="code2">tools\toolsplayerclip</span> material applied to all sides.</p></td>
+      <td class="cell"><p>Used to block off areas from players. Blocks players only &#8211; not NPCs or grenades.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p>Nodraw brushes &#8211; brushes with the <span class="code2">tools\toolsnodraw</span> material applied to all sides.</p></td>
+      <td class="cell"><p>Nodraw faces do not render, but the brushes still seal areas and cast shadows. Useful to put behind non-sealing geometry, such as models or displacements, to seal the map without rendering extra faces.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p>Water brushes &#8211; brushes with a water material applied to to the top surface.</p></td>
+      <td class="cell"><p>Water is created by making a brush volume and applying one of the water materials to the top surface and <span class="code2">tools\toolsnodraw</span> to all the other sides. See <a href="water.html">Adding Water</a> for further details on how to create water volumes.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class=code2>env_cubemap</p></td>
+      <td class="cell"><p>Need to be placed around the level for proper rendering of reflection/specular materials. See <a href="cubemaps.htm">Cubemaps</a> further details on how to use <span class="code2">env_cubemap</span>.</p></td>
+    </tr>
+    <tr>
+      <td class="cell"><p class=code2>env_soundscape</p></td>
+      <td class="cell"><p>Placed within a level to trigger different DSP (echo) effects and sound settings. See <a href="../Sound/soundscapes.html">Soundscapes</a> for further details on how to use env_soundscape.</p></td>
+    </tr>
+</table>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

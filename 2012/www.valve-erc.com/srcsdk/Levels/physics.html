@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Physics Entities</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+  <h1>Physics Entities</h1>
+  <p>The addition of physics to the Source engine has opened up a broad range of simulation possibilities. From swinging tires to constrained mechanisms, designers are now able to produce machines and objects that work in realistic ways physically. To create these objects, multiple physics entities must be employed to describe how entities are physically constrained or related to one another. Here we'll list these entities and their uses.</p>
+  <h2>Constraints</h2>
+  <p>In real-life, objects are <em>constrained</em> together by various means. Doors are attached to their frames via hinges that they can swing on. Your arm is attached to your torso via a ball socket joint. Heavy objects can be moved via a rope and pulley system. These concepts are exactly mimicked in the Source engine's physics implementation. Below is a list of the various constraint systems you can use to attach entities to one another.</p>
+
+  <table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_constraintsystem</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">When a large number of entities are all constrained together, it can cause a great deal of strain on the system to calculate all the interactions between them. One way to alleviate this is to combine a collection of constraints all acting on the same objects into one constraint system. This allows the physics system to solve those constraints in a much more timely manner. Anytime multiple constraints are acting on the same objects, a constraint system should be specified to ensure maximal performance.</p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_constraint</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">The most simple constraint available, this constraint simply attaches one entity to another, as if it were fixed by a rigid constraint like nails or glue. The entity defines two fields for the two entities to constrain. If either entity is left blank, the provided entity will be rigidly attached at the origin of the constraint. This is most often used to constrain objects to the world. Like all constraints, you may also specify a force or torque limit which the constraint will &quot;break&quot; at. When enough force or torque is applied to the object attached to the constraint it will break, causing it to disable itself and produces an output which can be used to orchestrate other events.</p>
+		  <p class="definition"><em>See maps/sdk_phys_constraint.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_ballsocket</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">A ball socket constraint is identical to how your arm attaches to your torso at the shoulder. An object is fixed to another object at a point and is able to rotate and move in a spherical motion around that point. This can be used to express the connection between a rope and a piece of world architecture within the game. The rope will be able to rotate in a sphere around the point on the world.</p>
+		  <p class="definition"><em>See maps/sdk_phys_ballsocket.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_hinge</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">Like the hinge of a door, this constraint allows the constrained objects to rotate in one axis of movement. The axis of hinge is expressed via a helper tool inside of Hammer. The hinge can be given a friction component which causes it to come to a rest more quickly like an old rusty hinge might. The &quot;load scale&quot; field is identical to the <em>phys_motor</em> implementation. </p>
+		  <p class="definition"><em>See maps/sdk_phys_hinge.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_lengthconstraint</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">This is a constraint that preserves the distance between two entities. If the &quot;Keep Rigid&quot; flag is set, it can be thought of it as a rod. If not, it acts like a virtual rope (with some amount of &quot;give&quot;).</p>
+		  <p class="definition"><em>See maps/sdk_phys_lengthconstraint.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_pulleyconstraint</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">Essentially, this constraint is really two length constraints and two points in space. It is similar to virtual rope connected to two objects, each suspended from a pulley above them. The constraint keeps the sum of the distances between the pulley points and their suspended objects constant. In other words, moving one constrained object will cause the other to move as well to keep the &quot;rope&quot; length constant.</p>
+		  <p class="definition"><em>See maps/sdk_phys_pulleyconstraint.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_convert</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">Sometimes it's necessary to keep an object completely static until a certain event has occurred. For instance, you may have a rock formation that you want to be immobile until a scripted explosion causes it to dislodge itself and tumble down on the player. While a <em>phys_constraint</em> could be used, using a <em>phys_convert</em> object makes this much more straightforward and fool-proof. The <em>phys_convert</em> object is able to convert static entities into physically simulated ones. <em> A prop_static</em> entity would behave like a <em>prop_physics</em> entity, while a <em>func_brush</em> entity would behave like a <em>func_physbox</em> entity after conversion. Because the entities are not simulated until after their conversion, they are much less of a load on the engine than if they were physical and constrained.</p>
+		  <p class="definition"><em>See maps/sdk_phys_convert.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_ragdollconstraint</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">Like a normal <em>phys_constraint</em> but used to tether ragdolls to a location in space. This constraint also allows the user to control how much movement in each axis is permitted, as well as how much friction is applied in each axis.</p>
+		  <p class="definition"><em>See maps/sdk_phys_ragdollconstraint.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_slideconstraint</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">This constraint allows movement along one axis. You can think of this like a shower curtain ring sliding along the curtain rod. Like the hinge constraint, the entity provides a visual helper for specifying the direction of travel.</p>
+		  <p class="definition"><em>See maps/sdk_phys_slideconstraint.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_keepupright</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">Some objects need to attempt to remain upright. This constraint applied torque to a physics object to attempt to do just that. The number of degrees of angular torque that can be applied per second is specified in the &quot;Angular Limit&quot; field of the entity. The higher the number, the more rigidly the object will maintain its upright positioning. </p>
+		  <p class="definition"><em>See maps/sdk_phys_keepupright.vmf </em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_spring</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">This is a physically simulated spring. The &quot;Length&quot; field specifies what is known as the <em>natural spring length</em>. This is how long the spring would be if it was at rest (nothing hanging on it or attached). When you attach something to the spring, it will stretch longer than its <em>natural length</em>. The amount of stretch is determined by the &quot;Sprint Constant&quot; field. The larger the spring constant the less stretch the spring will accommodate.</p>
+		  <p class="definition"><em>See maps/sdk_phys_sprint.vmf</em></p>
+	</tr>
+</table>
+<br>
+
+<h2>Miscellaneous</h2>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_magnet</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">An entity that acts like a magnet, attaching metallic physics objects to itself when they touch it.</p>
+		  <p class="definition"><em>See maps/sdk_phys_magnet.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_motor</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">An entity that tries to spin a target entity at a particular speed. This can be thought of as a motor with an axle connecting directly to an object. Connected to a tire, it could make it spin much like a car's tire. There is also a &quot;load scale&quot; field which works similarly to horsepower. The motor will attempt to move an object at a given velocity, but if that object creates resistance (from a collision, for instance), the motor will use the load scale field to increase its output to continue and move the object at the correct speed. A value of &quot;2&quot; would make the motor exert twice as much force as it normal would need to in order to move the attached object, should it meet with resistance. </p>
+		  <p class="definition"><em>See maps/sdk_phys_motor.vmf </em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_ragdollmagnet</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">A simple entity that attracts ragdolls towards it. This is often useful for getting a more reliably dramatic death from a corpse. The entity can attract at a point, or as a &quot;bar&quot;, meaning the entity is pulled towards that axis but not directly at a point in space. This is useful for pulling a ragdoll towards a railing's edge at any point along that edge, while not pulling it towards a specific point. </p>
+		  <p class="definition"><em>See maps/sdk_phys_ragdollmagnet.vmf</em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_thruster</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">This entity applies force to an entity along a specified axis. This is directly analogous to a rocket's engines propelling it forward. The entity also has a built-in timing feature which allows the designer to specify a duration for the thruster to propel its target, then stop. </p>
+		  <p class="definition"><em>See maps/sdk_phys_thruster.vmf </em></p>
+	</tr>
+</table>
+<br>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>phys_torque</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+		  <p class="definition">Like the phys_motor entity, this entity applies angular velocity to an object. This entity also has the ability to ignore the mass of the object being turned, as well as having a built in timer which allows the entity to exert torque on the attached entity for a given amount of time, disabling itself afterwards. </p>
+		  <p class="definition"><em>See maps/sdk_phys_torque.vmf</em></p>
+	</tr>
+</table>
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

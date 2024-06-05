@@ -1,0 +1,172 @@
+<html>
+
+<head>
+	<title>Source Mapping for Half-Life 1 Mappers</title>
+	<link rel="stylesheet" type="text/css" href="../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+	
+<h1>Source Mapping for Half-Life 1 Mappers</h1>
+<p>
+So you want to get started with mapping for Source.  Perhaps you've got a map 
+you want to port, or an idea for a brand new map you want to create.  
+If you are familiar with mapping for Half-Life 1 based games, you will find mapping
+in Source a pleasure.  Awkward things have been removed, complex things simplified,
+and many new powerful features added.  
+</p>
+
+<p>
+This document will provide you with information to get you going.  It assumes you
+have some familiarity with editing maps for the Half-Life 1 engine, and that
+you have used <strong>Valve Hammer Editor</strong> before.</p>
+
+
+<h2>Some General Advice</h2>
+<blockquote>
+<p>
+Don't worry too much about
+trying to add a lot of new features to your map at first - concentrate on just
+getting your map to work as it did in Half-Life 1.  Later, start adding new
+features specific to Source.  You'll probably feel like a a kid in a candy
+store at first, tempted by all kinds of new features in Source.  You will 
+be tempted to make your maps much more detailed.  But in fact if you don't
+watch out, you will quickly create a map that even the Source engine can't run!
+</p>
+<p>
+So start simple.  Experiment, yes.  Try new stuff, yes.  But don't go overboard! 
+If you are converting an existing map, your best approach is to just convert the map
+as-is as best you can.  Only then start adding new features.
+</p>
+</blockquote>
+
+<h2>New/Changed Terms and Ideas</h2>
+<blockquote>
+<p>
+Besides the old terms and ideas you're used to from Half-Life 1 mapping,
+there are a few new terms and ideas you'll find in Source mapping.  Below is a brief
+description of some changes that will help you transition to Source mapping.
+</p>
+
+<h3>Textures and Materials</h3>
+<p>
+Textures are now referred to as materials.
+Basically, materials and textures are the same thing - however 
+materials have a lot more information than textures did, including 
+material type, bump map and specularity information, etc.  This new name 
+reflects this increase in information.
+</p>
+
+<h3>Props and Models</h3>
+<p>
+In Source maps, it is very common to use small (and large) models to represent props
+and other objects in your map.  These props are used instead of creating brush based
+objects for the map.  You can use the <span class=code2>hlmv.exe</span> program to
+explore all the prop models available in Source.  Half-Life 2 and Counter-Strike: Source 
+both contain a huge number of useful prop models which you may use in your new
+Source map.
+</p>
+
+<p>
+For more information on props and how to use them, see <a href='performance_and_visibility.html'>
+Controlling Geometry Visibility and Compile Times</a>.
+</p>
+
+<h3>Map Units and Sizes</h3>
+<p>
+Units in Source maps are the same as those in the Half-Life 1 engine.  You will not need to 
+rescale your maps.
+</p>
+<p>
+Also, maps can be much much larger in Source than in Half-Life 1.  If you aren't going to change the
+size of your map, you are free to put your map anywhere in the Hammer grid.
+</p>
+
+</blockquote>
+
+<h2>Materials</h2>
+<blockquote>
+<p>As mentioned above, using Source you will refer to Materials instead of Textures.
+In Half-Life 1, a texture was just an image file; whereas a Source material is an
+image, but also information on bump mapping, specularity and reflection, rendering
+specifics for different DirectX levels, plus a number of other material properties.
+</p>
+
+<p>
+In Source, you no longer will have to use WAD files - which were used to store
+textures for Half-Life 1 maps.  Instead, all materials are stored in separate files -
+one for each material.  This makes it much easier to find and use materials without having
+to hunt around for the right WAD to include, etc.
+</p>
+<p>For information on converting .WAD files to Source materials, see <a href="source_conversion_textures.html">Converting Textures</a>. </p>
+<p>
+For more information on materials, see the Source SDK document on 
+<a href='../Materials/materials_creation.html'>Creating Materials</a>
+</p>
+
+</blockquote>
+
+<h2>Brushwork and Brush Entities</h2>
+<blockquote>
+<p>
+In the first pass of conversion, you should concentrate on converting 
+your brushwork - both world and entity brushes.   Working with brushes in
+Source is virtually identical to working with the Half-Life 1 engine, so you should
+have no problems creating and manipulating brushwork in Hammer if you are familiar
+with editing for Half-Life 1.
+</p>
+
+<p>
+For information 
+on brush conversion, see <a href='source_conversion_brushes.html'>Converting
+Brushwork</a>.
+</p>
+</blockquote>
+
+<h2>Non-Brush (Point) Entities</h2>
+<blockquote>
+<p>
+Once you have converted your brushwork, you will need to begin transforming
+entities in the map.  Some, such as <span class=code2>light</span> and
+<span class=code2>ambient_generic</span> you may not need to change at all.
+But others, especially when one entity is triggering one or more other
+entities, will need to be replaced with new Source specific entity targeting
+methods.
+</p>
+
+<p>
+For more detailed information on entities, targets and triggering in Source, see
+<a href='source_conversion_entities.html'>Converting Entities</a>.
+</p>
+
+<p>
+For a list of some
+of the more interesting new entities in Source, see <a href='source_conversion_cool.html'>New Features
+of Source</a>.
+</p>
+
+</blockquote>
+
+<h2>Building and Running Your Map</h2>
+<blockquote>
+<p>
+For information on building maps, see <a href='../Hammer/html/Running_Compiled_Maps.html'>Running
+Compiled Maps</a>.  
+</p>
+<p>
+In Half-Life 1 based maps, the traditional way of checking your map was to  use the <span class="code2">r_speeds</span> and <span class="code2">developer</span> console commands.  These commands would show  you the world and entity polygon count of your map where you were looking plus entity activity as it occurred. In Source, you are given a brand new set of tools which are far more useful and  informative to debug your map. </p>
+
+<p>See <a href='optimizing_and_checking.html'>Optimizing and Checking Your Map</a> for a  description of some useful developer commands. </p>
+</blockquote>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

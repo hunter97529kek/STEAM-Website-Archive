@@ -1,0 +1,125 @@
+<html>
+
+<head>
+<title>Source Mapping:  Converting Entities</title>
+<link rel="stylesheet" type="text/css" href="../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Converting Entities</h1>
+
+<p>
+This section will help you out with converting entities in your old Half-Life 1
+map to the Source engine.  It will also provide you information on the new
+triggering and targeting methods available for entities in Source.
+</p>
+
+<p>
+For more reading on other aspects of map conversion, see <a href='source_conversion.html'>Source
+Mapping for Half-Life 1 Mappers</a>.
+</p>
+
+<h2>Introduction</h2>
+
+<blockquote>
+<p>
+How you trigger entities in a map has gone through some very large and positive
+changes in Source.  In Half-Life 1 mapping, you typically used the "target" attribute
+of an entity such as a <span class=code2>func_button</span or ><span class=code2>trigger_multiple</span>
+to name an entity you wished to "target" when the entity was triggered.  Two
+big problems with this method is that you couldn't target more than one entity
+(without using a <span class=code2>multi_manager</span>), you couldn't specify
+HOW to trigger the target (turn a light on?  off?  toggle?), or when to target (when
+the user enters a <span class=code2>trigger_multiple</span>, leaves it?).
+</p>
+<h3>Input and Output</h3>
+<p>
+The new way of targeting entities is both very different than what you are used
+to with Half-Life 1, but also much more powerful and versatile.  In Half-Life 1,
+a typical entity such as a <span class=code2>func_button</span> could only target
+a single entity (by name) when the button was activated.  That basic concept of
+activation is still in Source, but now you have much more control over when the
+target is activated, and how the target is activated.  
+</p>
+<p>
+Hammer also now provides you with much more information as well.  When you view an 
+entity's outputs, you can see all the outputs it has. When you view it's inputs
+you can see all of those as well (if any).  
+
+</p>
+
+<h3>No More Multi_Manager</h3>
+<p>
+In Half-Life 1, you had to use <span class=code2>multi_manager</span> entities if you 
+wanted to trigger more than one thing at once.  For example if you had a button,
+and you wanted 5 things to happen when the button was used, you would have to make
+the <span class=code2>func_button</span> trigger a <span class=code2>multi_manager</span>
+entity which in turn would trigger the 5 other entities (sounds, lights, etc.)  This
+made things very complex.
+In Source on the other hand, any entity capable of output can now trigger any
+number of events itself.  
+</p>
+</blockquote>
+
+<h2>An Example</h2>
+<blockquote>
+<p>
+Suppose we want a <span class=code2>trigger_multiple</span> set up such that when a player
+enters it (first triggers it), a light goes on, and a "Hello" sound is played.  When the
+player leaves the trigger, the light goes off and a "Good Bye" sound is played.  Pretty complex
+to do in Half-Life 1, but easy in Source.  
+</p>
+<p>
+To set this up in Source, first we'll make a <span class=code2>trigger multiple</span>, 
+a light (<span class=code2>light</span> entity named "a_light"), 
+a hello sound (<span class=code2>ambient_generic</span> named "say_hello") and 
+a good bye sound (<span class=code2>ambient_generic</span> named "say_goodbye").
+</p>
+<p>
+Next we'll go to the <b>Outputs</b> tab in the <span class=code2>trigger_multiple</span> Object
+Properties dialog box.  Here we can add 4 new outputs to the entity, as illustrated below.
+</p>
+<blockquote><p>
+<img src='images/ent_trigger_outputs.jpg'>
+</p></blockquote>
+<p>
+Notice that not only can the <span class=code2>trigger_multiple</span> trigger more than one thing
+but also at different times.  It has two outputs set to only go off when first touched (<span class=code2>
+OnStartTouch</span>) and two to go off only when the player leaves (<span class=code2>OnEndTouch</span>).
+Also note how the outputs target specific actions on each target entity.  When the player enters
+the trigger, the light is specifically targeted to turn on, and the "hello" sound to play.  When the
+player leaves, the light is turned off, and the "goodbye" sound triggered to play. 
+</p>
+<p>
+Also notice the "Delay" column in the Outputs table.  This is how many seconds you want to delay before
+triggering the target.  Though our example has all zeros, it would be easy to modify our example to 
+use the delay.  For example if we wanted to wait 2 seconds before turning off the light as the
+user left the trigger, we could set the delay value to "2" for the <span class=code2>OnEndTouch</span>
+trigger that turns off the light.
+</p>
+
+<p>
+Besides viewing the outputs of an entity, you can also view the inputs - that is, what is 
+triggering it.  If we view the <b>Inputs</b> tab of the light entity in our example, we'll 
+see something like this...
+</p>
+<blockquote><p>
+<img src='images/ent_light_inputs.jpg'>
+</p></blockquote>
+<p>
+So now when viewing an entity in Hammer, you can see exactly what is triggering it (if anything).
+</p>
+</blockquote>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+	<title>Level Overviews</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Creating Level Overviews</h1>
+
+<p>Some Mods (Counter-Strike:Source, Day of Defeat:Source) have a minimap mode, that shows a level overview and projects players and objects on that map. An <em>overview map</em> is an image made from in-game screenshots and must be created once a new map is finished:
+</p>
+<ol>
+<li>Start the game. Click <strong>Options</strong> and switch to the <strong>Video </strong>tab. Change <strong>Resolution </strong>to &quot;1280x1024&quot; pixels and the <strong>Aspect Ratio</strong> to &quot;Normal&quot;.</li>
+<br><br>
+<li>Load the new level with the <span class="code2">map &lt;mapname&gt;</span> <a href="../console/developer_console.html">console</a> command and enable <span class="code2">"sv_cheats 1"</span> and <span class="code2">"developer 1"</span>.</li>
+<br><br>
+<li>Join the Spectator team.</li>
+<br><br>
+<li>Bind the screenshot command to a key, eg. <span class="code2">"bind p screenshot"</span> using the console. </li>
+<br><br>
+<li>Remove any HUD elements with console commands <span class="code2">"cl_drawhud 0"</span> and <span class="code2">"hidepanel all".</span></li>
+<br><br>
+<li>Remove disturbing world effects like skyboxes, fog etc. (<span class="code2">"fog_override 1"</span>).</li>
+<br><br>
+<li>Move in spectator mode to a position where you can see the whole level from above.</li>
+<br><br>
+<li>Switch to orthographic mode with the console command <span class="code2">"cl_leveloverview 1"</span>. The &quot;1&quot; is the scale factor.</li>
+<br><br>
+<li>Set "<span class="code2">cl_leveloverviewmarker 1024</span>" to show a red helper line on the right.</li><br><br>
+<li>Now change scale and position, so the map fits into the square defined by the red line.<br><br>
+
+	Here is a screenshot how it would look for the map <span class="code2">de_dust2</span> in Counter-strike:Source:<br>
+<br>
+  
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/overviews01.jpg"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Sample raw level overview for the de_dust2 map. </td>
+		</tr>
+	</table>
+	<br><br>
+
+<li>The current projection data (position and scale) will be updated in the console, eg <span class="code2">"Overview: scale 6.00, pos_x -2651, pos_y 4027"</span></li><br><br>
+<li>Once everything is perfect, take a screenshot (using the key you bound to &quot;screenshot&quot;) and <strong>write down </strong>the projection data values. You will need them in a later step.</li>
+<br><br>
+<li>
+Close the game and open the screenshot in an image editor. Screenshots are found in the &quot;<span class="code2">&lt;game dir&gt;\screenshots</span>&quot; directory. Using the image editor, remove the unused border right of the red line so the image size is reduced to 1024x1024 pixels. 
+</li>
+<br><br>
+<li>Modify the image as you like or add an alpha channel to blend out unused areas. Save
+  the final iamge as <span class="code2">mapname.TGA</span> where <span class="code2">mapname</span> is the name of your .BSP file. Save the .TGA in your material source folder (eg. &quot;<span class="code2">sourcesdk_content\cstrike\materialsrc\overviews\<em>mapname</em>.TGA</span>&quot;)</li><br><br>
+<li>Run "<span class="code2">vtex.exe mapname.TGA</span>" to create a matching .VTF texture file (eg. <span class="code2">counter-strike source\cstrike\materials\overviews\mapname.VTF</span>). Make sure that <strong>Current Game</strong> is set correctly in the SDK window for the Mod your working on. More information on creating materials can be found in <a href="../Materials/materials_creation.html">Creating Materials</a>. </li><br><br>
+<li>In the same folder as this .VTF, using a text editor, add a new material file, <span class="code2">mapname.VMT</span>, which should look like this:
+<pre class="code">"UnlitGeneric"
+{
+	"$translucent" "1"
+	"$basetexture" "overviews/mapname"
+	"$vertexalpha" "1"
+	"$no_fullbright" "1"
+	"$ignorez" "1"
+}</pre></li>
+<br>
+<li>Finally, in a text editor, create a text file <span class="code2">mapname.txt</span> in <span class="code2">\resource\overviews</span> (eg. <span class="code2">counter-strike source\cstrike\resource\overviews</span>) that contains
+  the necessary projection data:
+<pre class="code">"mapname"
+{
+	"material"	"overviews/mapname"	// texture file
+	"pos_x"		"-2651"	// X coordinate,
+	"pos_y"		"4027"	// Y coordinate,
+	"scale"		"6.0" 	// and used scale used when taking the screenshot
+	"rotate"		"0"	// map was rotated by 90 degress in image editor
+	"zoom"		"1.3"	// optimal zoom factor if map is shown in full size
+}</pre></li><br><br>
+</ol>
+
+
+
+
+  
+
+
+
+</div>
+</body>
+</html>

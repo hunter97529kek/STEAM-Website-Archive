@@ -1,0 +1,101 @@
+<html>
+
+<head>
+	<title>Source Mapping:  Converting Textures from Half-Life 1 to Source</title>
+	<link rel="stylesheet" type="text/css" href="../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Converting Textures from Half-Life 1 to Source</h1> 
+
+<p> This document explains how to convert Half-Life 1 WAD file textures to new Source materials. You will want to do this if you wish to use old textures from a map you are converting. </p>
+
+<p> Generally though, converted textures do not look nearly as good as ones made for Source. Old textures are usually always low resolution (128x128 or so), whereas Source materials are higher resolution (512x512). HL2 and Counter-Strike: Source both come with a large number of materials of all types, which you are free to use in any Source map you may make. </p>
+
+<p>For more reading on other aspects of map conversion, see <a href='source_conversion.html'>Source Mapping for Half-Life 1 Mappers</a>.</p>
+
+
+<h2>Converting Wads</h2>
+<blockquote>
+<p> Valve provides a tool for converting your existing WAD files. It is called XWAD. XWAD will make .TGA, .VTF, and .VMT files for each texture in a WAD file. In addition, it will create .resizeinfo files in the materials directory if it has to resize the textures. Then Hammer's <b>File-&gt;WAD to Materials</b> command will use them to rescale texture coordinates. </p>
+</blockquote>
+
+<h2>Running XWAD</h2>
+<blockquote>
+<p>
+Run XWAD from a command prompt window.  XWAD is located in the <span class="code2">\bin</span> directory, underneath where you've installed <strong>Steam</strong> and the <strong>Source SDK</strong>.</p>
+
+<p>For example, if you've installed the <strong>Source SDK</strong> here, where <span class="code2"><em>username</em></span> is your Steam login name:</p>
+<p class="code">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\sourcesdk\</p>
+
+<p>The <span class="code2">XWAD.exe</span> will be located in the <span class="code2">\bin</span> directory here:</p>
+
+<p class="code">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\sourcesdk\bin</p>
+
+<p>To use XWAD, you'll need to give it several specific command lines to tell it what WAD to convert and where to put the results. </p>
+<p> The command line options you need to give it are as follows:</p>
+
+<p><span class="code">-BaseDir &lt;basedir&gt;</span></p>
+<p>Specifies the root directory of your game installation. For example if you were converting a wad for Counter-Strike: Source, you would use a path something like <span class="code2">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\counter-strike source\cstrike</span></p>
+
+<p>When you run XWAD, two folders will be created under the base directory, assuming they don't already exist. One is named <span class="code2">materials</span> and will have a new sub-directory named after your wad. XWAD will place all the converted texture VTF and VMT files in this directory. The other directory created is named <span class="code2">materialsrc</span> and will also contain a sub-directory named after the WAD. XWAD will place TGA versions of each texture in this directory.</p>
+
+<p><span class="code">-WadFile &lt;wadfilename&gt;</span></p>
+<p>Specifies the name of the WAD file you are converting.</p>
+</blockquote>
+
+<h2>An XWAD Example</h2>
+<blockquote>
+<p>Here is a simple example of using XWAD. For additional help with XWAD, just run it with no arguments, and it will display a list of all command line options available. </p>
+
+<p class="code">xwad.exe -BaseDir "c:\Steam\SteamApps\<em>username</em>\counter-strike source\cstrike\" -WadFile d:\Sierra\Half-Life\cstrike\waterworks.wad</p>
+
+<p>Converts a WAD file named <span class="code2">waterworks.wad</span> into a set of new materials in your CS:Source installation. All the new materials (VMF and VMT files) are created in the folder <span class="code2">materials\waterworks</span> in your CS:Source installation. An additional folder named <span class="code2">materialsrc\waterworks</span> is also created with TGA images of each texture.</p>
+
+</blockquote>
+
+<h2>Using Existing Source Materials</h2>
+<blockquote>
+<p>As mentioned in the introduction to this document, there are a number of very good materials already in Half-Life 2 and Counter-Strike: Source which you may use. You will find many generic textures such as grass, rock, gravel, stone, water, glass, etc. which you can reuse. They will be superior to any texture you convert with XWAD. Remember that none of your converted textures will have bump mapping, specularity, or any of those other special features of Source. They also will be a lot lower resolution, and will not look very good in-game.</p>
+
+<p>When you first go to convert a map, go ahead and use all your converted textures. Then make a pass over your map and replace all the old water textures with new existing water materials. Do the same for glass unless you've got a specific need. </p>
+
+<p> Next, you might go over the other more generic nature textures available such as sand, gravel, grass, rock, etc. They will again look much better than your converted textures. The same is true for more generic plaster, stucco, stone and brick materials. </p>
+</blockquote>
+
+<h2>Improving Converted Textures</h2>
+
+<blockquote>
+<p> If you want to rework your textures to be higher resolution or to use other features in Source not set in the automatic conversion, you should read the <a href='../Materials/materials_creation.html'>Creating Materials</a> document. It provides extensive details on how to create and work with materials and their properties. </p>
+
+<p>Note that XWAD creates a set of TGA files for your textures, you can use them as a base for modification.</p>
+</blockquote>
+
+<h2>Texture Scaling</h2>
+
+<blockquote>
+<p> It is standard to scale all materials in Source to 0.25 scale, whereas in Half-Life 1 you usually scale textures to 1.0 scale. It may seem odd to use such a small scale at first, but it is the usual method for Source mapping. </p>
+
+<p> Since Source materials are 512x512, a single material scaled to 0.25 will perfectly cover a 128x128 brush. If you construct all your building walls around a standard brush height of 128 tall, you will have no problem using most materials for texturing at this scale. </p>
+</blockquote>
+
+<h2>Using Prop Models to Replace Texture Details</h2>
+<blockquote>
+
+<p> Exploring the models folder in Hammer will show you that there are a large number of prop models available for use. Many of these prop models (such as windows) can be used for very effective replacements of details normally placed on a texture.</p>
+
+<p> For example it is very common in Half-Life 1 textures for details such as windows, doors, trim, etc. to be part of the texture. However Source is capable of handling much higher detail levels. So instead of using textured on windows and other such details, use a more generic texture and then place a prop model on the brush surface to represent the detail. This gives your map a much higher level of detail at very little cost to the engine. </p>
+<p> For more information on prop models, see <a href='performance_and_visibility.html'> Controlling Geometry Visibility and Compile Times</a> and <a href="prop_types.html">Overview of Prop Types</a>. </p>
+</blockquote>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>
