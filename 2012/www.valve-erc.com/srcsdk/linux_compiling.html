@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Compiling under Linux</title>
+<link href="srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Compiling your Mod under Linux
+</h1>
+<p>To have a successful multiplayer mod a Linux version of your server is a must. Much of the grunt work of getting a Linux server binary created has been automated. This document describes the environment and configuration needed to get you going with a Linux port. 
+</p>
+
+<h2><br>
+Requirements</h2>
+<p>The following tools are required to compile the SDK under Linux.
+<ul>
+<li>GCC 3.4.1 or above ( <a href="http://gcc.gnu.org">http://gcc.gnu.org</a> ).
+<li>Xerces XML parser 2.6.0 or above ( <a href="http://xml.apache.org/xerces-c/">http://xml.apache.org/xerces-c/</a> ).
+<li>GLIBC 2.3.2 or above.
+</ul>
+<p>Slackware 10.0 ( <a href="http://www.slackware.org/">http://www.slackware.org/</a> ) is a good starting base to create your compiling environment. </p>
+
+
+<h2><br>
+Setting up the Makefile</h2>
+<p>As part of the compile process the Microsoft Visual C Project file used to compile your mod under Windows is converted into a snippet of a Makefile. This conversion process needs to be seeded with a few configuration parameters, all of which are contained in <span class="code2">linux_sdk/Makefile</span>. At a minimum you should configure these parameters:</p>
+<ul>
+<li><span class="code2">MOD_PROJ</span>, this is the filename of the Windows project file used to compile your mod. 
+<li><span class="code2">MOD_CONFIG</span>, the configuration set to use when compiling the Linux version of your mod. Typically this is the Release Win32 option. The easiest method to determine this parameter is to leave it at default, run the make process once and then look at the Makefile snippets that are produced and select the appropriate one.
+<li><span class="code2">GAME_DIR</span>, the path to an installation of the game.
+<li><span class="code2">CC</span>, <span class="code2">CPLUS</span>, <span class="code2">CLINK</span>, <span class="code2">CPP_LIB</span>, these parameters should be pointed to your particular install of GCC 3.4.1.
+<li><span class="code2">XERCES_INC_DIR</span>, <span class="code2">XERCES_LIB_DIR</span>, the installation directory of the Xerces library.
+</ul>
+<p>Once these configuration parameters are set compiling your mod should be a simple as running:
+<table width="100%" cellpadding="8"> 
+<tr class="code"><td><p><b>make</b></p></td></tr>
+</table>
+<p>This will compile the <span class="code2">vcpm</span> program, run this against your VCProject file and then use the resulting Makefile snippet and the configuration parameters you set above to compile your mod.
+</p>
+
+<h2><br>
+Running your Mod</h2>
+<p>To run the mod copy the file produced by the make process to <span class="code2">&lt;mod dir&gt;/bin/server_i486.so</span> and then run <span class="code2">srcds_run</span> with the appropriate <span class="code2">-game</span> parameter.
+</p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

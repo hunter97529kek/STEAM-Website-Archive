@@ -1,0 +1,89 @@
+<html>
+<head>
+	<title>My First MOD</title>
+    <link href="srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>My First MOD</h1>
+
+<p>This tutorial will teach you how to create, setup and build your first simple HL2 MOD.In this MOD we will change the speed at which Half-Life 2's rocket travels through the world.</p>
+<h2>1) Create the MOD project </h2>
+
+<p>For the purpose of this tutorial we will call our first MOD, &ldquo;MyMod&rdquo;. When you make your own MOD this can be any name you wish (i.e. &ldquo;QuickMod&rdquo;, &ldquo;TreasureTroll&rdquo;, etc.)</p>
+	
+<p>To create a MOD project: </p>
+<ol>
+	<li>Open the <strong>Source SDK</strong> application from Steam's <strong>Tools</strong> menu.<br><br></li>
+	
+	<li>Open <strong>Create A Mod</strong> from the <strong>Applications</strong> group.<br><br></li>
+	
+	<li>Select the <strong>Modify Half-Life 2 </strong>option.<br>
+    <br></li>
+	
+	<li>Specify where you would like the MOD's project to be placed <em>(i.e. C:\MyMod)</em><br><br></li>
+	
+	<li>Enter the name of your MOD. In this example, we'll use &quot;MyMod&quot;.</li>
+</ol>
+
+	<p>The Steam application will then copy all the relevant files to the destination directory that you specified. You now have a copy of Half-Life 2's source code at that location which you can modify. </p>
+	
+	<h2>2)&nbsp;Open the MOD solution</h2>
+	<ol>
+		<li>Launch the <strong>Microsoft Visual C++ .NET</strong> <strong>2003 v7.1 </strong>application.<br>
+	  <br></li>
+		
+		<li>Select <strong>File-&gt;Open Solution</strong> from the menu and open the <strong> Game_SDK</strong> solution located in your MOD's <em>src</em> directory. </li>
+	</ol>
+	
+<h2>3) Alter the rocket&rsquo;s speed</h2>
+
+<P>Open source file <B><I>hl2_dll/weapon_rpg.cpp</I></B></P>
+
+<P>At the top of the file, find the line:</p>
+
+<P class=code2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#define RPG_SPEED 1500</P>
+
+<P>Change this line to read:</P>
+
+<P class="code2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#define RPG_SPEED 400</P>
+
+<P>By altering this number, we&rsquo;ve told the rocket to travel at 400 units per second (or about 33 feet per second). Previously the rocket traveled at 1500 units per second (125 feet per second). The difference in speed will be very apparent when we compile and run the MOD.</P>
+
+<h2>4) Set the active configuration</h2>
+
+<p>We'll need to set our active <em>configuration</em> to &quot;Release HL2&quot;. </p>
+
+<p>To do this:</p>
+
+<ol>
+	<li>Select <strong>Build-&gt;Configuration Manager</strong>.<br><br></li>
+	
+	<li>Change the <strong>Active Solution Configuration</strong> drop-down list to &quot;Release HL2&quot;<br><br></li>
+	
+	<li>Select <strong>Close</strong>.</li>
+</ol>
+
+<h2>5) Compile the project</h2>
+
+<p>Now we are ready to build the solution.Choose<b> Build-&gt;Build Solution </b>to begin. When the requested compilation has completed there will be a <i>server.dll</i> and <em>client.dll </em>file in the <i>MyMod/bin</i> directory <em>(ie: C:\MyMod\MyMod\Bin)</em>. This is the custom server and client DLL for our MOD and is one of the pieces that would be distributed to end-users.</p>
+	
+<h2>6) Run the MOD</h2>
+
+<p>In the directory that you created your MOD, there will be a batch file called <em>run_mod.bat</em>. Use this batch file to launch your MOD.  When the engine has loaded, you&rsquo;ll be taken to the title screen.Hit the tilde key (<b>~</b>) to bring up the development console. This console will provide you with numerous tools to help you create content for the Source engine. Load a map and type &ldquo;<span class="code2">impulse 101</span>&rdquo; to give yourself a load of weapons. Select and fire the RPG to view the changes you've made. </p>
+	
+<h2>7) You’ve built your first MOD</h2>
+
+<p>You’ve now setup and built your first MOD. See the <a href="index.html">SDK Documentation</a> page for a listing of programmer documentation to help you add more features to your MOD. </p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

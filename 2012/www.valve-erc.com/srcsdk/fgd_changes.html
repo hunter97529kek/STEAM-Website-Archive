@@ -1,0 +1,119 @@
+<html>
+
+<head>
+	<title>Entity Definitions (.FGD) File Updates</title>
+	<link rel="stylesheet" type="text/css" href="srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+
+<h1>Entity Definitions (.FGD) File Updates</h1>
+
+<p>These changes to the .FGD files have been made from the initial SDK release. The .FGD files are used by the Valve Hammer editor to provide a list of usable entities for each game. These files are automatically received when you get a Source SDK update.<br>
+<br>
+</p>
+
+<p><strong>March 9, 2005 Update</strong> &middot; Initial clean up pass of all .FGD files.
+<hr noshade size="1px" style="padding: 1px"></p>
+
+
+<p class="code2">base.fgd</p>
+<ul>
+	<li>Standardized formatting in a lot of entity blocks.</li>
+	<li>Deleted these unused entities:<br><br>
+
+		weapon_cycle<br>
+		game_player_hurt<br>
+		game_team_set<br>
+		move_door<br>
+		move_roate<br>
+		move_wheel<br>
+		trigger_fog<br>
+		func_water<br>
+		func_ladder<br>
+		env_global (moved to halflife2.fgd)<br>
+		trigger_waterydeath (moved to halflife2.fgd)<br>
+		filter_activator_team (moved into individual game .FGDs).<br><br>
+	</li>
+<li>Deleted"CS Hostage: Escape Point" from HintNode baseclass.</li>
+	<li>Deleted Angles from keyframe_rope.</li>
+	<li>Deleted lightingoriginhack from Studiomodel, BaseNPC baseclasses.</li>
+	<li>Deleted redundant Enable/Disable keys from BaseNPCmaker (it was in base class).</li>
+	<li>Deleted many commented out and unused hint types from HintNode baseclass.</li>
+	<li>Deleted some commented out and unused spawnflags from prop_door_rotating.</li>
+	<li>Deleted obsolete key "message" from trigger_multiple.</li>
+	<li>Added Targetname base to env_steam, removed targetname key.</li>
+	<li>Moved phys_magnet to physics entities section.</li>
+	<li>Moved prop_physics_multiplayer to props section.</li>
+	<li>Added usage comments to func_usableladder and func_ladderendpoint.</li>
+	<li>Replaced env_particlescript and env_effectscript default model.</li>
+	<li>Added a default script "scripts/effects/testeffect.txt" for env_effectscript.</li>
+	<li>Created EnvGlobal baseclass, so each game can have their own global states.</li>
+	<li>Commented out "player_stealth" and "citizens_passive" from logic_auto global states.</li>
+</ul>
+<p class="code2">hl2.fgd</p>
+<ul>
+	<li>Deleted these unused entities: <br><br>
+		trigger_super_armor<br>
+		npc_assassin<br>
+		npc_apc<br>
+		npc_roller<br>
+		npc_rollerturret<br>
+		npc_rollerdozer<br>
+		npc_rollerbuddy<br>
+		npc_rollerbull<br>
+		npc_particlestorm<br>
+		npc_wscanner<br>
+		npc_sscanner<br>
+		npc_odell<br>
+		func_extinguishercharger<br>
+		env_extinguisherjet<br>
+		weapon_extinguisher<br>
+		weapon_physgun<br><br>
+	</li>
+	<li>Moved trigger_waterydeath from base.</li>
+	<li>Added env_global, moved from base.fgd.</li>
+	<li>Commented out "player_stealth" and "citizens_passive" from env_global.</li>
+</ul>
+
+<p class="code2">hlmp.fgd</p>
+<ul>
+	<li>Added filter_activator_team with proper team names/numbers.</li>
+</ul>
+
+<p class="code2">cstrike.fgd</p>
+<ul>
+	<li>Changed formatting to match base/hl2.fgd.</li>
+	<li>Added additional entity help.</li>
+	<li>Added func_ladder (was removed from base.fgd).</li>
+	<li>Deleted info_player_deathmatch.</li>
+	<li>Deleted func_grenade_eater.</li>
+	<li>Added actual models to info_player_terrorist, info_player_counterterrorist, hostage_entity.</li>
+	<li>Added comment noting that hostage models are randomly chosen.</li>
+	<li>Added Weapon baseclass.</li>
+	<li>Added weapon_* entities.</li>
+	<li>Added info_map_parameters (bomb damage radius).</li>
+	<li>Added filter_activator_team with proper team names/numbers.</li>
+</ul>
+
+
+<p><strong>March 3, 2005 Update</strong> &middot; hlmp.fgd fix.
+<hr noshade size="1px" style="padding: 1px"></p>
+
+<p class="code2">hlmp.fgd</p>
+<ul>
+	<li>Added weapon_slam.</li>
+</ul>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>
