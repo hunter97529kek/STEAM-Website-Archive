@@ -1,0 +1,334 @@
+<html>
+
+<head>
+	<title>Special Effects - Server Control</title>
+	<link href="../../../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1> Special Effects - Server Control</h1>
+
+<p>Earlier we built a sparkle effect using the <a href="../dispatcheffect.html" target="DispatchEffect">DispatchEffect</a> function. In this tutorial we will build on that knowledge to create a new entity that will demonstrate how to create client-side special effects that can be controlled by server-side logic.</p>
+<h3><br>
+1) Open the <a href="env_sparkler.html">env_sparkler.cpp</a> file</h3>
+<p>We&rsquo;ll add more code to this file to create an entity that will act as a <em>persistent</em> effect that we can control on the server-side.</p>
+<h3><br>
+2)  Create the following class framework in env_sparkler.cpp </h3>
+<table class="code">
+  <tr>
+    <td>class CSparkler : public CBaseEntity<br>
+        {<br>
+        public:<br>         &nbsp;&nbsp;&nbsp;&nbsp; DECLARE_SERVERCLASS();<br>         &nbsp;&nbsp;&nbsp;&nbsp; DECLARE_CLASS( CSparker, CBaseEntity );<br>
+         <br>
+        private:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CNetworkVar( bool, m_bEmit );<br>
+        };<br>
+        <br>
+      LINK_ENTITY_TO_CLASS( env_sparkler, CSparkler );</td>
+  </tr>
+</table>
+<p> This block of code declares our sparkler class. Note the addition of the <span class="code2">DECLARE_SERVERCLASS</span> macro definition. This causes us to create a <em>data-table</em><strong>,</strong> which allows us to transmit data between the server and client. In this entity, we will use this ability to turn our effect on and off, as well as changing its size. The class member <span class="code2">m_bEmit</span> is declared using the <span class="code2">CNetworkVar</span> type. This properly registers the member for use later in network communications. </p>
+<p> The <strong class="code2">LINK_ENTITY_TO_CLASS</strong> declaration simply gives the game engine a label with which to identify the class with. In this case <em>env_sparkler</em> becomes the entity classname of the <span class="code2">CSparkler</span> class. </p>
+<h3><br>
+3) Add the server-side network data-table </h3>
+<table class="code">
+  <tr>
+    <td>IMPLEMENT_SERVERCLASS_ST( CSparkler, DT_Sparkler )<br>
+      <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SendPropInt( SENDINFO( m_bEmit ), 1, SPROP_UNSIGNED ),<br>
+        <br>
+    END_SEND_TABLE()</td>
+  </tr>
+</table>
+<p> Here we declare our data-table for this entity. In <span class="code2">IMPLEMENT_SERVERCLASS</span> we hook this class (<span class="code2">CSparkler</span><em>)</em> to the data-table <span class="code2">DT_Sparkler</span>. This identifier will later help us link the server and client entities together, so that they can communicate.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p> The second line declares the <span class="code2">m_bEmit</span> data member and defines its characteristics for network transmission. See the <a href="../../DataDescriptionTable.htm">Data Description Table</a> document for more information on how to declare and transmit data using data-tables. In this case, we wish to transmit a boolean value, which will control whether we should be emitting particles on the client-side. </p>
+<h3><br>
+4) Open the file <a href="c_env_sparkler.html">c_env_sparkler.cpp</a></h3>
+<p>This will be the client-side component of our entity. This will handle the actual creation and emission of particles, based on the server-side&rsquo;s requests.</p>
+<h3><br>
+5) Create the following class framework in c_env_sparkler.cpp </h3>
+<table class="code">
+  <tr>
+    <td>#include &quot;cbase.h&quot;<br>
+      <br>
+        class C_Sparkler : public C_BaseEntity<br>
+        {<br>
+        public:<br>        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DECLARE_CLIENTCLASS();<br>         &nbsp;&nbsp;&nbsp;&nbsp; DECLARE_CLASS( C_Sparkler, C_BaseEntity );<br>
+        <br>
+        private:<br>         &nbsp;&nbsp;&nbsp;&nbsp; bool &nbsp;&nbsp; m_bEmit;<br>
+    };</td>
+  </tr>
+</table>
+<p> This block is nearly identical to the server-side version, but here we use <span class="code2">DECLARE_CLIENTCLASS</span> to declare this as being client-side. Also of note is that the client-side declaration of <span class="code2">m_bEmit</span> is simply declared as a boolean value and does not use the <span class="code2">CNetworkVar</span> type. </p>
+<h3><br>
+6) Add the client-side network data-table </h3>
+<table class="code">
+  <tr>
+    <td>IMPLEMENT_CLIENTCLASS_DT( C_Sparkler, DT_Sparkler, CSparkler )<br>
+      <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RecvPropInt( RECVINFO( m_bEmit ) ),<br>
+        <br>
+    END_RECV_TABLE()</td>
+  </tr>
+</table>
+<p> Again, this is very similar to its server-side counterpart. The top declaration of <span class="code2">IMPLEMENT_CLIENTCLASS_DT </span>serves to link the server, client and data-table all together. Now the engine can resolve the relationship between the client and server-side versions of the class. </p>
+<h3><br>
+7)  Add the Spawn() function for the entity </h3>
+<p>Even though the majority of the work for this entity is being done on the client-side, we still need to take care of the server&rsquo;s end of things. We&rsquo;ll quickly add a <span class="code2">Spawn()</span> function for the entity and setup its initial state. </p>
+<table class="code">
+  <tr>
+    <td>void CSparkler::Spawn( void )<br>
+        {<br>        &nbsp;&nbsp;&nbsp;&nbsp; SetMoveType( MOVETYPE_NONE ); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Will not move on its own<br>
+        <br>        &nbsp;&nbsp;&nbsp;&nbsp; SetSolid( SOLID_NONE ); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Will not collide with anything<br>        &nbsp;&nbsp;&nbsp;&nbsp; UTIL_SetSize( this, -Vector(2,2,2), Vector(2,2,2) ); &nbsp;&nbsp; // Set a size for culling<br>
+        <br>        &nbsp;&nbsp;&nbsp;&nbsp; AddEFlags( EFL_FORCE_CHECK_TRANSMIT );<br>
+        }</td>
+  </tr>
+</table>
+<p>Most of the function calls in this function should look familiar if you&rsquo;ve read through previous documents on entity creation. Because this entity will not move of its own volition, we set its movement type to <span class="code2">MOVETYPE_NONE</span>. Likewise, because it will not collide with other entities, we set its solid type to <span class="code2">SOLID_NONE</span>. We also set its bounding box size to be 4 units square for culling purposes. </p>
+<p>The last call to <span class="code2">AddEFLags() </span>causes the <span class="code2">EFL_FORCE_CHECK_TRANSMIT</span> flag to be added to the entity. This is necessary because the entity does not have a model and without this flag the entity would not be sent across to the client.</p>
+<p>At this point, changing the server-side value of <span class="code2">m_bEmit</span> will also change the client-side version of <span class="code2">m_bEmit</span>. We can now add logic to the game code to toggle this value.</p>
+<h3><br>
+8) Add an input to CSparkler to allow toggling </h3>
+<p> Add the following declarations in the appropriate places in <span class="code2">env_sparkler.cpp</span> file. For more information on entity I/O, refer to the <a href="../../../Levels/entityio.html">Entity I/O Document</a> or the included example files. </p>
+<table class="code">
+  <tr>
+    <td >void InputToggle( inputdata_t &amp;input );<br>
+        <strong><em><br>
+        . . . </em></strong><br>
+        <br>
+      BEGIN_DATADESC( CSparkler )<br>         &nbsp;&nbsp;&nbsp;&nbsp; DEFINE_FIELD( m_bEmit, FIELD_BOOLEAN ),<br>         &nbsp;&nbsp;&nbsp;&nbsp; DEFINE_INPUTFUNC( FIELD_VOID, &quot;Toggle&quot;, InputToggle ),<br>
+        END_DATADESC()<br>
+        <strong><em><br>
+        . . . </em></strong><br>
+        <br>
+      void CSparkler::InputToggle( inputdata_t &amp;input )<br>
+        {<br>         &nbsp;&nbsp;&nbsp;&nbsp; m_bEmit = !m_bEmit;<br>
+        }</td>
+  </tr>
+</table>
+<p> By adding the appropriate entries to the FGD file (<em>See the <a href="mymod.html">MyMod.fgd</a> that accompanies this document for the proper entry</em>), the entity is now able to toggle its <span class="code2">m_bEmit</span> field via entity I/O in a game map. An example map has been provided, called <span class="code2">sdk_fx_server.vmf</span>. Now we have all the framework in place to create the particles and control their state. Now we&rsquo;ll need to actually create those particles on the client at the appropriate times. </p>
+<h3><br>
+9)  Add particle creation code to the client-side </h3>
+<p> To begin, we need to know when the entity is first instantiated on the client. To do this, we check for a special condition in the <span class="code2">OnDataChanged()</span> function for our client-side entity. This function is called whenever networked member data in the class is altered on the server-side and received on the client-side. It also provides us with special information about when the first and last updates are received for this entity. </p>
+<table class="code">
+  <tr>
+    <td >
+        void C_Sparkler::OnDataChanged( DataUpdateType_t updateType )<br>
+        {<br>         &nbsp;&nbsp; BaseClass::OnDataChanged( updateType );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; <br>         &nbsp;&nbsp; if ( updateType == DATA_UPDATE_CREATED )<br>         &nbsp;&nbsp; {<br>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetNextClientThink( CLIENT_THINK_ALWAYS );<br>         &nbsp;&nbsp; }<br>
+        }</td>
+  </tr>
+</table>
+<p> Here we check for the <span class="code2">updateType</span> parameter being <span class="code2">DATA_UPDATE_CREATED</span>. This notifies us that this is the first instance of data being changed on the client, denoting the entity&rsquo;s creation. We also set the entity&rsquo;s client-side <span class="code2">ClientThink()</span> function to always be executed by calling the <span class="code2">SetNextClientThink()</span> function with the value <span class="code2">CLIENT_THINK_ALWAYS</span>. This assures that for the life of this entity, it will always receive a <span class="code2">ClientThink() </span>function call on every client frame. We&rsquo;ll use this function later to emit our particles. </p>
+<p><strong> Note: </strong>It&rsquo;s vital that we call the base classes&rsquo;<span class="code2"> OnDataChanged()</span> function before doing anything else in this function. Failure to do so will cause the entity to act in unexpected ways with regards to how it receives and updates its internal data. </p>
+<p>Now we can setup our <span class="code2">ClientThink() </span>function to handle emitting particles. We&rsquo;ll also use this function to control when our particles are allowed to emit by checking the <span class="code2">m_bEmit</span> data member being changed on the server. </p>
+<table class="code">
+  <tr>
+    <td>void C_Sparkler::ClientThink( void )<br>
+        {<br>        &nbsp;&nbsp; if ( m_bEmit == false )<br>        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+        }</td>
+  </tr>
+</table>
+<p> For every frame that the client executes, our entity will receive a call to the above function. This makes it an ideal place to emit particles and control other internal state for the entity. You&rsquo;ll also notice that we opt out of this function unless our <span class="code2">m_bEmit</span> is set. By doing this we&rsquo;ll refuse to emit particles if the <em>boolean</em> is not set. This framework now needs the code to emit particles. </p>
+<h3><br>
+10)  Set up a persistent particle emitter inside the <span class="code2">C_Sparkler</span> class </h3>
+<p>Unlike our previous foray into emitting particles, these particles will be emitted every client frame for the life of the entity. While creating a temporary emitter was practical for a &ldquo;one-off&rdquo; special effect, this would prove inefficient for a persistent effect, like the one we&rsquo;re creating. To implement this properly, we&rsquo;ll need to create a particle emitter instance that is owned by our <span class="code2">C_Sparkler</span> class. To do this, we&rsquo;ll add a data member to the class. </p>
+<table class="code">
+  <tr>
+    <td><em> . . . </em><br>
+      <br>
+        <em> private: </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;bool &nbsp;&nbsp; m_bEmit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Determines whether or not we should emit particles </em><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; <br>        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>CSmartPtr&lt;CSimpleEmitter&gt; &nbsp; m_hEmitter; </strong><br>
+        <br>
+    <em> . . . </em></td>
+  </tr>
+</table>
+<p> This should be very familiar from our last use of particles. Instead of creating the emitter when we want to emit a group of particles, we&rsquo;ll create the emitter once at the creation of the entity and use it over the lifetime of that entity. To create the emitter, we&rsquo;ll use the <span class="code2">OnDataChanged()</span> function again. </p>
+<table class="code">
+  <tr>
+    <td><em> void C_Sparkler::OnDataChanged( DataUpdateType_t updateType ) </em><br>
+        <em> { </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BaseClass::OnDataChanged( updateType ); </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; if ( updateType == DATA_UPDATE_CREATED ) </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; { </em><br>
+        <strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_hEmitter = CSimpleEmitter::Create( &quot;env_sparkler&quot; ); </strong><br>
+        <strong></strong><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetNextClientThink( CLIENT_THINK_ALWAYS ); </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; } </em><br>
+        <em> } </em></td>
+  </tr>
+</table>
+<p> Again, the code is identical to our last use of particles, the only difference being where the creation is happening. Another necessary addition to the code will be a data member to hold the material handle used for the particles we&rsquo;ll emit. We do this to avoid doing unnecessary searches through the material list every frame. </p>
+<table class="code">
+  <tr>
+    <td><em> . . . </em><br>
+      <br>
+        <em> private: </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; bool &nbsp;&nbsp; m_bEmit; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Determines whether or not we should emit particles </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; CSmartPtr&lt;CSimpleEmitter&gt; &nbsp; m_hEmitter; </em><br>
+         &nbsp;&nbsp;&nbsp;&nbsp; <strong>PMaterialHandle &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_hMaterial; </strong><br>
+         <br>
+    <em> . . . </em></td>
+  </tr>
+</table>
+<p><em>  </em> Now that we have the material handle, we need to set it to reference the appropriate instance of the material. Again, we accomplish this in the <span class="code2">OnDataChanged()</span> function. </p>
+<table class="code">
+  <tr>
+    <td><em> &nbsp;&nbsp;&nbsp;&nbsp; . . . </em><br>
+      <br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; if ( updateType == DATA_UPDATE_CREATED ) </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; { </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_hEmitter = CSimpleEmitter::Create( &quot;env_sparkler&quot; ); </em><br>
+        <br>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( m_hEmitter.IsValid() )<br>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_hMaterial = m_hEmitter-&gt;GetPMaterial( &quot;effects/yellowflare&quot; );<br>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+        <br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetNextClientThink( CLIENT_THINK_ALWAYS ); </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; } </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </em><br>
+    <em> &nbsp;&nbsp;&nbsp;&nbsp; . . . </em></td>
+  </tr>
+</table>
+<p> Apart from checking that the emitter was properly spawned, the code should be self-explanatory. We&rsquo;ve now setup our emitter and have a valid handle to the material we&rsquo;d like to use for our particles. We can now create those particles. </p>
+<table class="code">
+  <tr>
+    <td><em> void C_Sparkler::ClientThink( void ) </em><br>
+        <em> { </em><br>
+         &nbsp;&nbsp;&nbsp;&nbsp; if ( m_hEmitter == NULL )<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; if ( m_bEmit == false )<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; SimpleParticle *pParticle;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; float scale = 8.0f;<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; for ( int i = 0; i &lt; 64; i++ )<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; {<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle = m_hEmitter-&gt;AddSimpleParticle( m_hMaterial, GetAbsOrigin() );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( pParticle == NULL )<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_uchStartSize = (unsigned char) scale;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_uchEndSize = 0;<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_flRoll = random-&gt;RandomFloat( 0, 2*M_PI );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_flRollDelta = random-&gt;RandomFloat( -DEG2RAD( 180 ), <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; DEG2RAD( 180 ) );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_uchColor[0] = 255;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_uchColor[1] = 255;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_uchColor[2] = 255;<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_uchStartAlpha = 255;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_uchEndAlpha = 255;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Vector velocity = RandomVector( -1.0f, 1.0f );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VectorNormalize( velocity );<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float speed = random-&gt;RandomFloat( 4.0f, 8.0f ) * scale;<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_vecVelocity = velocity * speed;<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle-&gt;m_flDieTime = random-&gt;RandomFloat( 0.25f, 0.5f );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; }<br>
+        <em> } </em></td>
+  </tr>
+</table>
+<em><br>
+</em>
+<p>  The particle creation code is exactly the same code that we used previously to emit particles, with a few simple modifications. However, there is one crucial problem with the code above. Because we now spawn these particles every client frame, the number of particles being created will vary depending on the framerate of the user. At high framerates, massive amounts of particles will be created. At low framerates, there will be very few particles. We therefore need a way to spawn a fixed number of particles regardless of our framerate. To do this, we use a <span class="code2">TimedEvent</span> data member to help us track time and distribute our particle creation across a fixed amount of time that we&rsquo;ll specify. </p>
+<p>  First, we must add the <span class="code2">TimedEvent</span> data member to our class. </p>
+<table class="code">
+  <tr>
+    <td><em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CSmartPtr&lt;CSimpleEmitter&gt; &nbsp; m_hEmitter; </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PMaterialHandle &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_hMaterial; </em><br>
+        <br>
+        <strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TimedEvent &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_tParticleTimer; </strong></td>
+  </tr>
+</table>
+<p> Next we&rsquo;ll specify how many <em>events</em> we&rsquo;d like have triggered over one second. To do this, we&rsquo;ll add the initialization to the same code block we set up our other particle data members in. </p>
+<table class="code">
+  <tr>
+    <td><em> &nbsp;&nbsp;&nbsp;&nbsp; if ( m_hEmitter.IsValid() ) </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; { </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_hMaterial = m_hEmitter-&gt;GetPMaterial( &quot;effects/yellowflare&quot; ); </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; } </em><br>
+        <br>
+        <strong> &nbsp;&nbsp;&nbsp;&nbsp; m_tParticleTimer.Init( 128 ); </strong><br>
+        <strong></strong><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; SetNextClientThink( CLIENT_THINK_ALWAYS );</em></td>
+  </tr>
+</table>
+<p> This function call simply tells the <span class="code2">m_tParticleTimer</span> to fire 128 events per second. In our context, that means we&rsquo;ll use it to emit 128 particles every second, regardless of framerate. This code will replace the <em>for </em>loop in our particle creation code. </p>
+<table class="code">
+  <tr>
+    <td><em> &nbsp;&nbsp;&nbsp;&nbsp; . . . </em><br>
+      <br>
+        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float curTime = gpGlobals-&gt;frametime; </strong><br>
+        <strong></strong><br>
+        <strong> &nbsp;&nbsp;&nbsp;&nbsp; while ( m_tParticleTimer.NextEvent( curTime ) ) </strong><br>         &nbsp;&nbsp;&nbsp;&nbsp; <em> { </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pParticle = m_hEmitter-&gt;AddSimpleParticle( m_hMaterial, GetAbsOrigin() ); </em><br>
+        <br>
+    <em> &nbsp;&nbsp;&nbsp;&nbsp; . . .</em></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<h3> 11) Compile the code and test </h3>
+<p>We&rsquo;re ready to see the new effect. Compile and load the map <span class="code2">sdk_fx_server.vmf</span>. Step on the platform directly ahead of you, and the effect should begin to emit in the room. Try changing the number of particles emitted per second, or attach the entity to various other entities in hierarchy, like the waving citizen in this map. </p>
+<h3><br>
+12)  Add a new parameter </h3>
+<p>Now that we&rsquo;ve got a functioning entity, it is straightforward to add other parameters to control it from the server. We&rsquo;ll quickly add a <em>scale </em>parameter to the sparkler to let us control the size of the effect via entity I/O. Doing this directly mirrors the process of adding the earlier <em>boolean</em> value. Add the following lines to <span class="code2">env_sparkler.cpp</span>. </p>
+<table class="code">
+  <tr>
+    <td ><em> &nbsp;&nbsp;&nbsp;&nbsp; . . . </em><br>
+      <br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; CNetworkVar( bool, m_bEmit ); </em><br>         &nbsp;&nbsp;&nbsp;&nbsp; CNetworkVar( float, m_flScale ); <br>
+        <strong></strong><br>
+        <strong> &nbsp;&nbsp;&nbsp;&nbsp; . . . </strong><br>
+        <strong></strong><br>
+        <strong> &nbsp;&nbsp;&nbsp;&nbsp; </strong>DEFINE_KEYFIELD( m_flScale, FIELD_FLOAT, &quot;scale&quot; ),<br>         &nbsp;&nbsp;&nbsp;&nbsp; DEFINE_INPUTFUNC( FIELD_FLOAT, &quot;Scale&quot;, InputScale ),<br>
+        <br>         &nbsp;&nbsp;&nbsp;&nbsp; . . .<br>
+        <br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; SendPropInt( SENDINFO( m_bEmit ), 1, SPROP_UNSIGNED ), </em><br>         &nbsp;&nbsp;&nbsp;&nbsp; SendPropFloat( SENDINFO( m_flScale ), 0, SPROP_NOSCALE ),<br>
+        <br>         &nbsp;&nbsp;&nbsp;&nbsp; . . .<br>
+        <br>         &nbsp;&nbsp;&nbsp;&nbsp; void CSparkler::InputScale( inputdata_t &amp;input )<br>         &nbsp;&nbsp;&nbsp;&nbsp; {<br>         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_flScale = input.value.Float();<br>         &nbsp;&nbsp;&nbsp;&nbsp; }<br>
+        <br>    &nbsp;&nbsp;&nbsp;&nbsp; . . .</td>
+  </tr>
+</table>
+<p> The only real difference here is that the <span class="code2">m_flScale </span>variable is defined in the data description table as a <em>key-value</em>, instead of a regular value. This links the variable into the map data defined for the entity. </p>
+<p>  Next add the following lines to <span class="code2">c_env_sparkler.cpp</span>. </p>
+<table class="code">
+  <tr>
+    <td><em> . . . </em><br>
+      <br>
+        <em> bool &nbsp;&nbsp; m_bEmit; </em><br>
+        float &nbsp; m_flScale;<br>
+        <br>
+        <em> . . . </em><br>
+        <br>
+        <em> RecvPropInt( RECVINFO( m_bEmit ) ), </em><br>
+        RecvPropFloat( RECVINFO( m_flScale ) ),<br>
+        <br>
+        <em> . . . </em><br>
+        <br>
+        pParticle-&gt;m_uchStartSize = (unsigned char) <strong>m_flScale</strong>;<br>
+        <em> pParticle-&gt;m_uchEndSize = 0; </em><br>
+        <br>
+        <em> . . . </em><br>
+        <br>
+    float speed = random-&gt;RandomFloat( 4.0f, 8.0f ) * <strong>m_flScale</strong>;</td>
+  </tr>
+</table>
+<p>  At this point the entity can also be scaled up and down via entity I/O on the server. In our test map, we use this to control the size via a button. This should provide a simple basis for creating server-controlled special effects. Try parenting the <em>env_sparkler</em> entity to a moving entity, or changing its scale based on proximity to another object. </p>
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

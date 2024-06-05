@@ -1,0 +1,256 @@
+<html>
+
+<head>
+	<title>Networking: Events, Messages & String Tables</title>
+	<link rel="stylesheet" type="text/css" href="../../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Networking: Events, Messages & String Tables</h1>
+
+<h2>Overview</h2>
+
+<p>Most network bandwidth between server and client is spent on entity updates (compressed snapshots). Whenever a durable and reliable state must be transmitted, it should be encoded as an entity state and not sent as a message or event. The Half-Life 1 engine (GoldSrc) did a lot of reliable state updates via user messages, which created some problems that happen when packets are getting dropped and reliable messages are delivered to late or out of sync with entity changes. Also HLTV broadcasts and demos have problems with events and messages since they can play them back, but don't revert their impact when jumping back in time. That process is much easier with entities since they can easily be reverted  to any previous state.</p>
+
+<p>Still, there are situations where sending event-like messages are good to use. The Source Engine uses messages mainly to update general HUD and screen information like chat messages or short visual effects that don't have large impacts. The Source Engine uses three different message systems: game events, user messages and entity messages . Game events should be fired when a general, global event occurs that may be interesting for all players or other subsystems (logging, game analyzers etc) to know about. User messages are just like the old-style Half-Life 1 user messages and should be used to transmit specific information to single clients. Entity messages are unreliable messages broadcasted by entities to signal unreliable state changes. In general entity messages are not used that often since the normal entity networking allows easy and reliable transmission, therefore they are not discussed here.</p>
+
+<p>Beside events and messages there are two other networking systems to transmit data to clients. First the temporary entities used to create short-lived, non-solid entities, which are not synchronized or updated after their initial spawn. These temp entities are mostly used for visual in game effects like explosions or bullet impacts. Temp entity messages are unreliable and get dropped if too many temp entities are created at the same time (max 32 in multiplayer, 255 in single player per client update).</p>
+
+<p>The last system to mention is the server string table container. String tables are simple index tables that contain strings and optional binary data per entry (up to 4kB). Server string tables are mirrored on all clients and any change or addition made are replicated instantly. String tables can be used to avoid transmitting same strings over and over again and just send their matching string table index instead.</p>
+
+<h2>Game Events</h2>
+
+<p>Game events are generic gameplay related events that are defined in resource files. Mods can extend existing game events or define new game events. The central object on both the server and client that controls and dispatches game events is the game event manager. This manager loads events, registers event listeners, fires events and delivers them to registered event listeners (see interface IGameEventManager). Event listeners can be local objects on the server (server-side listeners) or remote listeners on a client. The event manager serializes events to send them via the network connection and processes them on the client.</p> 
+
+<p>Before using game events they must be defined in a game events resource file and loaded by the game event manager on both server and client. A game event has a unique name and a number of data fields where each data field can be a integer, float or string. Basic game events are defined in resources\gameevents.res. For example, here is the definition for the game event "player_death" that is fired when a player dies:</p>
+
+<pre class="code">"player_death"	// a game event, unique name may be 32 characters long
+{
+	"userid"		"short"  	// user ID who died				
+	"attacker"	"short" 	// user ID who killed
+}</pre>
+
+<p>Possible types for data fields are:</p>
+
+<table width="100%" class="definition">
+<tr>
+	<td>string</td>
+	<td>a zero terminated string</td>
+</tr>
+<tr>
+	<td>bool</td>
+	<td>unsigned int, 1 bit</td>
+</tr>
+<tr>
+	<td>byte</td>
+	<td>unsigned int, 8 bit</td>
+</tr>
+<tr>
+	<td>short</td>
+	<td>signed int, 16 bit</td>
+</tr>
+<tr>
+	<td>long</td>
+	<td>signed int, 32 bit</td>
+</tr>
+<tr>
+	<td>float</td>
+	<td>float, 32 bit</td>
+</tr>
+</table>
+
+<p>The game event manager must load all game event resource files before any game events are used:</p>
+
+<span class="code">gameeventmanager->LoadEventsFromFile("resource/gameevents.res");</span>
+
+<p>After that the server can fire these events, which are stored as KeyValues objects. The KeyValues class allows simple write & read access to its data entries: </p>
+
+<pre class="code">
+KeyValues * event = new KeyValues( "player_death" );
+event->SetInt("userid", pVictim->GetUserID() );
+event->SetInt("attacker", pScorer->GetUserID() );
+gameeventmanager->FireEvent( event );
+</pre>
+
+<p>After firing the event, the allocated KeyValues memory is freed by the game event manager. The game event manager serializes the data using the given type information from the resource file and distributes the events to all clients. On the client side an event listener object must register as a listener for this event. There is no limit on how many listeners may register for the same game event (like user messages, which can install only one callback hook). A simple event listener for the "player_death" event could look like this:</p>
+
+<pre class="code">
+class CMyListener : public IGameEventListener
+{
+	CMyListener ()
+	{
+		// add myself as client-side listener for this event
+		gameeventmanager->AddListener( this, "player_death", false );
+	}
+
+	void FireGameEvent(KeyValues * event)
+	{
+		// check event type and print message
+		if ( strcmp( "player_connect", event->GetName() ) == 0 )
+		{
+			Msg( "Player ID %i killed player ID %i\n", 
+				event->GetInt("attacker"), event->GetInt("userid") );
+		}
+	}
+}</pre>
+
+<h2>User Messages</h2>
+
+<p>User messages, like games events, have unique names that are used to identify themselves. Like the game event manager, user messages are controlled by the CUserMessages class, which registers and installs callback hooks. But unlike game events, user messages aren't automatically serialized or unserialized, that has to be done manually when sending the user message and also when receiving it on the client. Therefore both the client and server code must updated whenever a user message changes.</p>
+
+<p>User messages are registered in the shared function RegisterUserMessages(). Each message reserves a unique name and tells the system its playload size in bytes (or -1 if the message has a dynamic size like strings):</p>
+
+<span class="code">usermessages->Register( "MyMessage", 2 );	 // send 2 bytes payload</span>
+
+<p>To send user messages the server code needs to specify a group of recipient clients first which is done by creating a CRecipientFilter object.  Sending a user message starts with the command UserMessageBegin() followed by a block of WRITE_* commands to fill the user message with data (see enginecallback.h for all available WRITE_* commands). The messages are finished and sent when executing the MessageEnd() command:</p>
+
+<pre class="code">
+CSingleUserRecipientFilter filter ( pBasePlayer ); // set recipient
+filter.MakeReliable();  // reliable transmission
+
+UserMessageBegin( filter, "MyMessage" ); // create message 
+	WRITE_BYTE( 4 ); // fill message
+	WRITE_BYTE( 2 ); // fill message
+MessageEnd(); //send message
+</pre>
+
+<p>It's not possible to start a second user message block within an already started user message. The payload of a user message is limited to 255 bytes, if this size is exceeded within a single user message block, the message is not send and a warning will be shown.</p>
+
+<p>On the client side, the shared function RegisterUserMessages() has to be called to register the same message names & sizes like on the server. Also for every user message a message handler (callback hook) has to be installed. It's not possible to install multiple handlers for the same user message. A message handler gets the message as a bf_read object (class to read bit streams) and must be a function defined as follows:</p>
+
+<pre class="code">// declare the user message handler
+void __MsgFunc_MyHandler( bf_read &msg )
+{
+	int x = msg.ReadByte();
+	int y = msg.ReadByte();
+}
+
+// register message handler once
+usermessages->HookMessage( "MyMessage", __MsgFunc_MyHandler );
+</pre>
+
+<p>Usually helper macros like HOOK_MESSAGE or HOOK_HUD_MESSAGE are used to setup the callback functions (defined in hud_macros.h).</p>
+
+<h2>Temporary Entities</h2>
+
+<p>For creating short-living visual effects, creating and destroying real entities isn't the best way to do the job since that includes a significant amount of network overhead. Visual effects are more like a fire-and-forget event and if their data packet gets dropped its not necessary to retransmit it.</p>
+
+<p>Temporary entities are client side entities that can be spawned by server or client code. They don't have entity indices or EHANDLEs like normal entities. Once the server spawns a temp entity, it can't be modified anymore. Otherwise, temp entities are quite similar to normal entities. They all derive from the same bass class CBaseTempEntity on the server and C_BaseTempEntity on the client. They have a unique class name, networked member variables and defined send and receive tables (See documentation about "Entity Networking"). On the server there exists a singleton object for each temp entity class, which is used to spawn new temp entities by calling Create(filter, delay). </p>
+
+<p>Server code to declare and fire a custom temp entity "MyEffect":</p>
+
+<pre class="code">
+class CTEMyEffect : public CBaseTempEntity
+{
+public:
+	DECLARE_CLASS( CTEMyEffect, CBaseTempEntity );
+	DECLARE_SERVERCLASS();
+
+public:
+	CNetworkVector( m_vecPosition );
+};
+
+// Declare server send table
+IMPLEMENT_SERVERCLASS_ST(CTEMyEffect, DT_TEMyEffect)
+	SendPropVector( SENDINFO(m_vecPosition), -1, SPROP_COORD),
+END_SEND_TABLE()
+
+// Singleton to fire TEMyEffect objects
+static CTEMyEffect g_TEMyEffect ( "MyEffect" );
+
+// global function to spawn my effect
+void TE_MyEffect( IRecipientFilter& filter, float delay, const Vector* position )
+{
+	// set effect data
+	g_TEMyEffect.m_vecPosition = *position;
+
+	// Send it over the wire
+	g_TEMyEffect.Create( filter, delay );
+}</pre>
+
+<p>Client code to spawn this temp entity:</p>
+
+<pre class="code">
+class C_TEMyEffect : public C_BaseTempEntity
+{
+public:
+	DECLARE_CLASS( C_TEMyEffect, C_BaseTempEntity );
+	DECLARE_CLIENTCLASS();
+
+	void PostDataUpdate( DataUpdateType_t updateType )
+	{
+		// temp entity has been spawned, do something
+		Msg("Create effect at position %.1f,%.1f,%.1f\n",
+			m_vecPosition[0], m_vecPosition[1], m_vecPosition[2] );
+	}
+
+public:
+	Vector	m_vecPosition;
+};
+
+// declare the client receive table
+IMPLEMENT_CLIENTCLASS_EVENT_DT(C_TEMyEffect, DT_TEMyEffect, CTEMyEffect)
+	RecvPropVector( RECVINFO(m_vecPosition)),
+END_RECV_TABLE()</pre>
+
+<p>Temp entities are used quite often, also in shared game code (same code that is compiled into server.dll and client.dll). For shared code we need a shared interface that allows creating temp entities the same way on the server as on the client. This common interface is ItempEntsSystem that provides member functions to create any temp entity. The ItempEntsSystem interface is implemented server-side by class CTempEntsSystem and class C_TempEntsSystem in client code. For new temp entity classes, this interface has to be extended as well as both implementations.</p>
+
+<p>For shared predicted code these classes also handle effect suppression for clients that already spawned the effect in their own prediction code. E.g.: A client fires a predicted weapon and creates instantly a local, predicted impact effect. When the server runs the same weapon code again, this impact effect must be send to all other clients, but not to the shooting client. Filtering these temp entities that are spawned by predicted code is handled by function SuppressTE(). </p>
+
+<h2>String Tables</h2>
+
+<p>String tables are replicated data containers with indexed entries that contain a text string and optional binary user data (4 kB maximum). String tables are created on the server and updates are replicated instantly and reliable to all clients. The engine provides an interface INetworkStringTableContainer to both server and client code to manage these string tables. To create a new string table object, a unique table name and the maximum number of entries (must be power of 2) have to be specified. When a string table is created, an access interface INetworkStringTable is returned that can be used to add new entries, find existing entries or change their binary user data. An entry string itself can't be changed anymore once it has been added. The same interfaces are used client-side to find or access string tables, but they can't be modified here.</p>
+
+<p>String tables are a very simple and efficient way to transmit larger blocks of text strings (material or resource names etc). The general idea is to save bandwidth by transmitting just string table indices for often used strings. This way the same text string is never transmitted twice. Still, changes to the binary user data may cause expensive network load since they are transmitted as raw data and aren't delta compressed. If binary user data updates too often, you should consider using an entity object instead.</p>
+
+<p>Server code:</p>
+
+<pre class="code">INetworkStringTable *g_pMyStringTable = NULL;
+
+CServerGameDLL::CreateNetworkStringTables( void )
+{
+	g_pMyStringTable= networkstringtable->CreateStringTable( "MyStringTable", 32 );
+	... 
+}
+
+void InitMyStringTable()
+{
+	int data = 42; // some binary data
+	int index1 = g_pMyStringTable->AddString( "SomeString" );
+	int index2 = g_pMyStringTable->AddString( "SomeData", sizeof(data), &data );
+	...
+);</pre>
+
+<p>Client code:</p>
+
+<pre class="code">
+INetworkStringTable *g_pMyStringTable = NULL;
+
+void CHLClient::InstallStringTableCallback( const char *tableName )
+{
+	if ( !strcmp(tableName, "MyStringTable") )
+	{
+		// Look up the table 
+		g_pMyStringTable = networkstringtable->FindTable( tableName );
+	}
+	...
+}
+
+void UseMyStringTable( int index1, int index2 )
+{
+	Msg( " %s \n", g_pMyStringTable ->GetString( index1 ) );
+	int data = *(int *) g_pMyStringTable ->GetStringUserData( index2, NULL);
+}
+</pre>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

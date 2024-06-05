@@ -1,0 +1,896 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Authoring Shaders In Source</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Authoring Shaders In Source</h1>
+
+
+<h2>Contents</h2>
+
+<ul>
+	<li><a href="#overview">Overview</a></li>
+	<li><a href="#getting_started">Getting Started</a></li>
+	<li><a href="#high_level">High Level Concepts</a></li>
+	<li><a href="#quick_start">Quick Start - Sample Shaders</a></li>
+	<li><a href="#anatomy_of_shader_dll">Anatomy Of Shader DLL Code</a></li>
+	<li><a href="#ShadowAndDynamicState">Shadow And Dynamic State</a></li>
+		<ul>
+			<li><a href="#ShadowStateDetails">Shadow State</a></li>
+			<li><a href="#DynamicStateDetails">Dynamic State</a></li>
+		</ul>
+	<li><a href="#combo_variables">Combo Variables</a></li>
+	<li><a href="#default_shader_parameters">Default Shader Parameters</a></li>
+	<li><a href="#compiling">Compiling .FXC Files</a></li>
+	<li><a href="#for_more_information">For More Information</a></li>
+</ul>
+
+
+<a name="overview"></a>
+<h2>Overview</h2>
+	
+<p>This document describes how to author shaders in the Source SDK.</p>
+
+<p><strong>Note:</strong> Authoring new shaders is for advanced users. It requires a working knowledge of C++, Microsoft Visual Studio, and some familiarity with DirectX. It also assumes some familiarity with the Source SDK directory layout. This document refers to filenames with shorthand, like:</p>
+
+<blockquote>
+<p><span class="code2">&quot;[Steam]\sourcesdk_content\hl2\mapsrc\X.vmf&quot;</span></p>
+<p>Refers to <span class="code2">&quot;C:\Program Files\Valve\Steam\steamapps\<em>username</em>\sourcesdk_content\hl2\mapsrc\X.vmf&quot;, i</span>f you have installed Steam into <span class="code2">&quot;C:\Program Files\Valve\Steam&quot;</span></p>
+</blockquote>
+
+
+<p>Every material that is used in Source specifies which shader it uses to render itself. The shader contains the logic and equations to take the source artwork and lighting, and produce the final rendered color for every pixel that the shader is used on.</p>
+
+<p>The Source SDK fully supports Microsoft DirectX HLSL (High Level Shading Language) and shader assembly languages for writing shaders. We recommend using HLSL whenever possible, and only writing shader assembly as a last resort.</p>
+
+
+
+<a name="getting_started"></a>
+<h2>Getting Started</h2>
+
+	<p>The Source SDK relies on some external tools to build shaders. This section describes how to download and
+	install the tools you'll need in order to compile shaders.
+
+	<h3>Installing Perl</h3>
+	<p>To install Perl, go to the <a href="http://www.perl.com/download.csp#win32">download page</a> on <a href="http://www.perl.com">www.perl.com</a>,
+	download, and install Perl.</p>
+
+	<h3>Installing DirectX</h3>
+	<p>To install the latest DirectX SDK, go to <a href="http://www.microsoft.com/windows/directx">Microsoft's DirectX site</a>, download,
+	and install DirectX.</p>
+
+
+<h3>Copying Files</h3>
+
+<p>Now that you have Perl and DirectX installed, you can copy out the required executables so the SDK 
+compilation tools can use them. The table below assumes that you have installed Perl into <span class="code2">C:\Perl</span>, DirectX 
+into <span class="code2">C:\DXSDK</span>, and your mod's source code directory is	in <span class="code2">C:\MyMod\src</span>. Replace the 
+directory names as appropriate.</p>
+
+
+<table class="table" cellpadding="0" cellspacing="0">
+	<tr>
+		<td class="cell" width=327><p><b>Source File</b></p></td>
+		<td class="cell" width=711><p><b>Destination Directory</b></p></td>
+	</tr>
+	<tr class="code2">
+		<td class="cell">C:\Perl\bin\perl.exe</td>
+		<td class="cell">C:\MyMod\src\devtools\bin</td>
+	</tr>
+	<tr class="code2">
+		<td class="cell">C:\Perl\bin\perl58.dll</td>
+		<td class="cell">C:\MyMod\src\devtools\bin</td>
+	</tr>
+	<tr class="code2">
+		<td class="cell">C:\DXSDK\Utilities\fxc.exe</td>
+		<td class="cell">C:\MyMod\src\dx9sdk\Utilities</td>
+	</tr>
+	<tr class="code2">
+		<td class="cell">C:\DXSDK\Utilities\psa.exe</td>
+		<td class="cell">C:\MyMod\src\dx9sdk\Utilities</td>
+	</tr>
+	<tr class="code2">
+		<td class="cell" >C:\DXSDK\Utilities\vsa.exe</td>
+		<td class="cell" >C:\MyMod\src\dx9sdk\Utilities</td>
+	</tr>
+</table>
+
+
+<h3>Environment Setup</h3>
+<p>You'll also need to have the <b>nmake.exe</b> from Microsoft Visual Studio .NET 2003 in your path. If it isn't already
+in your path, you can run vcvars32.bat (which would be under your VS.NET directory somewhere like C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin). </p>
+
+
+
+<a name="high_level"></a>
+<h2>High Level Concepts </h2>
+
+<p>The two major pieces of code that have to be written to create a new shader are the HLSL code and the C++ code.</p>
+
+<p>The HLSL code is a C-like language in which you describe what happens at each vertex and each pixel for primitives drawn with your shader. HLSL code is compiled into files that are put under your mod directory's <span class="code2">shaders</span> directory. The specifics of HLSL are described in the <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/directx9_c/directx/graphics/programmingguide/hlslshaders/programmablehlslshaders.asp">DirectX docs here</a>.</p>
+
+<p>The C++ code is compiled into a "shader DLL" that fits the pattern of either <span class="code2">game_shader_dx*.dll</span> or <span class="code2">game_shader_generic*.dll</span>. The shader DLL goes in your mod's <span class="code2">bin</span> directory (the same place where your <span class="code2">client.dll</span> and <span class="code2">server.dll</span> goes). The C++ code describes the high-level operation of the shader to the Source Engine. It tells the engine things like:</p>
+
+<ul>
+	<li>Which textures the shader wants to use (texture names usually come from the .VMT [material] file).
+	<li>How many rendering passes the shader will use.
+	<li>Which HLSL code the shader will use.
+	<li>Which parameters to pass into the HLSL code from the material file.
+	<li>What shader to fallback to if the user's system can't support the shader.
+</ul>
+
+<p>Every shader has one C++ class and one or more HLSL files that it uses to render.</p>
+
+
+<a name="quick_start"></a>
+<h2>Quick Start - Sample Shaders</h2>
+
+<p>The Source SDK ships with some sample shaders that you can compile and use right away. To compile them and use them in your game:</p>
+
+<ol>
+	<li>Install a copy of the source code by running the <strong>Create a Mod</strong> from  the <strong>SDK launcher</strong>. If you've already installed the latest version
+		of the source code, you can skip this step. <strong>Note:</strong> In this document, we refer to the mod's source directory <i>as </i><span class="code2">C:\MyMod\src</span> (replace it with yours as appropriate).</li>
+<br><br>
+			
+	<li>Open a Windows command prompt, and use <span class="code2">cd</span> to change the <span class="code2">C:\MyMod\src\sdkshaders</span> directory. Then type:
+		
+		<p class="code">build_sample_shaders.bat -game [mod directory]</p>
+		
+		This will compile the sample HLSL code and copy the compiled code into a directory called <span class="code2">shaders</span> inside your mod's directory.
+</li><br><br>
+	
+	<li>Open <span class="code2">game_shader_generic_sample.vcproj</span> in Visual Studio .NET and build it. This will build the C++ part of each shader into a DLL and it will
+	automatically copy the DLL into your game's <span class="code2">bin</span> directory (where your client.dll and server.dll are stored).</li><br><br>
+	
+	<li>Now you can refer to the new shaders at the top of your material (.VMT) files. For example, you could have a material like this:
+	
+<pre class="code">
+"SDK_Lightmap"
+{<br>
+	"$basetexture" "Brick/brickwall003a"
+	"$surfaceprop" "brick"
+}
+</pre>
+
+	<li>The SDK includes some files you can copy into your mod to see how to refer to the sample shaders you just compiled. Note: Using the shaders you just compiled is just like referring to any other shader. See <a href="http://www.valve-erc.com/srcsdk/Materials/materials_creation.html">Creating Materials</a> for more information. The relevant sample files are listed below:<br><br>
+	
+	<table>
+		<tr>
+			<td width=500><b>Filename</b></td>
+			<td width=300><b>Use</b></td>
+		</tr>
+		<tr>
+			<td class="code2">[steam]\half-life 2\hl2\maps\sdk_shader_samples.bsp</td>
+			<td>Small map that refers to the shaders</td>
+		</tr>
+		<tr>
+			<td class="code2">[steam]\sourcesdk_content\hl2\mapsrc\sdk_shader_samples.vmf</td>
+			<td>Map source</td>
+		</tr>
+		<tr>
+			<td class="code2">[steam]\half-life 2\hl2\materials\sdk\sdk_lightmap.vmf</td>
+			<td>Material sample 1</td>
+		</tr>
+		<tr>
+			<td class="code2">[steam]\half-life 2\hl2\materials\sdk\sdk_particle.vmf</td>
+			<td>Material sample 2</td>
+		</tr>
+	</table>
+	<br>
+
+<strong>Note:</strong> These files are automatically installed by the SDK, but you will need to	copy them into the same relative locations in your mod's own folder. For example, if your Steam directory was in <span class="code2">C:\Program Files\Valve\Steam</span>, and your mod was called MyMod, you would need to copy:	<br><br>
+	
+	<p class="code2">C:\Program Files\Valve\Steam\steamapps\<em>username</em>\half-life 2\hl2\<b>materials\sdk\sdk_lightmap.vmf</b></p>
+	into
+	<p class="code2">C:\Program Files\Valve\Steam\steamapps\SourceMods\MyMod\<b>materials\sdk\sdk_lightmap.vmf</b></p>
+</ol>
+
+
+
+<a name="anatomy_of_shader_dll"></a>
+<h2>Anatomy Of Shader DLL Code</h2>
+
+<p>A shader DLL should contain one .CPP file for each shader. Inside the .CPP file, a set of macros is used to define the structure of the shader. These macros are listed below. For reference, here is a sample shader's code that you can refer to while reading the macros:</p>
+	
+<pre class="code">
+#include "BaseVSShader.h"
+
+// Note: you have to run buildshaders.bat to generate these files from the FXC code.
+#include "sdk_lightmap_ps20.inc"
+#include "sdk_lightmap_vs20.inc"
+
+<a href="#BEGIN_VS_SHADER">BEGIN_VS_SHADER</a>( SDK_Lightmap, "Help for SDK_Lightmap" )
+
+	<a href="#BEGIN_SHADER_PARAMS">BEGIN_SHADER_PARAMS</a>
+		<a href="#SHADER_PARAM">SHADER_PARAM</a>( BUMPMAP, SHADER_PARAM_TYPE_TEXTURE, "shadertest/BaseTexture", "base texture" )
+		<a href="#SHADER_PARAM">SHADER_PARAM</a>( BUMPFRAME, SHADER_PARAM_TYPE_INTEGER, "0", "frame number for $bumpmap" )
+	END_SHADER_PARAMS
+
+	// Set up anything that is necessary to make decisions in SHADER_FALLBACK.
+	<a href="#SHADER_INIT_PARAMS">SHADER_INIT_PARAMS()</a>
+	{
+		if( !params[BUMPFRAME]->IsDefined() )
+		{
+			params[BUMPFRAME]->SetIntValue( 0 );
+		}
+	}
+
+	<a href="#SHADER_FALLBACK">SHADER_FALLBACK</a>
+	{
+		return 0;
+	}
+
+	// Note: You can create member functions inside the class definition.
+	int SomeMemberFunction()
+	{
+		return 0;
+	}
+
+	<a href="#SHADER_INIT">SHADER_INIT</a>
+	{
+		LoadTexture( BASETEXTURE );
+	}
+
+	<a href="#SHADER_DRAW">SHADER_DRAW</a>
+	{
+		<a href="#SHADOW_STATE">SHADOW_STATE</a>
+		{
+			// Enable the texture for base texture and lightmap.
+			pShaderShadow->EnableTexture( SHADER_TEXTURE_STAGE0, true );
+			pShaderShadow->EnableTexture( SHADER_TEXTURE_STAGE1, true );
+
+			sdk_lightmap_vs20_Static_Index vshIndex;
+			pShaderShadow->SetVertexShader( "sdk_lightmap_vs20", vshIndex.GetIndex() );
+
+			sdk_lightmap_ps20_Static_Index pshIndex;
+			pShaderShadow->SetPixelShader( "sdk_lightmap_ps20", pshIndex.GetIndex() );
+
+			DefaultFog();
+		}
+		<a href="#DYNAMIC_STATE">DYNAMIC_STATE</a>
+		{
+			BindTexture( SHADER_TEXTURE_STAGE0, BASETEXTURE, FRAME );
+			pShaderAPI->BindLightmap( SHADER_TEXTURE_STAGE1 );
+		}
+		Draw();
+	}
+END_SHADER
+</pre>
+
+<a name="BEGIN_VS_SHADER"></a>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>BEGIN_VS_SHADER( [shader name], [help string] ) / END_SHADER</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">This macro defines the name of the shader, as referenced in .VMT files. It expands to a class definition, so you can create member functions inside.</p></td>
+	</tr>
+</table><br>
+
+<a name="BEGIN_SHADER_PARAMS"></a>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td><span class="code2">BEGIN_SHADER_PARAMS / END_SHADER_PARAMS</span></td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">These macros define the section in which your <a href="#MaterialParameters">material parameters</a> are defined. Briefly, the material parameters are the variables that your shader can read out of a .vmt file.</p></td>
+	</tr>
+</table><br>
+
+<a name="SHADER_PARAM"></a>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>SHADER_PARAM( [param name], [param type], [default value], [help string] )</td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+	<p class="definition">Each of these defines a parameter in your shader, and the parameter values are specified inside .VMT files. Any 
+	code you write in your shader can refer to the values of these parameters (as specified in the .VMT file) by referring to 
+	<span class="code2">params[param name]</span> (which will be of type <span class="code2">IMaterialVar</span>).
+	<br>
+	<br>
+	There are a number of default shader parameters that are automatically present in any shader. See 
+	<a href="#default_shader_parameters">Default Shader Parameters</a> for a list of these.
+	</p>
+	</td>
+	</tr>
+</table><br>
+
+<blockquote>
+<p class=>For example, you could have a <span class="code2">SHADER_PARAM</span> like this:</p>
+<p class="code">SHADER_PARAM( LIGHT_COLOR, SHADER_PARAM_TYPE_VEC3, "1 0 0", "This is the directional light color." )</p>
+<p class=>and a .VMT material file like this:</p>
+<pre class="code">
+"(your shader name here - whatever was in BEGIN_VS_SHADER)"
+{
+	"$light_color" "0 0 1"
+}
+</pre>
+
+<p>and then you could write <span class="code2">params[LIGHT_COLOR]->GetVecValue()</span> anywhere in your shader code to use the color.</p>
+<p>See <span class="code2">src\public\materialsystem\IMaterialVar.h</span> for the IMaterialVar interface, and see <span class="code2">src\public\materialsystem\IMaterialSystem.h - ShaderParamType_t</span> - for a list of the parameter types that are supported.</p>
+</blockquote>
+
+<a name="SHADER_INIT_PARMS"></a>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td><span class="code2">SHADER_INIT_PARAMS</span></td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+	<p class="definition">The code inside this block is called right after the values for the parameters are loaded from the .vmt file. It gives the shader a chance to validate and clamp the incoming parameters, and to set default values for them if needed.</p>
+	</td>
+	</tr>
+</table><br>
+
+<a name="SHADER_FALLBACK"></a>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td><span class="code2">SHADER_FALLBACK</span></td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+	<p class="definition">The code inside this block detects what DirectX version the user is running (using <a href="#HardwareConfig">g_pHardwareConfig</a>, and based on the DirectX version and what material parameters are specified, the shader can decide to use another shader to render the current material.</p>
+	</td>
+	</tr>
+</table><br>
+
+<blockquote>
+<p>This is useful if you have a high-end shader that makes use of the very latest HLSL version. If a user with an older DirectX 7 compatible machine were to try to run your shader, it wouldn't work because their machine couldn't support it. In that case, you would return the name of a "lesser" shader that will run on the person's machine.</p>
+
+<p><strong>Note: </strong>Sometimes, a material may go through a chain of <span class="code2">SHADER_FALLBACK</span> until it finds one that will support it. If all the	versions of <span class="code2">LightmappedGeneric</span> were compiled into one shader DLL, and a user with a DirectX 6 video card were to use a <span class="code2">LightmappedGeneric</span> shader, it would call them in this sequence:</p>
+
+<p><span class="code2">LightmappedGeneric</span> -> <span class="code2">LightmappedGeneric_DX8</span> -> <span class="code2">LightmappedGeneric_DX6</span></p>
+</blockquote>
+
+<a name="SHADER_INIT"></a>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td><span class="code2">SHADER_INIT</span> </td>
+	</tr>
+	<tr class="codeLite">
+	<td>
+	<p class="definition">The code in this block loads the shader's <a href="#textures">textures, bumpmaps, and cubemaps</a>, and initializes its <a href="#shader_flags">shader flags</a>. Briefly, textures can be loaded with <span class="code2">LoadTexture</span>, bumpmaps with <span class="code2">LoadBumpMap</span>, and cubemaps with <span class="code2">LoadCubeMap</span>.</p>
+	</td>
+	</tr>
+</table><br>
+
+<a name="SHADER_DRAW"></a>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td><span class="code2">SHADER_DRAW</span></td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">The code inside the <span class="code2">SHADER_DRAW</span> block contains all the state settings.</p></td>
+	</tr>
+</table>
+
+<a name="SHADOW_STATE"></a>
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td><span class="code2">SHADOW_STATE and DYNAMIC_STATE</span></td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">These macros always are specified one after the other, and they both are 
+	responsible for configuring all the rendering parameters for your shader. 
+	See <a href="#ShadowAndDynamicState">Shadow And Dynamic State</a> for more information.
+	</p></td>
+	</tr>
+</table>
+
+<a name="ShadowAndDynamicState"></a>
+<h2>Shadow And Dynamic State</h2>
+
+<p>The meat and potatoes of a shader is inside <span class="code2">SHADOW_STATE</span> and <span class="code2">DYNAMIC_STATE</span> blocks. Both blocks are responsible for specifying all the
+rendering parameters necessary to render the shader. The difference between the two is that shadow state is only called <b>once per material</b>,
+so it can not change dynamically. Dynamic state is called every time something with a specific material is rendered, so it can change
+its parameters over time. The material system makes a distinction between the two for optimization purposes.</p>
+
+<p>Note that each <span class="code2">SHADOW_STATE</span>/<span class="code2">DYNAMIC_STATE</span> pair is always followed by a <span class="code2">Draw()</span> call. Each <span class="code2">SHADOW_STATE</span>/<span class="code2">DYNAMIC_STATE</span>/<span class="code2">Draw()</span> sequence
+represents one rendering pass for your shader. You can use multiple rendering passes to achieve blending effects or to use 
+more textures than you otherwise would be able to.</p>
+</p>
+
+<a name="ShadowStateDetails"></a>
+<h3>Shadow State</h3>
+
+<p>Most shadow state code uses <span class="code2">pShaderShadow</span> (of type 
+	<span class="code2">IShaderShadow</span>) to set its state. For a comprehensive list of the things <span class="code2">pShaderShadow</span> supports, look at
+	<span class="code2">IShaderShadow</span> in <span class="code2">src\public\materialsystem\ishaderapi.h</span>.  The table below
+	summarizes the primary things done the <span class="code2">SHADOW_STATE</span> block.</p>
+	
+	<table class="table" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="cell" width=300><b>Specification</b></td>
+			<td class="cell"><b>Description</b></td>
+		</tr>
+		<tr>
+			<td class="cell"><span class="code2">pShaderShadow->EnableTexture</span></td>
+			<td class="cell"><p>For each texture that you want to use in your shader, you need to enable that texture in shadow state. Each texture stage
+			    corresponds to a <span class="code2">sampler</span> inside your pixel shader's .FXC file (<span class="code2">SHADER_TEXTURE_STAGE0</span> corresponds to sampler 0, and so on..)</p></td>
+		</tr>
+		<tr>
+			<td class="cell"><span class="code2">
+				pShaderShadow->SetVertexShader<br>
+				pShaderShadow->SetPixelShader</span>
+			</td>
+			<td class="cell"><p>This is where you specify which .FXC (or .VSH/.PSH if you're using shader assembly) files your shader will use for
+			its vertex shader and pixel shader. Usually, you'll have one .FXC file associated with each shader C++ class, 
+			but sometimes you'll want to choose a different .FXC file, and this call gives you the flexibility to do so.
+			See <a href="#combo_variables">Combo Variables</a> for a description of the second parameter to these functions.
+			</p></td>
+		</tr>
+
+		<tr>
+			<td class="cell"><span class="code2">pShaderShadow->VertexShaderVertexFormat</span></td>
+			<td class="cell"><p>
+			
+			This call specifies which vertex components your .FXC code needs in order to operate. 
+			
+			<br><br>The first parameter is a combination of the 
+			<span class="code2">VertexFormatFlags_t</span> flags listed in <span class="code2">src\public\materialsystem\imaterial.h</span>.
+			These correspond roughly with the functions in <span class="code2">CMeshBuilder</span> (see 
+			<span class="code2">src\public\materialsystem\imesh.h</span>) used to specify vertex data.
+			<br><br>
+			The second and third parameters specify how many texture coordinates your shader uses. The second parameter says how many 
+			texture coordinates you use, and the (optional) third parameter specifies how many components you'll use per texture coordinate
+			<i>(if you pass NULL for this parameter, then it will assume 2 components per texture coordinate)</i>.
+			This also corresponds with your 
+			<span class="code2">CMeshBuilder::TexCoordXXX</span> calls. For example, if you need a 2D texture coordinate and also a 3D one,
+			the code drawing the primitives would look like this:
+			<p class="code">meshBuilder.TexCoord2f( 0, s, t );<br>
+				meshBuilder.TexCoord3f( 1, x, y, z );
+			</p>
+			Then your call to <span class="code2">VertexShaderVertexFormat</span> would look like this::
+			
+			<p class="code">
+				int vertexFlags = VERTEX_COLOR | VERTEX_POSITION;<br>
+				int texCoordDimensions = { 2, 3 };<br>
+				int numTexCoords = 2;<br>
+				pShaderShadow->VertexShaderVertexFormat( vertexFlags, numTexCoords, texCoordDimensions, 0, 0 );
+			</p>
+
+			The fourth parameter to <span class="code2">VertexShaderVertexFormat</span> specifies the number of bone weights. For skinned
+			models, this should be set to 3. For all other shaders, it can be left at 0.
+			<br><br>
+			The last parameter specifies a user data size, and can be either 0 or 4. It corresponds to the data passed into 
+			CMeshBuilder::UserData, and can be accessed inside the VS_INPUT structure in your vertex shader like this:
+			<p class="code">
+				float4 vUserData : TANGENT;
+			</p>
+
+			</p></td>
+		</tr>
+
+		<tr>
+			<td class="cell"><span class="code2">DefaultFog<br>DisableFog</span></td>
+			<td class="cell"><p>
+			These functions control how your shader uses fogging.
+			</p>
+			</td>
+		</tr>
+		
+		<tr>
+			<td class="cell"><span class="code2">
+				pShaderShadow->EnableBlending<br>
+				pShaderShadow->BlendFunc</span>
+			</td>
+
+			<td class="cell"><p>
+			These functions control how your shader blends with the background (ie: translucency effects).
+			By default, blending is disabled, so whatever your shader draws is opaque. You can use these to turn on translucency
+			and different blending modes. When you enable translucency, all pixels produced by your shader go through this equation:
+			<p class="code">
+				[output color] = [your shader's output color] * SRC_FACTOR + [the destination pixel's current color] * DEST_FACTOR
+			</p>
+			
+			The two parameters to <span class="code2">BlendFunc</span> specify what SRC_FACTOR and DEST_FACTOR are. They are of 
+			type<span class="code2">ShaderBlendFactor_t</span> (see <span class="code2">src\public\materialsystem\ishaderapi.h</span>). 
+			The most common way to use translucency is standard alpha blending, where the alpha inside your texture specifies how
+			opaque your texture is (an alpha of 1 means fully opaque and an alpha of 0 means fully translucent). In that case, you would want
+			the equation to be:
+			<p class="code">
+				[output color] = [texture color] * [texture alpha] + [destination pixel's color] * [1 - texture alpha]
+			</p>
+			and the code to produce that would be:
+			<p class="code">
+				pShaderShadow->EnableBlending( true );<br>
+				pShaderShadow->BlendFunc( SHADER_BLEND_SRC_ALPHA, SHADER_BLEND_ONE_MINUS_SRC_ALPHA );
+			</p>
+
+			Note that <span class="code2">SHADER_BLEND_SRC_ALPHA</span> refers to the alpha produced by your pixel shader, which can be any value you want. Sometimes
+			it's as simple as the alpha that was in one of the textures.
+			</p>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="cell"><span class="code2">
+				pShaderShadow->EnableDepthWrites
+			</td>
+			<td class="cell"><p>
+			This function specifies whether your shader writes to the Z buffer or not. Usually, translucent things do not write to the Z buffer, because if
+			they did and something tried to draw behind them, it would get masked out by the Z buffer.
+			</p>
+			</td>
+		</tr>		
+			
+	</table>
+
+
+
+
+
+
+<a name="DynamicStateDetails"></a>
+<h3>Dynamic State</h3>
+
+	<p>
+	Code inside the <span class="code2">DYNAMIC_STATE</span> block specifies rendering parameters like the 
+	<span class="code2">SHADOW_STATE</span> block does, but the parameters that it sets are things that are 
+	allowed to change over time. The table below lists the most common categories of things that are done
+	inside a DYNAMIC_STATE block. For the complete list, look at the <span class="code2">IShaderDynamicAPI</span> class
+	in <span class="code2">src\public\materialsystem\ishaderapi.h</span>.
+	</p>
+
+	<table class="table" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="cell" width=300><b>Specification</b></td>
+			<td class="cell"><b>Description</b></td>
+		</tr>
+		<tr>
+			<td class="cell"><span class="code2">
+			BindTexture<br>
+			pShaderAPI->BindLightmap<br>
+			BindWhite<br>
+			BindBlack<br>
+			BindGrey
+			</span></td>
+
+			<td class="cell"><p>
+			These functions all tell which textures are bound to which texture samplers. They all take a parameter of type
+			<span class="code2">TextureStage_t</span>, which tells which texture stage (or sampler in the pixel shader) you want the
+			specified texture assigned to.
+			
+			<br><br><span class="code2">BindTexture</span> takes a second parameter that tells which texture
+			to assign to the texture stage. The variable is one of your <a href="#SHADER_PARM">shader parameters</a> (of type 
+			<span class="code2">SHADER_PARAM_TYPE_TEXTURE</span>). <span class="code2">BindTexture</span> also takes an optional
+			third parameter which is another <a href="#SHADER_PARM">shader parameter</a> that tells which frame of the texture
+			you want to bind (if the texture has multiple frames built into it).
+
+			</p></td>
+		</tr>
+
+		<tr>
+			<td class="cell"><span class="code2">
+			pShaderAPI->SetVertexShaderConstant<br>
+			pShaderAPI->SetPixelShaderConstant<br>
+			</span></td>
+
+			<td class="cell"><p>
+			These functions are used to set the vertex and pixel <a href="#shader_constants">shader constants</a>.
+			</p></td>
+		</tr>
+
+		<tr>
+			<td class="cell"><span class="code2">
+			SetVertexShaderTextureTransform<br>
+			SetVertexShaderTextureScaledTransform
+			</span></td>
+
+			<td class="cell"><p>
+				<span class="code2">SetVertexShaderTextureTransform</span> dumps a texture transform into two vertex <a href="#shader_constants">shader constants</a>,
+				starting at the one you specify in the first parameter. The second parameter specifies the texture transform,
+				which should be specified in one of your <a href="#SHADER_PARM">shader parameters</a> (of type <span class="code2">SHADER_PARAM_TYPE_MATRIX</span>).
+				<br><br>
+				The two vertex shader constants are setup with a 2x2 rotation/scaling matrix on the left, and the translation on the right:
+				<p class="code">
+					constant 1: [rot] [rot] 0 [u translation]
+					<br>constant 2: [rot] [rot] 0 [v translation]
+				</p>
+
+				As an example, the code below would bind the <a href="#default_shader_parameters">default shader parameter</a> called <span class="code2">BASETEXTURETRANSFORM</span>:
+				<p class="code">
+					SetVertexShaderTextureTransform( VERTEX_SHADER_SHADER_SPECIFIC_CONST_0, BASETEXTURETRANSFORM );
+				</p>
+
+				Then, your .FXC code would use it like this:
+				<p class="code">
+					const float4 cBaseTexCoordTransform[2] :  register( SHADER_SPECIFIC_CONST_0 );<br>
+
+					baseTexCoord.x = dot( i.texCoord, cBaseTexCoordTransform[0] ) + cBaseTexCoordTransform[0].w;<br>
+					baseTexCoord.y = dot( i.texCoord, cBaseTexCoordTransform[1] ) + cBaseTexCoordTransform[1].w;
+				</p>
+
+				<span class="code2">SetVertexShaderTextureScaledTransform</span> is just like <span class="code2">SetVertexShaderTextureTransform</span>,
+				but it takes a third parameter of type <span class="code2">SHADER_PARAM_TYPE_FLOAT</span>, which is a scaling factor for the matrix.
+			</p></td>
+		</tr>
+
+		<tr>
+			<td class="cell"><span class="code2">
+			pShaderAPI->SetVertexShaderIndex<br>
+			pShaderAPI->SetPixelShaderIndex<br>
+			</span></td>
+
+			<td class="cell"><p>
+			These functions are used to set the values of the dynamic <a href="#combo_variables">combo variables</a> that your shader supports.
+			The values passed to these functions come from the classes in your <a href="#shader_include_files">shader include file</a>.
+			</p></td>
+		</tr>
+	</table>
+
+
+
+<a name="combo_variables"></a>
+<h2>Combo Variables</h2>
+
+	<p>
+		The second parameter to <span class="code2">IShaderShadow::SetVertexShader</span> and <span class="code2">IShaderShadow::SetPixelShader</span>
+		is the <span class="code2">shader index</span>, which is how the Source engine
+		allows you to have conditionals inside your shaders. HLSL currently does not support branching code. It supports <span class="code2">if()</span> statements,
+		but only for static conditionals (usually based on <span class="code2">#defines</span> - things that can't change after the shader has been compiled).
+	</p>
+
+	<p>	
+		Without dynamic <span class="code2">if()</span> statements in shaders, it's very easy to wind up having to hand-code every variation of a shader, and you can
+		end up with a lot of manual labor. For example, if you have a shader that has an option to multiply the color from a third texture
+		after it multiplies the base texture and lightmap, you'd have to copy the contents of your pixel shader into a separate .FXC file,
+		add the code to multiply the third texture, and choose that file with pShaderShadow->SetPixelShader. That's with 1 option. With
+		10 orthogonal options, you'd have 2^10 (1024) shader files you'd have to manage.			
+	</p>	
+
+	<p>
+		To simulate dynamic conditionals in HLSL code, the Source engine uses a special syntax in its .FXC files to denote 
+		<span class="code2">combo variables</span> which can be different across different executions of the same .FXC file. Under the hood,
+		the engine does the dirty work of precompiling 2^n variations of the .FXC file, each with different <span class="code2">#defines</span> used for the <span class="code2">if()</span> statements.
+	</p>
+
+	<p>To make a combo variable, add a line like this to the top of your .FXC file:</p>
+			<p class="code">// STATIC:  "VERTEXCOLOR" "0..1"</p>
+		<p>or this:</p>
+	<p class="code">// DYNAMIC: "VERTEXCOLOR" "0..1"</p>
+	<p>
+		where <span class="code2">VERTEXCOLOR</span> is replaced with the name of the variable. Use <span class="code2">STATIC</span> whenever possible - static combo variables can only
+		be set once per material (at load time). The values of the static combo variables are set inside the <a href="#ShadowStateDetails">SHADOW_STATE</a>
+		block in your shader's C++ class. 
+	</p>	
+
+	<p>
+		If you need to dynamically change the value of the combo variables (based
+		on a <a href="#proxies">proxy</a>), use <span class="code2">DYNAMIC</span>. The values of <span class="code2">DYNAMIC</span> combo variables are set inside the <a href="#DynamicStateDetails">DYNAMIC_STATE</a>
+		part of your shader's C++ class.
+	</p>
+
+	<p>
+		Note: The '0..1' part following the shader can be any range of values (like '5..10'). Be aware that the number of permutations 
+		(and thus memory usage and runtime overhead) rapidly increases as you add more possible dynamic shader variable values. For example, these lines:
+	</p>
+		<p class="code">
+			// STATIC: "STATIC_VAR_1" "0..1"<br>
+			// STATIC: "STATIC_VAR_2" "0..1"<br>
+			// STATIC: "STATIC_VAR_3" "0..1"<br>
+			// STATIC: "STATIC_VAR_4" "0..1"
+		</p>
+	<p>would cause 16 different versions of your .FXC file to be compiled (2^4 or one for each possible combination of valid values).</p>
+	<p>This, however:</p>
+		<p class="code">
+			// STATIC: "STATIC_VAR_1" "0..9"<br>
+			// STATIC: "STATIC_VAR_2" "0..9"<br>
+			// STATIC: "STATIC_VAR_3" "0..9"<br>
+			// STATIC: "STATIC_VAR_4" "0..9"
+		</p>
+	<p>
+		would cause <b>10,000</b> (10^4) different versions of your .FXC file to be compiled, which will not only take a long time
+		to compile, it will also eat up lots of memory. You can use <a href="#skip_statements">SKIP statements</a> to optimize this.
+	</p>
+		
+		<a name="shader_include_files"></a>
+		<h3>Important - shader include files</h3>
+
+	<p>	
+		When you <a href="#compiling">compile your .FXC code</a>, a file called fxctmp9\[FXC filename].inc is created.
+		This file contains classes that you use to access the combo variables. For an example, if you look at 
+		<span class="code2">src\sdkshaders\sdk_lightmap.cpp</span>, it has this include statement at the top:
+	</p>
+		<p class="code">
+			#include "sdk_lightmap_vs20.inc"
+		</p>
+
+	<p>
+		That include file defines two classes. One is for the combo variables inside a 
+		<span class="code2">SHADOW_STATE</span> block (combo variables denoted with 
+		<span class="code2">// STATIC</span> in the .FXC file), and the other is for combo variables
+		specified inside a <span class="code2">DYNAMIC_STATE</span>
+		block (denoted with <span class="code2">// DYNAMIC</span> inside the .FXC file).
+	</p>
+
+	<p>
+		The names of the two classes defined inside a shader include (.inc) file are <span class="code2">[shader name]_Static_Index</span> and <span class="code2">[shader name]_Dynamic_Index</span>.
+		To tie this all together, let's say you were writing a vertex shader in a file called <span class="code2">MyVertexShader.fxc</span>, and it had some 
+		<span class="code2">STATIC</span> and <span class="code2">DYNAMIC</span>
+		combo variables at the top of your .FXC file that looked like this:
+	</p>
+		<p class="code">
+			// STATIC: "STATIC_VAR_1" "0..1"<br>
+			// STATIC: "STATIC_VAR_2" "0..1"<br><br>
+			// STATIC: "DYNAMIC_VAR_1" "0..1"<br>
+			// STATIC: "DYNAMIC_VAR_2" "0..1"
+		</p>
+
+	<p>
+		Then, at the top of your .cpp file for your shader, you would have this line:
+	</p>
+		<p class="code">
+			#include "MyVertexShader.inc"
+		</p>
+
+	<p>	
+		Then, inside your <span class="code2">SHADOW_STATE</span> block, where you would say 
+		<span class="code2">pShaderShadow->SetVertexShader</span>, you would write this code:
+	</p>
+		<p class="code">
+			MyVertexShader_Static_Index vshIndex;<br><br>
+			vshIndex.SetSTATIC_VAR_1( <i>0 or 1</i> );<br>
+			vshIndex.SetSTATIC_VAR_2( <i>0 or 1</i> );<br>
+			pShaderShadow->SetVertexShader( "MyVertexShader", vshIndex.GetIndex() );
+		</p>
+
+	<p>and inside your <span class="code2">DYNAMIC_STATE</span> block, you would write this code.</p>
+		<p class="code">
+			MyVertexShader_Dynamic_Index vshIndex;<br><br>
+			vshIndex.SetDYNAMIC_VAR_1( <i>0 or 1</i> );<br>
+			vshIndex.SetDYNAMIC_VAR_2( <i>0 or 1</i> );<br>
+			pShaderAPI->SetVertexShaderIndex( vshIndex.GetIndex() );
+		</p>
+
+
+		<a name="skip_statements"></a>
+		<h3>SKIP Statements</h3>
+
+	<p>
+		<span class="code2">SKIP</span> statements can be used to tell Source's shader compiler about values of combo variables that
+		will never be used. For example, if you had 3 combo variables:
+	</p>
+		<p class="code">
+			// STATIC: "STATIC_VAR_1" "0..1"<br>
+			// STATIC: "STATIC_VAR_2" "0..1"<br>
+			// STATIC: "STATIC_VAR_3" "0..1"
+		</p>
+	<p>
+		but you knew that <span class="code2">STATIC_VAR_1</span> and <span class="code2">STATIC_VAR_2</span> could never both have 
+		a value of 1 at the same time, you would add a <span class="code2">SKIP</span> statement like this:
+	</p>
+		<p class="code">
+			// SKIP: $STATIC_VAR_1 && STATIC_VAR_2
+		</p>
+
+	<p>Then the compiler wouldn't have to bother compiling and storing the two extra combinations of variables.</p>
+		
+	<p>Valve's <span class="code2">LightmappedGeneric</span> shader saves <em>thousands</em> of unnecessary versions of its .FXC file by using <span class="code2">SKIP</span> statements.</p>
+
+	
+<p></p>
+
+
+<a name="default_shader_parameters"></a>
+<h2>Default Shader Parameters</h2>
+
+	<p>
+	In addition to the <a href="#SHADER_PARAM">SHADER_PARAM</a> definitions in your shader's C++ file, there are a bunch of parameters that are automatically 
+	defined because they are so common. For example, most shaders have a 'main texture' that they use, so there is a shader parameter called <span class="code2">BASETEXTURE</span>.
+	The list of default shader parameters is:
+	</p>
+
+	<table border=1 cellpadding=4>
+		<tr>
+			<td><b>Parameter Name</b></td>
+			<td><b>Parameter Type</b></td>
+			<td><b>Default value</b></td>
+		</tr>
+		
+		<tr>
+			<td><span class="code2">COLOR</span></td>
+			<td><span class="code2">SHADER_PARAM_TYPE_COLOR</span></td>
+			<td>[1 1 1]</td>
+		</tr>
+
+		<tr>
+			<td><span class="code2">ALPHA</span></td>
+			<td><span class="code2">SHADER_PARAM_TYPE_FLOAT</span></td>
+			<td>1.0</td>
+		</tr>
+
+		<tr>
+			<td><span class="code2">BASETEXTURE</span></td>
+			<td><span class="code2">SHADER_PARAM_TYPE_TEXTURE</span></td>
+			<td>shadertest/BaseTexture</td>
+		</tr>
+
+		<tr>
+			<td><span class="code2">FRAME</span></td>
+			<td><span class="code2">SHADER_PARAM_TYPE_INTEGER</span></td>
+			<td>0</td>
+		</tr>
+
+		<tr>
+			<td><span class="code2">BASETEXTURETRANSFORM</span></td>
+			<td><span class="code2">SHADER_PARAM_TYPE_MATRIX</span></td>
+			<td>center .5 .5 scale 1 1 rotate 0 translate 0 0</td>
+		</tr>
+	</table>
+
+
+
+<a name="compiling"></a>
+<h2>Compiling .FXC Files</h2>
+
+	<p>To compile .FXC files, list them in a text file (one per line), then run <span class="code2">src\materialsystem\stdshaders\BuildShaders.bat</span> on
+		the text file. It will go process your .FXC code and compile all the <a href="#combo_variables">combinations</a> into your mod's directory.
+
+		The syntax of the <span class="code2">BuildShaders.bat</span> command line is:
+	</p>
+			<p class="code">BuildShaders.bat [text filename] -game [mod directory] -source [source directory]</p>
+		<p>Example:</p>
+			<p class="code">BuildShaders.bat MyShaders.txt -game C:\Steam\SteamApps\SourceMods\MyMod -source C:\MyMod\Src</p>
+		
+	<p>
+
+		<i>Note: The text file that lists the .FXC files should be in the same directory as your shader DLL source code, because your shader DLL
+		source code will need to refer to files that are generated by <span class="code2">BuildShaders.bat</span>.
+		<br><br>
+		Before building your shader DLL, you need to run <span class="code2">BuildShaders.bat</span>, so it can generate <a href="#shader_include_files">include files</a> that 
+		your shader DLL will need.
+		</i>
+
+		<br><br>
+		You can look in <span class="code2">src\sdkshaders\build_sample_shaders.bat</span> for an example of how it's setup. <span class="code2">sdk_shaders.txt</span> specifies
+		all the .FXC files, all the source code for the shader DLL is in the same directory, and the .INC files are placd in the <span class="code2">fxctmp9</span> directory.
+		After BuildShaders.bat runs, you can look in the fxctmp9 directory to see the <a href="#shader_include_files">include files</a> generated by teh shader compiler.
+	</p>
+
+
+<!--
+<a name="proxies"></a>
+<h2>Proxies</h2>
+
+
+<a name="shader_flags"></a>flags (SET_FLAGS, MATERIAL_VAR_, SET_FLAGS2, MATERIAL_VAR2_)<br>
+
+
+<h2>Shader Fallbacks</h2>
+-->
+
+
+
+<h2>To Be Continued...</h2>
+
+<p>Due to time constraints, the remainder of this document is not complete yet. Keep watching it for updates, as it will be completed within a week.</p>
+
+
+
+<a name="for_more_information"></a>
+<h2>For More Information</h2>
+	
+<p>You can get more information about HLSL and shader assembly programming in <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/directx9_c/directx/graphics/programmingguide/hlslshaders/programmablehlslshaders.asp">the online MSDN docs</a>.</p>
+
+<p>There are more documents describing how the material system works under the <strong>Material System</strong> section of the <a href="http://www.valve-erc.com/srcsdk/">Source SDK Documentation Index</a>.</p>
+
+
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>
+

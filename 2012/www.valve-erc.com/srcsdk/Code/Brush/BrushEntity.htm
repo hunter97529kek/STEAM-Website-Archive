@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Authoring a Brush Entity</title>
+<link href="../../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1><strong> Authoring a Brush Entity </strong></h1>
+
+<p>Our last example dealt with giving entity&rsquo;s a model. Here we&rsquo;ll use world architecture (or <em>brushes</em>) to represent our entity and how it collides and moves around the world. We&rsquo;ll also look at the <em>touch</em> function, available to all entities. This will let us make the entity move when touched.</p>
+
+<h2>Create a .CPP file for the new entity</h2>
+
+<table cellspacing="8">
+	<tr valign="top">
+	<td>
+		<ul>
+			<li>Create a file named <span class="code2">sdk_brushentity.cpp</span>. The file should go under the <span class="code2">dlls</span> folder	under your source code folder. For example, if you installed the source code into <span class="code2">C:\MyMod\src</span>, then you would create a file called <span class="code2">C:\MyMod\src\dlls\sdk_brushentity.cpp</span>.<br><br></li>
+			<li>Next, copy <a href="sdk_brushentity.html">this code</a> and paste it into this new file.<br><br></li>
+			<li>Last, add this file to your server.dll project. If you opened the <span class="code2">game_sdk.sln</span> solution, then you can right-click on the <span class="code2">hl</span> project in the Solution Explorer window and choose <strong>Add</strong>, then <strong>Add Existing Item</strong>.</li>
+		</ul>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="../add_existing_item.gif"></img></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Add the source file to the server.dll project by right-clicking.</td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+</table>
+
+<h2>Walking through the code</h2>
+
+<h3>Creating the Class Definition </h3>
+
+<p class="code">
+	class CMyBrushEntity : public CBaseToggle<br>
+	{<br>
+	public:<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DECLARE_CLASS( CMyBrushEntity, CBaseToggle );<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DECLARE_DATADESC();<br>
+	 <br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void Spawn( void );<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool CreateVPhysics( void );<br>
+	 <br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void BrushTouch( CBaseEntity *pOther );<br>
+	};
+</p>
+
+<p>We descend our new entity from the <span class="code2">CBaseToggle</span> class. This class has some basic functions to help us move our brush entity through the world.</p>
+
+<h3>Defining the Data Description</h3>
+
+<p class="code">
+LINK_ENTITY_TO_CLASS( my_brush_entity, CMyBrushEntity );<br>
+      <br>
+        // Start of our data description for the class<br>
+        BEGIN_DATADESC( CMyBrushEntity )<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // Declare this function as being a touch function<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; DEFINE_ENTITYFUNC( BrushTouch ),<br>
+         <br>
+    END_DATADESC()
+</p>
+
+<p> Here we simply declare our touch function that we&rsquo;ll use. See the <a href="../DataDescriptionTable.htm">Data Description Table Document</a> document for more information.</p>
+
+<h3>Create the Spawn() function</h3>
+
+<p class="code">
+	void CMyBrushEntity::Spawn( void )<br>
+	{<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // We want to capture touches from other entities<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetTouch( BrushTouch );<br>
+	 <br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // We should collide with physics<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetSolid( SOLID_VPHYSICS );<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // We push things out of our way<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetMoveType( MOVETYPE_PUSH );<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Use our brushmodel<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetModel( STRING( GetModelName() ) );<br>
+	 <br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Create our physics hull information<br>
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CreateVPhysics();<br>
+	}
+</p>
+
+<p>The first thing we do in this block is setup our touch function to point to <em>BrushTouch()</em> where we&rsquo;ll do our movement code. Next we tell the entity to use <span class="code2">SOLID_VPHYSICS</span> so we&rsquo;ll use our exact bounds to collide. Setting the entity to <span class="code2">MOVETYPE_PUSH</span> means that we&rsquo;ll attempt to move entities out of our way, instead of just being blocked.</p>
+
+<p>In this example we use the <span class="code2">SetModel()</span> with our model name from the editor. In this case it tells the entity to use its brush model, as defined in the map. </p>
+
+<p class="code">
+		bool CMyBrushEntity::CreateVPhysics( void )<br>
+        {<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // For collisions with physics objects<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VPhysicsInitShadow( false, false );<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br>
+        }
+</p>
+
+<p>Finally, we call <span class="code2">CreateVPhysics()</span> to setup our collision shadow. This is what we&rsquo;ll use to collide with physics objects in the world. Without this, the brush would pass through those objects.</p>
+
+<h3>Create the BrushTouch() function </h3>
+
+<p>The entity has been told to notify us when its been touched, via the <span class="code2">BrushTouch()</span> function. When we receive this notification, we&rsquo;ll cause the entity to move away from the entity that touched it.  To do this, we&rsquo;ll need information about the events surrounding the touch. This information is provided in the <span class="code2">trace_t</span> structure, returned by the <span class="code2">GetTouchTrace()</span> function. This returns the actual trace collision that generated the event.</p>
+
+<p class="code">
+ 		void CMyBrushEntity::BrushTouch( CBaseEntity *pOther )<br>
+        {<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // Get the collision information<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; const trace_t &amp;tr = GetTouchTrace();<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // We want to move away from the impact point along our surface<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; Vector vecPushDir = tr.plane.normal;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; vecPushDir.Negate();<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; vecPushDir.z = 0.0f;<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // Move slowly in that direction<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; LinearMove( GetAbsOrigin() + ( vecPushDir * 64.0f ), 32.0f );<br>
+        }<br>
+</p>
+
+<p>First we retrieve the normal of the surface that was hit. In our case, this will be one of the planes of the brush entity. We negate that value to point towards the direction of the impact, and then remove the Z component of the direction to keep us parallel to the floor.</p>
+
+<p> Finally, we use the <span class="code2">LinearMove()</span> function to cause the brush to move to a location at a given speed. The <span class="code2">LinearMove()</span> function is implemented by <span class="code2">CBaseToggle</span> and takes care of behind-the-scenes maintenance in how the brush model moves. </p>
+
+
+<!--
+<h2><br><strong>Compile and run </strong></h2>
+
+<p>Load the <span class="code2">sourcesdk_content\hl2\mapsrc\sdk_entity_brush.vmf</span> map. &nbsp; Run up to the brush entity ahead of you and touch it. &nbsp; The brush will move for a short time, then stop. &nbsp; Touch it again and it&rsquo;ll move again.</p>
+
+<p>Try changing how far it moves or how quickly it does so. &nbsp; You could also add a <em>think</em> function to let the entity do more complicated behaviors.</p>
+-->
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

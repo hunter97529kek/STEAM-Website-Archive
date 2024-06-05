@@ -1,0 +1,1212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Using Source Control With The Source SDK</title>
+<link href="../../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Using Source Control With The Source SDK</h1>
+
+<h2>Table Of Contents</h2>
+	<ul>
+		<li><a href="#overview">Overview</a></li>
+		<ul>
+			<li><a href="#integrating_changes_overview">Integrating Source Code Changes</a></li>
+		</ul>
+		<li><a href="#step_by_step">Step By Step</a></li>
+		<ul>
+			<li><a href="#prerequisites">Prerequisites</a></li>
+			<li><a href="#download_perforce">Download and install Perforce</a></li>
+			<li><a href="#create_workspace">Creating Your First Client Workspace</a></li>
+			<li><a href="#populate_codeline_a">Populating Codeline A</a></li>
+			<li><a href="#populate_codeline_b">Populating Codeline B</a></li>
+			<li><a href="#copy_code_to_codeline_b">Copying Your Code Into Codeline B</a></li>
+			<li><a href="#move_codeline_b_directory">Moving Codeline B's Directory</a></li>
+		</ul>
+		<li><a href="#edit_code_in_perforce">Editing Your Source Code In Perforce</a></li>
+		<ul>
+			<li><a href="#editing_files">Editing Files</a></li>
+			<li><a href="#adding_files">Adding Files</a></li>
+			<li><a href="#submitting_changelists">Submitting Changelists</a></li>
+		</ul>
+
+		<li><a href="#integrate_sdk_code_into_mod">Integrating SDK Code Into Your Mod</a></li>
+		<li><a href="#further_investigations">Further Investigations</a></li>
+	</ul>
+
+<a name="overview"></a>
+<h2>Overview</h2>
+
+<p>This document describes how to use source control with the Source SDK. By using a source control system with the SDK, 
+you will have the ability to easily integrate the latest optimizations and fixes from Valve into your mod's code. 
+In addition, you get all the benefits of source control like revision history, backups, multiuser support, branches, and labels.
+
+<br><br><strong>Note:</strong> This document refers to Perforce as the source control system because that is what Valve uses 
+internally for all of its source (and content). There is a free 2-user version of Perforce that can be downloaded on 
+the <a href="http://www.perforce.com">Perforce web site</a>. Most other source control systems (like <a href="https://www.cvshome.org/">CVS</a>) 
+should be able to support the process that we describe here.
+
+<p>The high-level steps that you want to use to keep your code in sync with updates from Valve are:
+</p>
+
+<ol>
+	<li>Create a codeline (codeline A) that contains the latest code from Valve.
+	<li>Create a codeline (codeline B) that contains your modified version of the code - you work out of this codeline.
+	<li>Integrate the latest changes from Valve into your code.
+</ol>
+
+<img src="source_control_flowchart.gif">
+
+
+<a name="integrating_changes_overview"></a>
+<h3>Integrating Source Code Changes</h3>
+
+<p>The high-level steps to integrate the latest source changes from Valve into your existing source code are:</p>
+<ol>
+	<li>Open all files in Codeline A for edit, copy all the latest Valve source into it, and revert unchanged files.
+	<li>Submit all the changes in Codeline A.
+	<li>Submit any pending changes in Codeline B.
+	<li>Integrate from Codeline A to Codeline B. At this point, any changes that happened to Valve's source code since the latest time
+	Codeline A was integrated into Codeline B will be integrated into your source code.
+	<li>Check the differences in Codeline B to make sure you want the changes in your code.
+	<li>Submit the change. At this point, you are up to date with the latest code from Valve.
+</ol>
+
+<a name="step_by_step"></a>
+<h2>Step By Step</h2>
+
+<p>This section walks through the entire process of setting up your mod to use source control.</p>
+
+<a name="prerequisites"></a>
+<h3>Prerequisites</h3>
+
+<p>
+	If you already have installed the SDK source code and modified it, and you want to use the process described in this document,
+	then you must follow the steps in this section before proceeding.
+<ol>
+		<li>First, backup the source code that you have.
+		<li>Double check that you just backed up your source code.
+		<li>Next, you must get yourself in sync with the latest version of Valve's SDK code. This must be done manually by clicking <span class="code2">Create a Mod</span>
+	        from the SDK launcher, installing the source code somewhere, and merging your own code into it by hand or vice-versa. Tools 
+			like <a href="http://www.scootersoftware.com/">Beyond Compare</a> can make this process easier, and this should be the last time you ever have
+			to do this process painfully.
+</ol>
+	
+</p>
+
+
+
+<a name="download_perforce"></a>
+<h3>Download and install Perforce</h3>
+
+<p>To download Perforce, go to <a href="http://www.perforce.com">www.perforce.com</a>, go to the <strong>downloads</strong> page, and get the most recent version. Note that you want to download the <b>Core Perforce Windows Installer</b> because that includes the Perforce server as well as the front end.</p>
+
+<ol>
+	<li>Run the installer, and choose "Administrator - Typical" as the type of install. You can install to any directory,
+		but this document will assume you've installed it into <span class="code2">C:\Perforce</span>. Click <b>Next</b>.
+	<li>Accept the default options at the next screen and click <b>Next</b>.
+	<li>Click <b>Install</b>.
+	<li>Perforce may mention that installation won't be complete until the system is restarted. If it mentions this, restart your system before proceeding.
+</ol>
+
+<a name="create_workspace"></a>
+<h3>Creating Your First Client Workspace</h3>
+
+<p>
+In this section, you will create a <span class="code2">client workspace</span> that will hold Valve's source code only. 
+
+<br><br>
+Briefly, a client workspace describes where to place a <span class="code2">codeline</span> on a user's hard drive. It 
+is similar to mapping a network drive - Perforce has its own internal file system that has a root called <span class="code2">//depot</span> (and you're 
+going to place Valve's source code in <span class="code2">//depot/ValveSDKCode</span>), and the <span class="code2">client workspace</span> is
+what tells Perforce to store the contents of <span class="code2">//depot/ValveSDKCode</span> on your hard drive in <span class="code2">C:\ValveSDKCode</span>.
+
+For example, 
+as described above, you will have a codeline called &quot;Codeline A&quot;, which will hold Valve's latest source code. This codeline exists
+inside Perforce and cannot be edited directly. To edit it, each user must have a copy of the codeline on his or her hard drive.
+They edit that copy, then <strong>Submit</strong> their changes to Perforce, in effect saying, "Take the source code on my hard drive
+and put it up on the Perforce server so other users can get my changes".
+
+<br>
+<br>
+For more details on <span class="code2">client workspaces</span>, visit the <a href="http://www.perforce.com/perforce/doc.042/manuals/p4guide/04_details.html#1040395">Perforce documentation here</a>.
+</p>
+
+<table cellspacing="18">
+<tr>
+<td width="100%" valign="top">
+	<ul>
+		<li>The first time you run Perforce, it will bring up the <strong>Client Workspace Wizard</strong> dialog. We need to enter some advanced options, so click <b>Cancel</b>.
+          <br><br>
+          		
+          <li>Select the <b>ClientSpec</b> menu and choose <b>New</b>.
+            <br><br>
+            		
+          <li>At the next dialog, enter ValveSDKCode and click <b>OK</b>.
+        </ul>
+</td>
+<td valign="top">
+	<img src="source_control_clientspec_name.gif">
+</td>
+<tr>
+<td valign="top">
+	<ul>
+		<li>At the next dialog, make these changes (and leave the other fields as they are):
+			<ol>
+				<li>Set <strong>Root</strong> to <span class="code2">C:\ValveSDKCode</span> (or wherever you want to put Valve's source code on your machine - you will
+					never edit the code in here directly).
+				<li>Add <span class="code2">ValveSDKCode</span> after the <span class="code2">//depot</span> in the <strong>View</strong> section, so it reads:
+<p class="code2">//depot/<b>ValveSDKCode/</b>... //ValveSDKCode/...</p> 
+			</ol>
+		<li>Click <b>Update</b>.
+          <br><br>
+          		
+          <li>A dialog will come up asking if you want to <strong>Sync To Head</strong> (i.e. copy the latest files from the codeline to your hard drive).
+	Since there are no files in the codeline yet, click <strong>Dont Sync.</strong>	
+</ul>
+</td>
+<td valign="top">
+	<img src="source_control_clientspec.gif">
+</td>
+</tr>
+</table>
+
+<a name="populate_codeline_a"></a>
+<h3>Populating Codeline A</h3>
+
+<p>
+In the previous step, we created a <em>client workspace</em> to hold Valve's source code.
+It is still empty - we haven't added any files to the Perforce server, so now we want to add all of 
+Valve's source code to the codeline (in <span class="code2">//depot/ValveSDKCode</span>). </p>
+
+
+<table cellspacing="18">
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Run the Source SDK and choose <span class="code2">Create a Mod</span>.
+              <br><br>
+              			
+            <li>Choose the <b>Source code only</b> option and click <b>Next</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_create_mod.gif">
+	</td>
+	</tr>
+
+	<tr>
+<td width="100%" valign="top">
+		<ul>
+			<li>Enter in the directory name you chose above to hold the Valve code (<span class="code2">C:\ValveSDKCode</span>).
+              <br><br>
+              			
+            <li>Click <b>Next</b>.<br><br>
+              
+			<li>All the latest source code will be copied into <span class="code2">C:\ValveSDKCode</span>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_mod_info.gif">
+	</td>
+	</tr>
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Now, to add all the files, open a command prompt and <span class="code2">cd</span> to <span class="code2">C:\ValveSDKCode</span>.<br><br>
+			  
+			<li>To tell Perforce which client workspace you're adding the files to, type: 
+			    <p class="code">set p4client=ValveSDKCode</p>
+			<li>Then type the following command to add all the files to the depot:
+			    <p class="code">for /R %i in (*.*) do @p4 add "%i"</p>
+			<li>You will see Perforce adding all the files. It will be scrolling lines like this:
+			    <br><br>
+			    <span class="code2">//depot/ValveSDKCode/dlls/nav_generate.cpp#1 - opened for add</span>
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_command_prompt.gif">
+	</td>
+	</tr>
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>At this point, we've told Perforce that we want to add all the Valve SDK code to Codeline A. All that remains is to <em>submit</em> the 
+			    change to the Perforce server.<br>
+			    <br>
+			<li>Alt+TAB back to Perforce and hit <b>F5</b>. Under <b>Pending Perforce Changelists</b>, you should see an item called <b>Default</b>.
+              <br><br>
+              			
+            <li>Right-click on the <b>Default</b> item and choose <b>Submit</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_perforce_submit.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In the dialog that comes up, the only thing you need to change is the <b>Description</b> field.
+              <br><br>
+              			
+            <li>Fill in the <b>Descrpition</b> field as shown in the image to the right, and click the <b>Submit</b> button.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_perforce_submit2.gif">
+	</td>
+	</tr>
+
+</table>
+
+<p>
+To recap: At this point, we have created Codeline A and populated it with the most latest version of Valve's SDK code.
+From now on, the only time Codeline A will ever be modified is when you want to integrate a newer version of Valve's SDK code
+into your mod's codebase.
+
+<br><br>
+We need two more things to complete the source control setup:
+<ol>
+	<li>We need a codeline for your mod's source code to live in (Codeline B).
+	<li>We need Perforce to know that Codeline A and Codeline B are related, so when you update Codeline A with Valve's latest SDK code,
+	    Perforce will do all the dirty work of merging the changes into your mod's code (in Codeline B).
+</ol>
+</p>
+
+<a name="populate_codeline_b"></a>
+<h3>Populating Codeline B</h3>
+
+<p>
+Populating Codeline B is going to be similar to populating Codeline A, with a few key differences. The main difference
+is that we're going to <b>branch</b> the code in Codeline A into Codeline B. This means we're making a copy
+of Codeline A, but Perforce is going to remember that the files in the two codelines are linked, so it can easily merge
+changes between the two copies of the files (which is the main reason we want to use source control in the first place).
+</p>
+
+<table cellspacing="18">
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In Perforce, click the <b>ClientSpec</b> menu and choose <b>New</b>.
+              <br><br>
+              			
+            <li>Enter <span class="code2">LocalModCode</span> in the dialog and click <b>OK</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_clientspec_name_local_mod.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td valign="top">
+		<ul>
+			<li>At the next dialog, make these changes (and leave the other fields as they are):
+				<ol>
+					<li>Set <strong>Root</strong> to <span class="code2">C:\LocalModCode</span>. Important: This must be a directory that does not currently exist on your hard drive.
+					    If you want to store and edit your source code somewhere else (and you probably will), you can change this later - we'll show you how.
+					<li>Add <span class="code2">LocalModCode</span> after the <span class="code2">//depot</span> in the <strong>View</strong> section, so it reads:
+					<p class="code2">//depot/<b>LocalModCode/</b>... //LocalModCode/...</p> 
+				</ol>
+			<li>Click <b>Update</b>.
+              <br><br>
+              			
+            <li>A dialog will come up asking if you want to <strong>Sync To Head</strong> (i.e. copy the latest files from the codeline to your hard drive).
+				Since there are no files in the codeline yet, click <strong>Dont Sync</strong>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_clientspec_local_mod.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Click on the <b>BranchSpec</b> menu and choose <b>New</b>.
+              <br><br>
+              			
+            <li>At the next dialog, make these changes (and leave the other fields as they are):
+				<ol>
+					<li>Set <strong>Branch</strong> to <span class="code2">valve_to_mod</span>.
+					<li>Change the <b>View</b> section to read like this:
+						<p class="code2">//depot/ValveSDKCode/... //depot/LocalModCode/...</p> 
+				</ol>
+			<li>Click <b>Update</b>.
+              <br><br>
+              			
+            <li>We just told Perforce that we want to map the files from Codeline A (<span class="code2">//depot/ValveSDKCode</span>) into Codeline B (<span class="code2">//depot/LocalModCode</span>).
+			    All we have to do now is branch the files over.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_branchspec.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Hit <b>F10</b> to flip back to the ClientSpec view.
+              <br><br>
+              			
+            <li>On the left-hand side of the Perforce window, you should see a tree control with <span class="code2">//depot</span> at the root. 
+			    Right-click on <span class="code2">//depot</span>, and choose <b>Integrate Using</b>, then choose <b>Branchspec</b> in the popup menu.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_integrate_branchspec.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>The <span class="code2">valve_to_mod</span> BranchSpec that we just created should be selected.
+              <br><br>
+              			
+            <li>Click <b>Next</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_perforce_branches.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In this dialog, the only thing you need to change is the radio buttons next to the <b>File Specifications - Integrate</b> area
+			in the middle.
+              <br><br>
+              			
+            <li>Check the <b>To</b> button, as shown in the image to the right.
+              <br><br>
+              			
+            <li>Click <b>Finish</b>.
+              <br><br>
+              			
+            <li>Perforce will spit out a lot of messages like this:
+				<p class="code2">//depot/LocalModCode/dlls/particle_light.h#1 - branch/sync from //depot/ValveSDKCode/dlls/particle_light.h#1</p>
+			<li>When Perforce is done branching all the files from the previous step, you can proceed to the next step.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_final_integrate.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>At this point, Perforce has a big list of all the files it wants to branch from Codeline A into Codeline B. All that remains is 
+			to <b>Submit</b> the change.
+              <br><br>
+            			
+            <li>Hit <b>F6</b> to bring up the <strong>Change List</strong> pane in Perforce.
+              <br><br>
+              			
+            <li>In the right-hand panel, there will be a tree control that says <b>Pending Changelists</b>, and right under there, <b>Default</b>.
+              <br><br>
+              			
+            <li>Right-click on <b>Default</b>, and choose <b>Submit</b>.		
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_about_to_submit_branched_code.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In this dialog, enter anything you want into the <b>Description</b> field and click <b>Submit</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_submit_branched_code.gif">
+	</td>
+	</tr>
+
+</table>
+
+<p>
+At this point, you have Codeline A and Codeline B setup on the Perforce server.
+</p>
+
+<a name="copy_code_to_codeline_b"></a>
+<h3>Copying Your Code Into Codeline B</h3>
+
+<p>If, before embarking on this document, you already had source code for a mod you were working on, you should follow
+the instructions in this section. Otherwise (i.e. if you are starting a new set of mod source code right now), you 
+should skip over this section and start reading at <a href="#move_codeline_b_directory">Moving Codeline B's Directory</a>. </p>
+
+<table cellspacing="18">
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In Perforce, hit <b>F10</b> to go to your ClientSpecs list.
+              <br><br>
+              			
+            <li>If the <span class="code2">LocalModCode</span> ClientSpec doesn't have a green arrow next to it (i.e. it is not the active ClientSpec), 
+			right-click on it and choose <b>Switch to LocalModCode</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_switch_to_local_mod_code.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td valign="top">
+		<ul>
+			<li>On the left-hand side, right-click on <span class="code2">//depot</span> and choose <b>Open For Edit</b>.
+              <br><br>
+              			
+            <li>Answer <b>Yes</b> to the dialog asking if you want to proceed with the edit.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_open_for_edit.gif">
+	</td>
+	</tr>
+</table>
+
+<ul>
+	<li>Now, either in Windows explorer or in a command prompt, copy the source tree from your mod into
+	<span class="code2">C:\LocalModCode</span>. For example, if you installed your mod into <span class="code2">C:\MyMod</span>, the command line would be:
+	<p class="code">xcopy C:\MyMod\src C:\LocalModCode /e</p>
+</ul>
+
+<table cellspacing="18">
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>We also need to make sure that any extra files files in your mod's code are added to Perforce.
+              <br><br>
+              			
+            <li>Open a command prompt and <span class="code2">cd</span> to <span class="code2">C:\LocalModCode</span>.
+              <br><br>
+              			
+            <li>To tell Perforce which client workspace you're adding the files to, type: 
+			    <p class="code">set p4client=LocalModCode</p>
+			<li>Then type the following command to add all the files to the depot:
+			    <p class="code">for /R %i in (*.*) do @p4 add "%i"</p>
+			<li>Perforce will be scrolling lines like this:
+			    <p class="code">//depot/LocalModCode/vgui2/controls/controls.cpp - can't add existing file</p>
+			<li>This just means that Perforce already has most of the files on its server, so now we'll check to see if there were any new ones.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_add_files_to_localmodcode.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Hit <b>F6</b> to bring up the 'Change List' pane in Perforce.
+              <br><br>
+              			
+            <li>In the right-hand panel, there will be a tree control that says <b>Pending Changelists</b>, and right under there, <b>Default</b>.
+              <br><br>
+              			
+            <li>Right-click on <b>Default</b>, and choose <b>Revert Unchanged Files</b>
+              <br><br>
+              			
+            <li>Perforce will work for a few minutes gathering the file list.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_revert_unchanged.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>When this dialog appears listing the files to Revert, click <b>Revert Files</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_revert_unchanged_final.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Hit <b>F6</b> to bring up the 'Change List' area in Perforce.
+              <br><br>
+              			
+            <li>In the right-hand pane, there will be a tree control that says <b>Pending Changelists</b>, and right under there, <b>Default</b>.
+              <br><br>
+              			
+            <li>Right-click on <b>Default</b>, and choose <b>Submit</b>
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_about_to_submit_branched_code.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In this dialog, enter anything you want into the <b>Description</b> field, then click <b>Submit</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_submit_branched_code.gif">
+	</td>
+	</tr>
+</table>
+
+<a name="move_codeline_b_directory"></a>
+<h3>Moving Codeline B's Directory</h3>
+  <p>At this point, the Perforce server has your mod's latest code in Codeline B. The only problem now is
+	that you've got Codeline B in <span class="code2">C:\LocalModCode</span>, and you may want it elsewhere (like in <span class="code2">C:\MyMod\src</span> if you
+	installed your mod into <span class="code2">C:\MyMod</span>). To move where Codeline B is stored on your hard drive, follow the steps below.
+	<br>
+	<br>
+	First, if you want Codeline B to sit in the same directory where you had your source code previously (if you were already
+	working on a mod), then go rename that directory to something else for now. <b>Note: </b>You should have already copied your source code
+	into Codeline B in the <a href="#copy_code_to_codeline_b">Copying Your Code Into Codeline B</a> section, so we're just
+	going to tell Perforce that we want Codeline B's code in the directory you copied from.
+	<br><br>
+	For example, if you already were working on a mod, and its source code was in <span class="code2">C:\MyMod\src</span>, then in the 
+	<a href="#copy_code_to_codeline_b">Copying Your Code Into Codeline B</a> section, you would have copied from <span class="code2">C:\MyMod\src</span>
+	into <span class="code2">C:\LocalModCode</span>. Now, you would rename the <span class="code2">C:\MyMod\src</span> directory to something else, and we'll tell Perforce
+  to put Codeline B's source code in <span class="code2">C:\MyMod\src</span>.  </p>
+
+<table cellspacing="18">
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In Perforce, hit <b>F10</b> to go to your ClientSpecs list.
+			  <br><br>
+			  				
+			<li>If the <b>LocalModCode</b> ClientSpec doesn't have a green arrow next to it (i.e. it is not the active ClientSpec), 
+			right-click on it and choose <b>Switch to LocalModCode</b>.
+	  </ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_switch_to_local_mod_code.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Right-click on <b>LocalModCode</b> and choose the <b>Edit LocalModCode</b> option from the popup menu.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_edit_local_mod_spec.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In this dialog, edit the <b>Root</b> field to point to where you want Codeline B's source code on your hard drive. <strong>Note:</strong> <span class="code2">C:\MyMod\src</span> is just an example. What you enter here depends on where you want to work on your mod.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_change_local_mod_dir.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Click <b>Yes</b> in this dialog.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_confirm_change_root.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Now we need to have Perforce copy the latest source code for Codeline B back into the directory you just specified,
+			so you can edit it.
+			  <br><br>
+			  				
+			<li>In the left-hand pane, there should be a tree control with <span class="code2">//depot</span> at the root.
+			  <br><br>
+			  				
+			<li>Right-click on it, go to <b>Sync</b>, then select the <b>Force sync to Head Revision</b> option from the sub-menu.
+			  <br><br>
+			  				
+			<li>Perforce will now copy all the source code into the directory you specified earlier.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_force_sync.gif">
+	</td>
+	</tr>
+</table>
+
+<a name="edit_code_in_perforce"></a>
+<h2>Editing Your Source Code In Perforce</h2>
+	<p>
+		At this point, you should be all set to continue with development of your mod. The main thing to be aware of is
+		that Perforce needs to know about any changes to the source code you are making. What you do is build a <em>changelist</em> of the
+		files that you've edited, and you <em>Submit</em> the changelist to Perforce. For a complete description of how to use Perforce,
+		see the <a href="http://www.perforce.com/perforce/doc.042/manuals/p4guide/index.html">Perforce Documentation</a>.
+	</p>
+
+<a name="editing_files"></a>
+<h3>Editing Files</h3>
+
+<table cellspacing="18">
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In Perforce, hit <b>F10</b> to go to your ClientSpecs list.
+			  <br><br>
+			  					
+			<li>If the <b>LocalModCode</b> ClientSpec doesn't have a green arrow next to it (i.e. it is not the active ClientSpec), 
+			right-click on it and choose <b>Switch to LocalModCode</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_switch_to_local_mod_code.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>On the left-hand side, there should be a tree control with <span class="code2">//depot</span> at the root.
+			  <br><br>
+			  					
+			<li>Navigate  the tree control by clicking the &quot;+&quot; next to folders, to the file you want to edit. Then right-click the file and choose <b>Open for Edit</b>.
+			  <br><br>
+			  					
+			<li>Now you can edit the file on your local hard drive (but don't forget to <a href="#submitting_changelists">submit the changelist</a> when you are done).
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_open_file_for_edit.gif">
+	</td>
+	</tr>
+</table>
+
+
+<a name="adding_files"></a>
+<h3>Adding Files</h3>
+<p>This section describes how to add a new source code file to Perforce.</p>
+
+<table cellspacing="18">
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In Perforce, hit <b>F10</b> to go to your ClientSpecs list.
+			  <br><br>
+			  					
+			<li>If the <b>LocalModCode</b> ClientSpec doesn't have a green arrow next to it (i.e. it is not the active ClientSpec), 
+			right-click on it and choose <b>Switch to LocalModCode</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_switch_to_local_mod_code.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Go to the <b>File</b> menu and choose <b>Add to Source Control</b>.
+			  <br><br>
+			  					
+			<li>Find the file you want to add and double-click on it.
+			  <br><br>
+			  					
+			<li>At the following dialog, make sure that the files listed are the files you want to add, then click the <b>Add Files</b> button.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_add_file.gif">
+	</td>
+	</tr>
+</table>
+	
+	
+<a name="submitting_changelists"></a>
+<h3>Submitting Changelists</h3>
+
+<p>As you <a href="#adding_files">add</a> and <a href="#editing_files">edit</a> files, they sit in a temporary area waiting to be <em>Submitted</em>
+to Perforce. The nice thing about this is that you can revert your changes at any time, in case you decide to back up and start over on them.
+Once you have a set of changes that you do want to commit to Perforce (which will give you the ability to restore that version and to make it available to other users),
+follow the steps below to submit the change.</p>
+
+<table cellspacing="18">
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In Perforce, hit <b>F10</b> to switch the right pane to your ClientSpecs list.
+			  <br><br>
+			  					
+			<li>If the <b>LocalModCode</b> ClientSpec doesn't have a green arrow next to it (ie: it is not the active ClientSpec), 
+			right-click on it and choose <b>Switch to LocalModCode</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_switch_to_local_mod_code.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Hit <b>F6</b> to bring up the <strong>Change List</strong> pane in Perforce.
+			  <br><br>
+			  					
+			<li>In the right-hand pane, there will be a tree control that says <b>Pending Changelists</b>, and right under there, <b>Default</b>.
+			  <br><br>
+			  					
+			<li>Right-click on <b>Default</b>, and choose <b>Submit</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_about_to_submit_branched_code.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In this dialog, enter anything you want into the <b>Description</b> field, and then click <b>Submit</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_submit_branched_code.gif">
+	</td>
+	</tr>
+</table>
+	
+<a name="integrate_sdk_code_into_mod"></a>
+<h2>Integrating SDK Code Into Your Mod</h2>
+
+<p>This section assumes you've setup the codelines as described above. When new code from Valve comes out, 
+you can use the steps here to merge it into your code. First, make sure that you have <a href="#submitting_changelists">submitted</a>
+any changelists in your <b>LocalModCode</b> client workspace.</p>
+
+<table cellspacing="18">
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In Perforce, hit <b>F10</b> to go to your ClientSpecs list.
+			  <br><br>
+			  				
+			<li>If the <b>ValveSDKCode</b> ClientSpec doesn't have a green arrow next to it (ie: it is not the active ClientSpec), 
+			right-click on it and choose <b>Switch to ValveSDKCode</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_switch_to_valvesdkcode.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td valign="top">
+		<ul>
+			<li>On the left-hand side, right-click on <span class="code2">//depot</span> and choose <b>Open For Edit</b>.
+			  <br><br>
+			  				
+			<li>Answer <b>Yes</b> to the dialog asking if you want to proceed with the edit.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_open_for_edit.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Run the Source SDK and choose <strong>Create a Mod</strong>.
+			  <br><br>
+			  				
+			<li>Choose the <b>Source code only</b> option and click <b>Next</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_create_mod.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Enter in the directory name you chose above to hold the Valve code (<span class="code2">C:\ValveSDKCode</span>).
+			  <br><br>
+			  				
+			<li>Click <b>Next</b>.
+			  <br><br>
+			  				
+			<li>All the latest source code will be copied into the directory (<span class="code2">C:\ValveSDKCode</span>, in this example).
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_mod_info.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>We don't want to merge in the .vcproj files, because they are difficult to merge. It's easier to just add and remove
+				any changes in your <b>LocalModCode</b> codeline.
+				<br>
+				<br>				
+			<li>Open a command prompt and <span class="code2">cd</span> into the <span class="code2">C:\ValveSDKCode</span> directory.
+			  <br><br>
+			  				
+			<li>Next type:
+				<p class="code">set p4client=ValveSDKCode</p>
+			<li>And then:
+				<p class="code">for /R %i in (*.vcproj) do @p4 revert "%i"</p>
+	  </ul>		</td>
+	<td valign="top">
+		<img src="source_control_revert_vcproj.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Hit <b>F6</b> to bring up the 'Change List' area in Perforce.
+			  <br><br>
+			  				
+			<li>In the right-hand pane, there will be a tree control that says <b>Pending Changelists</b>, and right under there, <b>Default</b>.
+			  <br><br>
+			  				
+			<li>Right-click on <b>Default</b>, and choose <b>Revert Unchanged Files.<br>
+				<br>
+			</b>
+			<li>Perforce will work for a few minutes.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_revert_unchanged.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>When this dialog appears, click <b>Revert Files</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_revert_unchanged_final.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In the right-hand panel, there will be a tree control that says <b>Pending Changelists</b>, and right under there, <b>Default</b>.
+			  <br><br>
+			  				
+			<li>Right-click on <b>Default</b>, and choose <b>Submit</b>.			
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_about_to_submit_branched_code.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In this dialog, enter anything you want into the <b>Description</b> field and click <b>Submit</b>.
+			  <br><br>
+			  				
+			<li>At this point, Perforce now has the latest Valve code in Codeline A (<span class="code2">ValveSDKCode</span>). What remains to be done 
+				is to tell Perforce to integrate the changes that just happened in Codeline A into Codeline B. Perforce
+				will automatically detect which files changed, and it will move those changes into your MOD's code.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_submit_branched_code.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In Perforce, hit <b>F10</b> to go to your ClientSpecs list.
+			  <br><br>
+			  				
+			<li>If the <b>LocalModCode</b> ClientSpec doesn't have a green arrow next to it (i.e. it is not the active ClientSpec), 
+			right-click on it and choose <b>Switch to LocalModCode</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_switch_to_local_mod_code.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>On the left-hand pane of the Perforce window, you should see a tree control with <span class="code2">//depot</span> at the root. 
+				Right-click on <span class="code2">//depot</span>, and choose <b>Integrate Using</b>, then choose <b>Branchspec</b> in the sub-menu.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_integrate_branchspec.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>The <span class="code2">valve_to_mod</span> BranchSpec that we just created should be selected.
+			  <br><br>
+			  
+			<li>Click <b>Next</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_perforce_branches.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In this dialog, the only thing you need to change is the radio buttons next to the <b>File Specifications - Integrate</b> area
+			in the middle.
+			  <br><br>
+			  				
+			<li>Select the <b>To</b> button, as shown in the image to the right.
+			  <br><br>
+			  				
+			<li>Click <b>Finish</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_final_integrate.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Hit <b>F6</b> to bring up the changelists pane on the right.
+			  <br><br>
+			  				
+			<li>There should be a tree control that says, <b>Pending Changelists (client 'LocalModCode')</b> with a bunch of files in the tree (when you expand the tree).
+			  <br><br>
+			  				
+			<li>Right-click on any file and choose <b>Resolve</b>, then <b>Auto resolve...</b> from the sub-menu.
+	  </ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_auto_resolve.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In this dialog, the only thing you need to change is to make sure the <b>All open files requiring resolution</b> option is checked.<br>
+			  <br>
+			<li>Then click the <b>OK</b> button. 
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_auto_resolve_dialog.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+	<ul>
+			<li>Now, look over all the files in the tree control, and if there are any with a yellow exclamation point next to them, it means that
+				they couldn't be automatically resolved by Perforce (see example in this image). This means that changes you have made in your <b>LocalModCode</b> codeline
+				are conflicting with changes Valve has made, and you will have to resolve them manually.
+				<br><br>If there are no yellow exclamation points, then you can skip to the last step of this section where you submit the change.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_yellow_exclamation.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>First, if there are any library (.LIB) files with yellow exclamation marks, you want to use Valve's version of the .LIB file.
+			  <br><br>
+			  				
+			<li>Select all the .LIB files with yellow exclamation marks.
+			  <br><br>
+			  				
+			<li>Right-click, and choose <b>Resolve</b>, then <b>Auto Resolve</b> from the sub-menu.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_resolve_libs.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In the dialog that comes up, make sure that the <b>Accept Theirs</b> option is selected.
+			  <br><br>
+			  				
+			<li>Click the <b>OK</b> button.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_accept_theirs.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>For all other files (ones that aren't .LIB files), you must resolve them manually.
+			  <br><br>
+			  				
+			<li>For each file, right-click on it and choose <b>Resolve</b>, then <b> Interactively</b> from the sub-menu.
+			  <br><br>
+			  				
+			<li>Perforce will bring up a 3-way merge application that lets you merge Valve's changes into your code.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_resolve_interactively.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Click on the <b>Run Merge Utility</b> button on this dialog.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_resolve_interactively_dialog.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Here is a brief description of how to use Perforce's default 3-way merge utility.
+			<ul>
+				<li>The top-left window pane contains Valve's version of the file.
+				<li>The top-right window pane has your version of the file.
+				<li>The bottom window pane has the merged version of the file.
+			</ul>
+			<br>
+			<br>
+			<li>Use the green button in the toolbar on the top to go to each difference.
+			  <br><br>
+			  				
+			<li>At each difference, pick which of the top windows you want to keep the source from, and double-click on the section of code that you want to move into the bottom window.
+			  <br><br>
+			  				
+			<li>You can also right-click in the bottom window to edit the source code directly.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_interactive_merge_window.gif">
+	</td>
+	</tr>
+
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>Now, finally, you can submit the merged version.<br>
+			  <br>
+			<li>In the right-hand panel, there will be a tree control that says <b>Pending Changelists</b>, and right under there, <b>Default</b>.
+			  <br><br>
+			  				
+			<li>Right-click on <b>Default</b>, and choose <b>Submit</b>.
+	  </ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_about_to_submit_branched_code.gif">
+	</td>
+	</tr>
+	
+	<tr>
+	<td width="100%" valign="top">
+		<ul>
+			<li>In this dialog, enter anything you want into the <b>Description</b> field and click <b>Submit</b>.
+		</ul>
+	</td>
+	<td valign="top">
+		<img src="source_control_submit_branched_code.gif">
+	</td>
+	</tr>
+</table>	
+
+<p>At this point, you should do a fixup pass on the code to fix any compile errors that may have been introduced by the code merge. You could
+also do this pass right before submitting the merged code changelist, but it tends to be easier to make changes starting with an empty changelist
+rather than one full of code merges.</p>
+
+<a name="further_investigations"></a>
+<h2>Further Investigations</h2>
+
+<p>We highly recommend that you read the <a href="http://public.perforce.com/public/perforce/faq/beginner.html">Perforce Beginner's FAQ</a>
+	and look at the <a href="http://www.perforce.com/perforce/doc.042/manuals/p4guide/index.html">Perforce Documentation</a> if necessary,
+	and get acquainted with:</p>
+
+<ul>
+	<li>Codelines
+	<li>Client workspaces
+	<li>Changelists
+	<li>Branches
+	<li>Integrations
+</ul>
+
+<p>Working with a source control introduces some concepts that take getting used to, but it pays dividends. It saves time,
+helps teams work together on the same product, and provides access to the whole history of a project.</p>
+
+<p>Keep in mind that, while this document has a lot of steps, this stuff is all trivial once you're familiar with Perforce. Once you know
+how this all works, all these integrations and merges can be done in a matter of minutes. We recommend that you jump back to the 
+<a href="#overview">overview section</a> of this document to review the high-level process that is involved, and see how all the
+detailed steps fit into that simple high-level process.</p>
+
+<p>Internally, Valve uses source control in a similar fashion to that described in this document. The main difference is that ALL files for
+Valve games go in Perforce, including content source .TGA artwork, .VMT files, executables, scripts, documents, etc. We recommend doing this while developing
+a mod as well, because you can instantly restore any version of the mod that ever existed.</p>
+
+<p>Valve also uses a multitude of codelines (whereas there are just two in this document). For example, we have a main codeline that about 20 programmers 
+submit code into. Oftentimes, programmers need to stay sheltered from other people's changes (which may happen as many as 20 times per day), so
+each programmer has their own set of personal codelines that are branched off the main codeline. This way, they can choose when they want to integrate
+all the changes from other programmers into their personal codeline (just like you now have the choice about when you want to integrate Valve's source
+code into your mod's source code).</p>
+
+<p>As always, feel free to ask questions and post feedback on the <a href="http://www.chatbear.com/board.plm?a=boardlisting&b=4991&v=flatold">VERC Code Forums</a>.
+Happy coding!</p>
+
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>
+

@@ -1,0 +1,278 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Physics Entities on Server & Client</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Physics Entities on Server & Client  </h1>
+
+<h2>Overview</h2>
+
+<p>A major feature of the Source Engine is the physical simulation of rigid bodies. This simulation implements mostly mechanical and Newtonian physics like gravity, trajectory, friction, collisions, springs and dampening. Models have to support this simulation by providing information about their collision model, material type, weight etc. In single player mode all physics entities are controlled and simulated by the server (server-side physics) and networked to the client. In multiplayer mode smaller objects like cans or bottles that doesn't affect gameplay are completely simulated client-side and are therefore not synchronized between clients.  This is necessary because moving physics entities generate significant network traffic since they change their position and orientation basically with every frame. Networking these updates would almost stall any connection as soon as lots of physics object start to move at the same time (explosions, etc). Client-side physics objects don't affect player movement and should always be significant smaller that players so they can't hide behind. When destroying server-side breakable objects, they break apart into smaller client-side simulated fragments.</p>
+
+<h2>Adding physics entities</h2>
+
+<p>For a mapmaker it's pretty easy to placed physics entities in Hammer. For single player maps the entity class physics_prop must be used to create server-side controlled physics entities. The player does correctly collide with these entities, can walk over them, push them around or pick them up. Unfortunately this class can't be used in multiplayer mode since player interaction with physics entities isn't predicted on the client and would cause jittery or delayed movement. Therefore a special entity class prop_physics_multiplayer must be used, which implements a simpler collision behavior (<span class="code2">COLLISION_GROUP_PUSHAWAY</span>). Multiplayer physics entities can only be pushed away, but not be used to walk over or picked up. If they are larger, a player just bounces off. Whether a multiplayer physics entity becomes a server-side or a client-side simulated entity, is defined by the object model.</p>
+
+<p>The physical properties of a model are defined in it's .QC file by 3 entries: <span class="code2">$surfaceprop, $collisionmodel, $keyvalues</span>. The first entry <span class="code2">$surfaceprop</span> sets the model surface properties as defined in text file <span class="code2">\scripts\surfaceproperties.txt</span>. There properties like friction, elasticity and collision sounds are defined. The next entry <span class="code2">$collisionmodel</span> sets the collision model and the objects weight. The see collision models for entities in game enable console variable "<span class="code2">vcollide_wireframe 1</span>". The last section are the "prop_data" entries under <span class="code2">$keyvalues</span>. Here the object properties like health, break models and physics mode are defined. Here an example:</p>
+
+<pre class="code">
+$surfaceprop "cardboard" // object surface properties
+
+$collisionmodel "mymodel.smd" {
+     $Mass 40	// Mass in kilograms
+     $concave
+}
+
+$keyvalues
+{
+	"prop_data"
+	{
+		"base" 		"Cardboard.Medium" // base material defined in propdata.txt
+		"health"		"40" // overriding material properties
+		"physicsmode"	"1" // setting a custom physics mode
+	}
+}</pre>
+
+<p>The physics mode defines if the object becomes a server-side or client-side physics entity. There are to  2 server-side modes and one client-side mode define in <span class="code2">props_shared.h</span>:</p>
+
+<pre class="code">
+#define PHYSICS_MULTIPLAYER_AUTODETECT	0	// autodetect mode based on mass & size
+#define PHYSICS_MULTIPLAYER_SOLID		1	// server-side, solid (collides with player)
+#define PHYSICS_MULTIPLAYER_NON_SOLID	2	// server-side, non-solid
+#define PHYSICS_MULTIPLAYER_CLIENTSIDE	3	// client-side, non-solid>
+</pre>
+
+<p>If the physics mode property is not set in propdata.txt neither in the QC file, the physics mode will be picked by the function <span class="code2">GetAutoMultiplayerPhysicsMode()</span> based on the model's size and weight. A model will become a client-side physics entity, if it's size is below a certain threshold (set by console variable <span class="code2">sv_pushaway_clientside_size</span>). </p>
+
+<h2>Collision Groups</h2>
+
+<p>For quite some reason, it's not necessary that all dynamic physic entity collide with each other. That may be for game play reasons, but most of the time it's a performance issue. Especially creating dozens of small, fast moving debris pieces would drag down client performance significantly. As for the visual effect of breaking debris or exploding particle-like objects it's sufficient enough when they collide with static world objects, but not with themselves or other dynamic objects. To implement specific collision behavior the Source engine allows to define collision groups and specify if elements of these groups should collide or not. Each entity belongs to a single group at a time set with <span class="code2">SetCollisionGroup()</span>.  New groups and new rules can be added easily. The physics subsystem queries the virtual function <span class="code2">bool CGameRules::ShouldCollide(int group0, int group1)</span> to see if a collision check must be run for between two objects. Already existing collision groups are:</p>
+
+<table width="98%" class="definition">
+<tr>
+	<td width="28%"><p class="code2">COLLISION_GROUP_NONE</p></td>
+	<td width="72%"><p>Default, collsides with static and dynamic objects</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_DEBRIS</p></td>
+	<td><p>Collides with nothing but world and static stuff</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_DEBRIS_TRIGGER </p></td>
+	<td><p>Same as debris, but hits triggers</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_INTERACTIVE_DEBRIS</p></td>
+	<td><p>Collides with everything except other interactive debris or debris</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_INTERACTIVE</p></td>
+	<td><p>Collides with everything except interactive debris or debris</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_PLAYER</p></td>
+	<td><p>Collsiosn group for player</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_BREAKABLE_GLASS</p></td>
+	<td><p>Special group for glass debris </p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_VEHICLE</p></td>
+	<td><p>Collision group for driveable vehicles</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_PLAYER_MOVEMENT  </p></td>
+	<td><p>For singleplayer, same as Collision_Group_Player, for multiplayer, this filters out other players and CBaseObjects </p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_NPC</p></td>
+	<td><p>Generic NPC group</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_IN_VEHICLE</p></td>
+	<td><p>for any entity inside a vehicle</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_WEAPON</p></td>
+	<td><p>for any weapons that need collision detection</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_VEHICLE_CLIP</p></td>
+	<td><p>vehicle clip brush to restrict vehicle movement</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_PROJECTILE</p></td>
+	<td><p>Projectiles</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_DOOR_BLOCKER</p></td>
+	<td><p>Blocks entities not permitted to get near moving doors</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_PASSABLE_DOOR</p></td>
+	<td><p>Doors that the player shouldn't collide with</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_DISSOLVING</p></td>
+	<td><p>Things that are dissolving are in this group</p></td>
+</tr>
+<tr>
+	<td><p class="code2">COLLISION_GROUP_PUSHAWAY</p></td>
+	<td><p>Nonsolid on client and server, pushs player away</p></td>
+</tr>
+</table>
+
+<h2>Appendix</h2>
+
+<p>List of valid commands in the <span class="code2">$collisionmodel</span> section of a model:</p>
+
+<table width="100%" class="definition">
+<tr>
+	<td width="19%"><p class="code2">$mass</p></td>
+	<td width="81%"><p>Manually set the mass of the model</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$automass</p></td>
+	<td><p>Tell the physics system to compute a mass for the model, based on it's surfaceprops & volume</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$inertia</p></td>
+	<td><p>Inertia scale</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$damping</p></td>
+	<td><p>Linear damping scale</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$rotdamping</p></td>
+	<td><p>Rotational damping scale</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$drag</p></td>
+	<td><p>Scales the air resistance</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$concave</p></td>
+	<td><p>The vphysics collision model is not a single convex hull. If not set, it'll make a single convex hull out of whatever geometry you give it.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$masscenter</p></td>
+	<td><p>Override the center of mass, in local coords</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$jointskip</p></td>
+	<td><p>Rarely used. Eliminates a joint in the collision model that you don't want to use. (i.e. if you were using a render model as a ragdoll, and it has bones you don't want)</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$jointmerge</p></td>
+	<td><p>Merges the vertex assignments for two joints.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$rootbone</p></td>
+	<td><p>The parent-most bone that actually has collision geometry.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$jointconstrain</p></td>
+	<td><p>The limits of the joint's movement</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$jointinertia</p></td>
+	<td><p>Like $inertia, but per-bone</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$jointdamping</p></td>
+	<td><p>Like $damping, but per-bone</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$jointrotdamping</p></td>
+	<td><p>Like $rotdamping, but per-bone</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$jointmassbias</p></td>
+	<td><p>Mass is automatically distributed by volume, this lets you bias it per-bone</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$noselfcollisions</p></td>
+	<td><p>Turns off all collisions between bones in this model, usually for perf.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$jointcollide</p></td>
+	<td><p>If any $jointcollide pairs are specified, only those joints collide with each other.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">$animatedfriction</p></td>
+	<td><p>Used to animate the amount of friction on joints over time.</p></td>
+</tr>
+</table>
+
+<p>List of valid entries for <span class="code2">propdata.txt</span> definitions:</p>
+
+<table width="100%" class="definition">
+<tr>
+	<td><p class="code2">base</p></td>
+	<td><p>Specify a base propdata class to derive from (base types can be found in propdata.txt)</p></td>
+</tr>
+<tr>
+	<td><p class="code2">blockLOS</p></td>
+	<td><p>Override whether this prop should block NPC's Line-Of-Sight.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">AIWalkable</p></td>
+	<td><p>Override whether AI should consider this prop as walkable on.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">dmg.bullets</p></td>
+	<td><p>Mod damage done by bullets to this prop.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">dmg.club</p></td>
+	<td><p>Mod damage done by clubs to this prop.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">dmg.explosive</p></td>
+	<td><p>Mod damage done by explosives to this prop.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">health</p></td>
+	<td><p>Amount of damage this prop should take before breaking.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">explosive_damage</p></td>
+	<td><p>Explosive damage done by this prop.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">explosive_radius</p></td>
+	<td><p>Radius of the explosion caused by this prop when it breaks.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">breakable_model</p></td>
+	<td><p>The type of breakable gibs this prop should break into</p></td>
+</tr>
+<tr>
+	<td><p class="code2">breakable_count</p></td>
+	<td><p>The number of breakable gibs to break into.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">allowstatic</p></td>
+	<td><p>Allow this prop to be static as well as physically simulated.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">physicsmode</p></td>
+	<td><p>Set multiplayer physics behavior (1=full, 2=non-solid,3=clientside)</p></td>
+</tr>
+</table>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

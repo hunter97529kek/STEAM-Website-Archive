@@ -1,0 +1,303 @@
+<html>
+
+<head>
+	<title>Introduction to Special Effects</title>
+	<link href="../../../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1> Special Effects</h1>
+
+<h2>Introduction</h2>
+
+<p>This document will explain the steps necessary to create special effects in the Source engine. Special effects encompass many different visual aspects of the game, from bullet impacts, explosions, dust and debris. We&rsquo;ll start with the simplest implementation of a special effect, which is a server-dispatched effect. We will build on the code and examples in this tutorial later to make more complex entities.</p>
+<h3>1) Create a new file called <a href="env_sparkler.html" >env_sparkler.cpp</a> in your MOD&rsquo;s server-side folder </h3>
+<p>Create and include this file in your server project. This will act as the basis for our effect tutorial. Our goal is to create a simple sparkle effect that pulses once when called from the server. To accomplish this, we&rsquo;ll create a simple utility function that <em>dispatches</em> our effect to the client for it to act upon.</p>
+<h3><br>
+2)  Add our dispatch function </h3>
+<p>Add the following code to <a href="env_sparkler.html">env_sparkle.cpp</a> to create the basic dispatch function. </p>
+<table class="code">
+  <tr>
+    <td> #include &quot;cbase.h&quot; <br>
+         #include &quot;te_effect_dispatch.h&quot; <br>
+         <br>
+         void MakeSparkle( const Vector &amp;origin, float flScale ) <br>
+         { <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CEffectData data; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.m_vOrigin = origin; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.m_flScale = flScale; <br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DispatchEffect( &quot;Sparkle&quot;, data ); <br>
+         }</td>
+  </tr>
+</table>
+<p>See definitions of <a href="../ceffectdata.html" target="CEffectData">CEffectData</a> and <a href="../dispatcheffect.html" target="DispatchEffect">DispatchEffect()</a>.</p>
+<table class="code">
+  <tr>
+    <td> <em>. . . </em><br>
+        <em> <br>
+        void MakeSparkle( const Vector &amp;origin, float flScale ) </em><br>
+        <em> { </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</em>CEffectData data; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; data.m_vOrigin = origin; <br>
+    &nbsp;&nbsp;&nbsp;&nbsp; data.m_flScale = flScale; &nbsp; <br></td>
+  </tr>
+</table>
+<p>The code above declares a <a href="../ceffectdata.html" target="CEffectData">CEffectData</a> class instance and fills in an origin and scale for the effect. This data will be used on the client-side to determine where to place the effect and how large it should be. The <a href="../ceffectdata.html" target="CEffectData">CEffectData</a> instances simply hold values and the interpretation of those values on the client-side is completely up to the user.</p>
+<table class="code">
+  <tr>
+    <td><em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. . . </em><br>
+        <em> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp; data.m_vOrigin = origin; </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp; data.m_flScale = flScale; </em><br>
+        <br>        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DispatchEffect( &quot;Sparkle&quot;, data ); <br></td>
+  </tr>
+</table>
+<p>Here we call the <a href="../dispatcheffect.html" target="DispatchEffect">DispatchEffect()</a> function with an identifier of &ldquo;<em>Sparkle&rdquo;</em>. We&rsquo;ll use this name on the client-side to receive and process this dispatch. We pass in the <a href="../ceffectdata.html" target="CEffectData">CEffectData()</a> instance that we previously filled out. </p>
+<p>Now that we have the server-side sending off a dispatch, we&rsquo;ll need to create the client-side code to receive it. </p>
+<h3><br>
+3)  Create a new file called <a href="c_env_sparkler.html">c_env_sparkler.cpp</a> in your Mod&rsquo;s client-side folder </h3>
+<p>Create and include this file in your client project. Like the server-side counter-part, this file will hold our client-side implementation of our sparkle effect. Here we&rsquo;ll receive the effect dispatched from the server and interpret that into our visual result. </p>
+<h3><br>
+4)  Add our dispatch receiving function </h3>
+<p>Adding the block of code below will give us the necessary framework to start our visual effect.</p>
+<table class="code">
+  <tr>
+    <td>void SparkleCallback( const CEffectData &amp;data ) <br>
+        { <br>
+        } </br>
+        <br>
+      DECLARE_CLIENT_EFFECT( &quot;Sparkle&quot;, SparkleCallback );</td>
+  </tr>
+</table>
+<p>See the <a href="../declareclienteffect.html" target="DECLARE_CLIENT_EFFECT">DECLARE_CLIENT_EFFECT</a> macro definition for more information.</p>
+<p>This completes the bridge between server and client. Any server dispatches for the <em>&ldquo;</em>Sparkle<em>&rdquo;</em> effect will now be routed into the <span class="code2">SparkleCallback</span> function. </p>
+<p>We can now add the actual creation of particles to make our effect appear in the world. </p>
+<h3><br>
+5)  Add the particle creation framework to our client-side code </h3>
+<p>Now that we have put in place the scaffolding for creating our client-side effects, we can begin to actually spawn the particles that will comprise the visuals. Add the following code to the <span class="code2">SparkleCallback()</span> function in <span class="code2">c_env_sparkler.cpp</span>.</p>
+<table class="code">
+  <tr>
+    <td>#include &quot;particles_simple.h&quot;<br>
+      <br>
+        void SparkleCallback( const CEffectData &amp;data ) <br>      {<br>
+         <em>&nbsp;&nbsp;&nbsp;&nbsp; </em>CSmartPtr&lt;CSimpleParticles&gt; pSparkleEmitter;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pSparkleEmitter = CSimpleParticles::Create( &quot;Sparkle&quot; );<br>
+        <br>
+         &nbsp;&nbsp; &nbsp;&nbsp;if ( pSparkleEmitter == NULL )<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>
+         <br>
+         &nbsp;&nbsp; &nbsp;&nbsp;Vector origin = data.m_vOrigin;<br>
+         &nbsp;&nbsp; &nbsp;&nbsp;float &nbsp; scale = data.m_flScale;<br>
+         <br>
+         &nbsp;&nbsp; &nbsp;&nbsp;pSparkleEmitter-&gt;SetSortOrigin( origin );<br>
+    } </td>
+  </tr>
+</table>
+<p>Particles are created using the <span class="code2">CParticleEffect</span> class. For convenience, the <span class="code2">CSimpleEmitter</span> class wraps some useful functionality for rendering and is what we will generally use to create and deal with particles. </p>
+<p>To make our particles, we  must create an instance of the <span class="code2">CSimpleEmitter</span> class. To do this we execute the following lines of code: </p>
+<table class="code">
+  <tr>
+    <td>CSmartPtr&lt;CSimpleParticles&gt; pSparkleEmitter;<br>
+        pSparkleEmitter = CSimpleParticles::Create( &quot;Sparkle&quot; );</td>
+  </tr>
+</table>
+<p><span class="code2"> CSmartPtr </span> is a helper template class that provides extra safety for our particle emitter pointer. We create the particle system <span class="code2">pSparkleEmitter</span> by calling <span class="code2">CSimpleParticles::Create()</span>. The string parameter simply identifies this emitter by name for debugging purposes and can be whatever the user finds most useful. </p>
+<table class="code">
+  <tr>
+    <td> Vector origin = data.m_vOrigin;<br>      float &nbsp; scale = data.m_flScale;</td>
+  </tr>
+</table>
+<p>In this next code block we create local variables to hold the data we need from our <a href="../ceffectdata.html" target="CEffectData">CEffectData</a> instance for this call. Next, we call the emitter&rsquo;s member function <span class="code2">SetSortOrigin()</span> to tell the particle system where its base origin is for sorting. </p>
+<table class="code">
+  <tr>
+    <td>pSparkleEmitter-&gt;SetSortOrigin( origin );</td>
+  </tr>
+</table>
+<p>Without this information, the particle emitter cannot accurately cull its child particles. Here we set it to be the origin point passed in to the function. </p>
+
+<h3><br>6) Add particles to our emitter </h3>
+
+<p>At this point we have an empty emitter waiting for child particles to be added to it. The emitter is responsible for allocation and cleanup of these children, as well as culling, moving and drawing them. To add particles, we will add the following block of code to our <span class="code2">SparkleCallback</span> function. </p>
+<table class="code">
+  <tr>
+    <td><em> </em>PMaterialHandle hMaterial = pSparkleEmitter-&gt;GetPMaterial(&quot;effects/yellowflare&quot;);</td>
+  </tr>
+</table>
+<p>The particles will need a material so that they can be drawn (For more information on materials, see the <a href="../../../Materials/materials_creation.html">Creating Materials</a> documentation.) &nbsp; The particles hold onto this information via a reference handle. This handle must be obtained from the particle emitter, via the <span class="code2">GetPMaterial()</span> member function in <span class="code2">CSimpleEmitter</span>. The function will return a handle of type <span class="code2">PMaterialHandle</span>.  We will use this in the next step to declare the material for our new particles. </p>
+<p>Note: Calls to this function should not be made excessively in a particle creation function. If all particles are to use the same material, only one call needs to be made to this function and the reference handle returned can be used by all children of the same material. Failure to do this can result in sub-optimal performance. If the material is not found by the system, <span class="code2">GetPMaterial() </span>will return a <span class="code2">NULL</span> pointer. </p>
+<p>Now we can start to actually build the particles which will cause them to appear in our world. </p>
+
+<table class="code">
+  <tr>
+    <td><em> . . .<br>
+    </em><br>
+        <em> PMaterialHandle hMaterial = pSparkleEmitter-&gt;GetPMaterial(&quot;effects/yellowflare&quot;); </em><br>
+        <br>
+      SimpleParticle *pParticle;<br>
+        <br>
+      for ( int i = 0; i &lt; 64; i++ )<br>
+        {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pParticle = pSparkleEmitter-&gt;AddSimpleParticle( hMaterial, origin );<br>
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ( pParticle == NULL )<br>        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+    }</td>
+  </tr>
+</table>
+
+<h2><br>CSimpleEmitter::AddSimpleParticle()</h2>
+
+<p>The <span class="code2">CSimpleEmitter </span>must deal with how its children are created. To do this, we use the <span class="code2">AddParticle()</span> function call to create a new particle. This function&rsquo;s declaration is as follows: </p>
+<table class="code">
+  <tr>
+    <td>SimpleParticle* AddSimpleParticle( <br>
+&nbsp;&nbsp;&nbsp;&nbsp;      PMaterialHandle hMaterial, <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const Vector &amp;vOrigin, <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float flDieTime=3, <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned char uchSize=10 <br>
+    );</td>
+  </tr>
+</table>
+
+<p>The <em>hMaterial</em> handle is the material handle we obtained in the previous code block. The <em>vOrigin</em> parameter is the starting position for this particle. The <em>flDieTime</em> data member refers to the lifetime of our particle and <em>uchSize</em> refers to its size. We&rsquo;ll override the final two parameters later, so we leave them as defaults in this example. The function will return a pointer to the newly created particle if it was successful. If not, we will receive a NULL pointer. </p>
+<p>We&rsquo;ve now allocated a particle that will display at a position and for a certain amount of time. However, that won&rsquo;t amount to much of a visual effect. To obtain an effect that more accurately lives up to the name <em>Sparkler</em>, we&rsquo;ll need to customize the parameters of how the particle is to move and draw. To do this, we&rsquo;ll look at the <em>SimpleParticle</em> itself. </p>
+
+<h2>SimpleParticle</h2>
+
+<p><strong> </strong> Emitters contain a list of particles which they move and draw. How they do this depends on the information contained within the particles themselves. We use the <span class="code2">SimpleParticle</span> class to contain this information for the <span class="code2">CSimpleEmitter</span> class. The <span class="code2">SimpleParticle</span> class is defined as: </p>
+
+<table class="code">
+  <tr>
+    <td>class SimpleParticle : public Particle<br>
+        {<br>
+        public:<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Vector &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_vecVelocity; &nbsp;&nbsp; // Velocity of the particle in units per sec<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_flRoll; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;// Initial roll (in radians)<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_flDieTime; &nbsp; &nbsp;&nbsp;&nbsp;// How long it lives for<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_flLifetime; &nbsp;&nbsp;&nbsp;&nbsp;// How long it has been alive for so far<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned char &nbsp;m_uchColor[3]; &nbsp;&nbsp; // Color<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned char &nbsp;m_uchStartAlpha;&nbsp;&nbsp;// Beginning alpha<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned char &nbsp;m_uchEndAlpha; &nbsp;&nbsp; // End alpha<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned char &nbsp;m_uchStartSize;&nbsp;&nbsp;&nbsp;// Starting size<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned char &nbsp;m_uchEndSize;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Ending size<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_flRollDelta; &nbsp;&nbsp;&nbsp;// Radians of roll per second<br>
+        };</td>
+  </tr>
+</table>
+
+<p>The data members all describe characteristics of the particle and are fairly self-explanatory. By specifying varying numbers in these data members, we can get a wide range of behaviors from our particles. By specifying an <span class="code2">m_uchEndSize</span> larger than the <span class="code2">m_uchStartSize</span>, the particle will grow. If the <span class="code2">m_uchEndAlpha</span><em> is larger than </em><span class="code2">m_uchStartAlpha</span>, the particle will slowly become more opaque. </p>
+
+<p>All values are expressed as changes over the lifetime of the particle. For instance, the particle will be <span class="code2">m_uchEndSize</span> pixels wide when its <em>m_flLifetime </em>member is equal to its <span class="code2">m_flDieTime</span> member (at which point it is removed from the emitter). Likewise, the particle will be <span class="code2">m_uchStartAlpha</span> (0-255) at the beginning of its life (<span class="code2">m_flLifetime</span> is equal to zero). </p>
+
+<p>Now that we know the parameters available to us that allow us to change our particles&rsquo; behaviors, we can finish our effect. First, we set our starting and ending sizes. </p>
+
+<table class="code">
+  <tr>
+    <td>. . . <br>
+      <br>
+        <em> pParticle = pSparkleEmitter-&gt;AddSimpleParticle( hMaterial, origin ); </em></br>
+        <em> if ( pParticle == NULL ) </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+        </em><br>
+        pParticle-&gt;m_uchStartSize = (unsigned char) scale;<br>
+        pParticle-&gt;m_uchEndSize &nbsp;&nbsp;= 0;<br></td>
+  </tr>
+</table>
+
+<p>The above code block says that the particle will begin at <em>scale</em> size in pixels, and then linearly shrink to 0 pixels in size over the course of its lifetime. Next, we&rsquo;ll describe how this particle turns. </p>
+
+<table class="code">
+  <tr>
+    <td><em> . . . </em><br>
+      <br>
+        <em> pParticle-&gt;m_uchStartSize = (unsigned char) scale; </em><br>
+        <em> pParticle-&gt;m_uchEndSize = 0; </em><br>
+        pParticle-&gt;m_flRoll = random-&gt;RandomFloat( 0, 2*M_PI );<br>
+        pParticle-&gt;m_flRollDelta = random-&gt;RandomFloat( -DEG2RAD( 180 ), DEG2RAD( 180 ) );<br></td>
+  </tr>
+</table>
+
+<p>Because <span class="code2">SimpleParticles</span> are always oriented to face the camera (like a sprite), the turning will only happen in one axis. This will cause the particle to roll around its center while still facing the camera. The <span class="code2">m_flRoll</span> and <span class="code2">m_flRollDelta</span> data members describe the starting position and rate of turn of the particle per second, respectively. It&rsquo;s important to note that these numbers are describing radians and not degrees. Above you&rsquo;ll see that <span class="code2">m_flRoll</span> is set to a random value between zero and 2*M_PI (or 360 degrees). This means that the particle will start out randomly oriented across its full range of potential angles. We also use a random value for our <span class="code2">m_flRollDelta</span> field, but this time we use the helper macro <strong>DEG2RAD</strong> that will convert values expressed in degrees to radians. This is useful because degrees are generally more intuitive than radians for most users. Using this macro, we find a random value somewhere between &ndash;180 degrees and 180 degrees of turn per second. Decreasing our values will make the particle spin more slowly, increasing them will make it spin more quickly. Now we&rsquo;ll describe the color of our particle. </p>
+<br>
+
+<table class="code">
+  <tr>
+    <td><em> . . . </em><br>
+      <br>
+        <em> pParticle-&gt;m_flRoll = random-&gt;RandomFloat( 0, 2*M_PI ); </em><br>
+        <em> pParticle-&gt;m_flRollDelta = random-&gt;RandomFloat( -DEG2RAD( 180 ), DEG2RAD( 180 ) ); </em><br>
+        <br>
+        pParticle-&gt;m_uchColor[0] = 255; &nbsp;&nbsp; // Red<br>
+        pParticle-&gt;m_uchColor[1] = 255; &nbsp;&nbsp; // Green<br>
+        pParticle-&gt;m_uchColor[2] = 255; &nbsp;&nbsp; // Blue<br></td>
+  </tr>
+</table>
+
+<p>The <span class="code2">m_uchColor</span> data member array holds the information for the red, green, and blue components of our particle&rsquo;s color, respectively. This is more accurately the <em>tint</em> of the particle, because it describes the color values applied to the vertices of the polygons. If you have a monochromatic (black and white) base material, the particle will be tinted to exactly the color you specify in the <span class="code2">m_uchColor[]</span> character array. If the base material is quite colorful, the results of tinting may be undesired. For our example, we&rsquo;ll leave the color white (all values are at their maximum 255 value). This means that the base material&rsquo;s colors will be unaffected by this tint. Decreasing all the values in the array by the same amount will produce darker grays, which cause the colors of the particle&rsquo;s base material to darken. Try changing the colors and see how they affect the particles being created. </p>
+
+<p><strong> Note: </strong>The base material used for the particle must have the <span class="code2">$vertexcolor</span> keyword set for the engine to factor in the color values provided. See the <a href="../../../Materials/materials_creation.html">Creating Materials</a>  document for more information<strong>. </strong></p>
+
+<p>Next we&rsquo;ll describe how this particle will change its opacity over its lifetime.</p>
+
+<table class="code">
+  <tr>
+    <td><em> . . . </em><br>
+      <br>
+        <em> pParticle-&gt;m_uchColor[0] = 255; </em><br>
+        <em> pParticle-&gt;m_uchColor[1] = 255; </em><br>
+        <em> pParticle-&gt;m_uchColor[2] = 255; </em><br>
+        <br>
+      pParticle-&gt;m_uchStartAlpha = 0;<br>
+        pParticle-&gt;m_uchEndAlpha = 255;<br></td>
+  </tr>
+</table>
+
+<p>Most particles will fade in or out, depending on their utility. We control the fading by using the <span class="code2">m_uchStartAlpha</span> and <span class="code2">m_uchEndAlpha</span> data members. The particle will begin with an opacity (or <em>alpha </em>value<em>)</em> of <span class="code2">m_uchStartAlpha</span> and will linearly fade towards <span class="code2">m_uchEndAlpha</span> over its lifetime. The value is expressed as a normalized <span class="code2">float </span>value, where 1.0 is fully opaque and 0.0 is fully translucent. In this example, the particle will begin as completely translucent (invisible) and will become completely opaque over the course of its lifetime. Try swapping these values to make the particle fade out instead. </p>
+
+<p>Now we&rsquo;ll make the particle actually move through space. </p>
+
+<table class="code">
+  <tr>
+    <td><em> . . .<br> 
+      </em><br>
+        <em> pParticle-&gt;m_uchStartAlpha = 0; </em><br>
+        <em> pParticle-&gt;m_uchEndAlpha = 255; </em><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+        Vector velocity = RandomVector( -1.0f, 1.0f );<br>
+        VectorNormalize( velocity );<br>
+        <br>
+        float speed = random-&gt;RandomFloat( 4.0f, 8.0f ) * scale;<br>
+        <br>
+      pParticle-&gt;m_vecVelocity = velocity * speed;<br></td>
+  </tr>
+</table>
+
+<p>To do this, we use the <span class="code2">m_vecVelocity</span> data member. Much like velocity for entities, the velocity of particles describes the number of units to move in a direction per second (i.e. a vector with a magnitude of 128 will move a particle 128 units in the direction of the vector, each second). In our example, we&rsquo;ll construct our velocity in two steps. First, we create a unit-length vector randomly pointing into space. Next, we randomly determine a speed for the particle to travel at. This speed is multiplied by the <em>scale</em> value so that it will become faster as the particle becomes larger. It is often useful in special effects to make all values scale in parallel so as to keep some cohesion across varying sizes. Once we&rsquo;ve created a direction and a speed, we multiply them together to form the velocity of the particle. This is then stored in <span class="code2">m_vecVelocity</span>. </p>
+
+<p>Try using different numbers for speed and direction to make particles emit in cones or at very high or low speeds. Velocity plays one of the biggest parts in how a particle acts and is perceived by a viewer. &nbsp;</p>
+
+<p>Finally we&rsquo;ll tell our particle emitter how long we wish this particle to live. </p>
+
+<table class="code">
+  <tr>
+    <td>pParticle-&gt;m_flDieTime = 1.0f;</td>
+  </tr>
+</table>
+
+<p>Here we set the <span class="code2">m_flDieTime</span> data member to 1.0. This tells the particle emitter to remove the particle after one second. Try higher or lower values to see how it affects the particles. </p>
+
+<p>At this point we have a fully functioning particle system. Hook up your <span class="code2">DispatchEffect</span> call on the server-side and start to tweak. </p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

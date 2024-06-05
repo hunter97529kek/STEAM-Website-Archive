@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Creating Server-Side Bots</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Creating Server-Side Bots</h1>
+
+<p>A server-side bot is an entity that pretends to be a player, but is driven by AI instead. It usually derives from the game's main player class, and the majority of the game code can treat it like it's a regular player.</p>
+
+<h2>Concepts</h2>
+
+<p>The primary responsibility of a server-side bot is to simulate user input for its player entity each server tick. To accomplish this, it fills in a <span class="code2">CUserCmd</span> structure and passes it to <span class="code2">CBasePlayer::PlayerRunCommand</span>. The <span class="code2">CUserCmd</span> structure contains all of the input that a normal player could create - which  buttons they're pressing, which way they want to move, and where they want their view angles to point.</p>
+
+<p>While the <span class="code2">CUserCmd</span> is generated, a bot will typically have code to make it interact with the game world in an intelligent way. For example, it may be tracing rays out to nearby player entities to decide if it can see the other players. It also might have a state machine that decides what its strategy will be when it's low on health, tracking an enemy, picking up a weapon, or dying. Whatever it decides to do on that frame, its final output is a <span class="code2">CUserCmd</span> telling the engine, &quot;this is what I'm doing this frame&quot;. </p>
+
+<h2>Implementation</h2>
+
+<p>The SDK ships with a rudimentary sample bot. It runs in a straight line until it hits a wall, then it turns in a random direction. It is also very useful for testing player animations. To access the SDK bot, run <strong>Create a Mod</strong> from the SDK Launcher panel and choose <strong>Start a mod from scratch</strong>. When you run the mod you've just created, the sample bot can be accessed with these commands:</p>
+
+<table width="90%"  border="0">
+  <tr>
+    <td width="260"><p class="code2">bot_add</p></td>
+    <td><p>Spawns a bot. </p></td>
+  </tr>
+  <tr>
+    <td><p class="code2">bot_mimic &lt;entity index&gt;</p></td>
+    <td><p>When set to something other than 0, all bots will mimic the CUserCmd of the entity specified (usually, a value of 1 will specify the local player). Whatever way you run and look and shoot, the bots will too. </p></td>
+  </tr>
+  <tr>
+    <td><p class="code2">bot_mimic_yaw_offset &lt;angle&gt;</p></td>
+    <td><p>If you are using <span class="code2">bot_mimic</span>, and you want the bot to face you, set this to 180 and the bot will face you directly. Other values will give you other perspectives on the bot. </p></td>
+  </tr>
+</table>
+
+<p>You will find the sample bot code in <span class="code2">dlls\sdk\sdk_bot_temp.cpp</span>. The key function in this file is <span class="code2">Bot_Think</span>. This is called each server tick for each bot entity. Inside of here is where the bot decides if it has hit a wall. It also responds to various console commands (not documented here). At the very end, it calls <span class="code2">RunPlayerMove</span>, which generates a <span class="code2">CUserCmd</span> and calls <span class="code2">CBasePlayer::PlayerRunCommand</span> with it.</p>
+
+<p>The other interesting function in <span class="code2">sdk_bot_temp.cpp</span> is <span class="code2">BotPutInServer</span>. This function shows how to create an edict for a bot, create a player entity, and attach the two together so a bot can exist. Most of the time, you'll want to copy the code in here and in <span class="code2">CBotManager</span> because it is just glue code that can always be the same (with your own bot classname).</p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

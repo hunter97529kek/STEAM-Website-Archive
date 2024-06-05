@@ -1,0 +1,362 @@
+<html>
+
+<head>
+	<title>Entity Networking</title>
+	<link rel="stylesheet" type="text/css" href="../../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Entity Networking</h1>
+
+<h2>Overview</h2>
+
+<p>The Valve Source engine allows up to 255 players to play at the same time in a shared, virtual, real-time world. To synchronize the user input and world changes between players, Source uses a server-client architecture that communicates via UDP/IP network packets. The server as central authority processes player input and updates the world according to the game & physics rules. The server frequently broadcasts world updates to all connected clients. Logical and physical objects in the game world are called 'entities' and represented in the source code as classes derived from a shared base entity class. Some objects live only on the server (server-side only entities) and some objects live only on the client (client-side only entities), but most objects live on the server and as a corresponding copy on the client. The base entity networking code makes sure that these objects stay synchronized for all players.</p>
+
+<p>Therefore the networking code has to detect changes in the server-side object, then serialize (transforming into a bit-stream) changed member variables, sending it as a data packet via the network and unserialize the data on the client (updating corresponding member variables in the client-side object). Data packets are not sent with every single change is made in some object; rather frequent snapshots (usually 20/sec) are made that contain all entity changes since the last update. Also not all entity changes are sent to all clients all the time. Only entities that are of possible interest for a client (visible, audible etc) are updated frequently to keep the network bandwidth as low as possible.</p>
+
+<h2>An Example</h2>
+
+<p>This all sounds quite complex and difficult to handle, but most of the work is done in the background by the Source engine. For a mod author it is pretty simple to create a new networked entity class. The next example should give an idea of how easy it can be. Still it can become very complex once you start optimizing the network bit-stream to reduce the network bandwidth.</p>
+
+<p>Server-side entity (server.dll):</p>
+
+<pre class="code">
+class CMyEntity : public CBaseEntity
+{
+public:
+	DECLARE_CLASS(CMyEntity, CBaseEntity );	// setup some macros
+	DECLARE_SERVERCLASS();  // make this entity networkable
+
+	int UpdateTransmitState()	// set transmit filter to transmit always
+	{
+		return SetTransmitState( FL_EDICT_ALWAYS );
+	}
+
+public:
+	// public networked member variables:
+	CNetworkVar( int, m_nMyInteger ); // int values from 0..255
+	CNetworkVar( float, m_fMyFloat ); // any float value
+}
+
+//Link a global entity name to this class (name used in Hammer etc.)
+LINK_ENTITY_TO_CLASS( myentity, CMyEntity );
+
+//server data table describing networked member variables (SendProps)
+IMPLEMENT_SERVERCLASS_ST( CMyEntity, DT_MyEntity )
+	SendPropInt(	SENDINFO( m_nMyInteger ), 8, SPROP_UNSIGNED ),
+	SendPropFloat( SENDINFO( m_fMyFloat ), 0, SPROP_NOSCALE),
+END_SEND_TABLE()
+
+void SomewhereInYourGameCode( void )
+{
+	CreateEntityByName( "myentity" ); // create an object of this entity class
+}</pre>
+
+<p>Client-side entity (client.dll):</p>
+
+<pre class="code">
+class C_MyEntity : public C_BaseEntity
+{
+public:
+	DECLARE_CLASS( C_MyEntity, C_BaseEntity ); // setup class macros
+	DECLARE_CLIENTCLASS(); // this is a client represtation for a server class 
+
+public:
+	// networked variables as defined in server class
+	int	m_nMyInteger;
+	float	m_fMyFloat;
+};
+
+// link data table DT_Myentity to client class and map variables (RecvProps)
+IMPLEMENT_CLIENTCLASS_DT( C_MyEntity, DT_MyEntity, CMyEntity )
+	RecvPropInt( RECVINFO( m_nMyInteger ) ),
+	RecvPropFloat( RECVINFO( m_fMyFloat )),
+END_RECV_TABLE()</pre>
+
+<h2>Networking entities</h2>
+
+<p>As stated above each game object is an entity, an instance of an entity class. An entity class has, beside a unique class name, a global name that is linked with that entity class. The linkage is done by a macro:</p>
+
+    <span class="code2">LINK_ENTITY_TO_CLASS( globalname, CEntityClass );</span>
+
+<p>The entity factory that creates world entities placed in a map uses these global names to find the matching entity class. Server-side implementations of an entity class are usually named like CName, while client-side implementations are named C_Name with an additional underscore. </p>
+
+<p>A Source engine server can handle up to 2048 entities at the same time (see <span class="code2">MAX_EDICT_BITS</span> in \public\const.h), where each entity may have 1024 different member variables that are networked to clients (<span class="code2">MAX_PACKEDENTITY_PROPS</span>). A common way to address a specific entity is by its entity index ( <span class="code2">CBaseEntity::entindex() </span>). Each time a new entity is instantiated, the engine looks up an unused entity index and assigns it to the new entity. Once the entity object is destroyed, its entity index becomes available again and may be reused for a different entity. Therefore the entity index is not a good way to reference a specific entity over longer times. A better and safer is to use <span class="code2">EHANDLEs</span> (or <span class="code2">CBaseHandle</span>) to keep track of entity instances. <span class="code2">EHANDLEs</span> encapsulate a 32-bit ID that is unique for an entity instance during the whole game and can be used on both server and client to refer to entity objects (<span class="code2">EHANDLEs</span> are a combination of entity index and an increasing serial number). An <span class="code2">EHANDLE</span> can be transformed to <span class="code2">CBaseEntity</span> and vice versa just by using it's overloaded operators. If an <span class="code2">EHANDLE</span> resolves to NULL, the entity object is not valid anymore.</p>
+
+<pre class="code">
+// find a player, if no player is available pPlayer and hPlayer are NULL
+EHANDLE hPlayer = gEntList.FindEntityByClassname( NULL, "player" );
+CBaseEnity *pPlayer = hPlayer; // convert EHANDLE into entity pointer
+m_hPlayer = pPlayer; // convert entity pointer to EHANDLE</pre>
+
+<p>To tell the server engine that an entity class should be networked and a corresponding client class exists, the <span class="code2">DECLARE_SERVERCLASS</span> macro must be placed in the entity's definition. This macro will register the class in a global server class list and reserve a unique class ID. The macro <span class="code2">DECLARE_SERVERCLASS</span> has to be added for each derived networkable entity class again. Also the macro <span class="code2">IMPLEMENT_SERVERCLASS</span> must be placed in the class implementation to register the server class and it's data send table. This is usually done when declaring the server send table (see below).</p> 
+
+<p>On the client side a corresponding class has to be created which needs to place the macro <span class="code2">DECLARE_CLIENTCLASS</span> in it's class definition and implement the macro <span class="code2">IMPLEMENT_CLIENTCLASS_DT</span>. This macro links the client class to a given server class name. When a client connects to a server, they exchange a list of known classes and if the client doesn't implement all server classes the connection is stopped with a message "Client missing DT class CName". </p>
+
+<h2>Network Variables</h2>
+
+<p>Entity classes have member variables just like any other classes. Some of these member variables may be server-side only, meaning they are not replicated on clients. More interesting are the member variables, which need to be replicated for the client copy of this entity. Networked variables are essential entity properties like position, angle or health. Anything that is needed to display an entity in its current state on the client must be networked. </p>
+
+<p>Whenever a networked member variable changes, the Source engine must know about it to include an update message for this entity in the next snapshot broadcast. To signal an change of a networked variable, the function <span class="code2">NetworkStateChanged()</span> of this entity must be called to set the internal flag <span class="code2">FL_EDICT_CHANGED</span>. Once the engine has sent the next update, this flag will be cleared again. Now it wouldn't be very convenient to call NetworkStateChanged() every time you change a member variable, therefore networked variables use a special helper macro <span class="code2">CNetworkVar</span> that will replace the original variable type (int, float, bool etc) with a modified type that automatically signals a state change to it's parent entity. There exits special macros for the Vector and QAngle class, as well as for arrays and <span class="code2">EHANDLES</span>. The practical usage of these <span class="code2">CNetworkVars</span> doesn't change, so you can use them just like the original data types (except networked arrays, you have to use <span class="code2">Set()</span> or <span class="code2">GetForModify()</span> when changing elements). The following example shows how the different CNetwork* macros are used when defining member variables (the comments show the non-networked version):</p>
+
+<pre class="code">
+CNetworkVar( int, m_iMyInt );		// int m_iMyInt;
+CNetworkVar( float, m_fMyFloat );		// float m_fMyFloat;
+CNetworkVector( m_vecMyVector );  		// Vector m_vecMyVector;
+CNetworkQAngle( m_angMyAngle );  		// QAngle m_angMyAngle;
+CNetworkArray( int, m_iMyArray, 64 ); 	// int m_iMyArray[64];
+CNetworkHandle( CBaseEntity, m_hMyEntity );	// EHANDLE m_hMyEntity;</pre>
+
+<h2>Network Data Tables</h2>
+
+<p>When an entity signals a change and the engine is building the snapshot update, the engine needs to know how to convert a variable value into a bit stream. Of course it could just transfer the memory footprint of the member variable but that would be way too much data in most cases and not very efficient in terms of bandwidth usage. Therefore each entity class keeps a data table that describes how to encode each of it's member variables. These tables are called SendTables and must have a unique name, usually like DT_EntityClassName. </p>
+
+<p>Entries of this table are SendProps, objects that keep the encoding description for a member variable. The Source engine provides various different data encoders for the commonly used data types like integer, float, vector and text string. SendProps also store information on how many bits should be used, minimum and maximum values, special encoding flags and send proxy functions (explained later).</p>
+
+<p>Usually you don't create and fill SendProps by yourself but rather use one of the SendProp* helper functions ( <span class="code2">SendPropInt(…)</span>,<span class="code2">SendPropFloat(…)</span> etc). These functions help to set up all important encoding properties in a single line. The <span class="code2">SENDIFNO</span> macro helps to calculate the member variable size and relative offset to the entity address. Here's an example of a SendTable for the network variables defined earlier.</p>
+
+<pre class="code">
+SendProp* ( SENDINFO(name), bits, flags ),
+
+IMPLEMENT_SERVERCLASS_ST(CMyClass, DT_MyClass)
+   SendPropInt( SENDINFO(m_iMyInt), 4, SPROP_UNSIGNED ),
+   SendPropFloat( SENDINFO(m_fMyFloat), -1, SPROP_COORD),
+   SendPropVector( SENDINFO(m_vecMyVector), -1, SPROP_COORD ),		
+   SendPropQAngles( SENDINFO(m_angMyAngle), 13, SPROP_CHANGES_OFTEN ),
+   SendPropArray3( SENDINFO_ARRAY3(m_iMyArray), SendPropInt( SENDINFO_ARRAY(m_iMyArray), 10, SPROP_UNSIGNED ) ),
+   SendPropEHandle( SENDINFO(m_hMyEntity)),
+END_SEND_TABLE()</pre>
+
+<p>The macro <span class="code2">IMPLEMENT_SERVERCLASS_ST</span> automatically links the SendTable of the base class the entity it is derived from, so all inherited properties are already included. If you for some reason don't want to include base class properties, use the <span class="code2">IMPLEMENT_SERVERCLASS_ST_NOBASE</span> macro. Otherwise single properties of the base class can be excluded by using the <span class="code2">SendPropExclude(…)</span> helper function. Instead of adding a new SendProp, it removes an existing one from an inherited SendTable.</p>
+
+<p>The first place to start optomizing the bit-stream size is of course the number of bits that should be used for transmission (-1=default). When you know that an integer value can only be a number between 0 and 15, you just need 4 bits instead of 32 (set also flag <span class="code2">SPROP_UNSIGNED</span>). Other optimizations can be archived by using proper SendProps flags:</p>
+
+<table width="100%" class="definition"> 
+<tr>
+	<td width="17%"><p class="code2">SPROP_UNSIGNED</p></td>
+	<td width="83%"><p>Encodes an integer as an unsigned integer, don't send a sign bit.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">SPROP_COORD</p></td>
+	<td><p>Encodes float or Vector components as a world coordinate. The data is compressed, a 0.0 just needs 2 bits and other values may use up to 21 bits.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">SPROP_NOSCALE</p></td>
+	<td><p>Write float or Vector components as full 32-bit value to make sure no data loss occurs because of compression. </p></td>
+</tr>
+<tr>
+	<td><p class="code2">SPROP_ROUNDDOWN</p></td>
+	<td><p>Limit high float value to range minus one bit unit</p></td>
+</tr>
+<tr>
+	<td><p class="code2">SPROP_ROUNDUP</p></td>
+	<td><p>Limit low float value to range minus one bit unit</p></td>
+</tr>
+<tr>
+	<td><p class="code2">SPROP_NORMAL</p></td>
+	<td><p>Float value is a normal in range between -1 to +1, uses 12 bits to encode.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">SPROP_EXCLUDE</p></td>
+	<td><p>Exclude a SendProp again that was added by a base class SendTable. Don't set this flag manually, use the SendPropExclude(…) function instead.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">SPROP_INSIDEARRAY</p></td>
+	<td><p>Internal array flag, do not use.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">SPROP_PROXY_ALWAYS_YES</p></td>
+	<td><p>Internal array flag, do not use.</p></td>
+</tr>
+<tr>
+	<td><p class="code2">SPROP_CHANGES_OFTEN</p></td>
+	<td><p>Some properties change very often like player position and view angle (almost with every snapshot). Add this flag for frequently changing SendProps, so the engine can optimize the SendTables indices to reduce networking overhead.</p></td>
+</tr>
+</table>
+
+<p>On the client side you must declare a ReceiveTable similar to the SendTable, so the client knows where to store the transmitted entity properties. If the variables names remain the same in the client-side class, ReceiveTables are just a simple list of received properties (property order doesn't have to match SendTable order). The macro <span class="code2">IMPLEMENT_CLIENTCLASS_DT</span> is used to define the ReceiveTable and also links client to the server classes and their SendTable names. </p>
+
+<pre class="code">
+IMPLEMENT_CLIENTCLASS_DT(C_MyClass, DT_MyClass, CMyClass )
+	RecvPropInt( RECVINFO ( m_iMyInt ) ),
+	RecvPropFloat( RECVINFO ( m_fMyFloat ) ),
+	RecvPropVector( RECVINFO ( m_vecMyVector ) ),		
+	RecvPropQAngles( RECVINFO ( m_angMyAngle ) ),
+	RecvPropArray3( RECVINFO_ARRAY(m_iMyArray), RecvPropInt( RECVINFO(m_iMyArray [0]))),
+	RecvPropEHandle( RECVINFO (m_hMyEntity) ),
+END_RECV_TABLE()</pre>
+
+<p>The relative offset and size of a member variable is calculated by the <span class="code2">RECVINFO</span> macro. If the server and client variable name is different, the <span class="code2">RECVINFO_NAME</span> must be used.</p>
+
+<h2>Transmission Filters</h2>
+
+<p>Transmitting all entity updates to all clients would be an unnecessary waste of bandwidth assuming that a player usually sees only a small subset of all objects in the world. In general a server needs to update only entities that are in the local vicinity of a player. Areas or rooms visible from a player's position are called the "Potential Visible Set" (PVS) of a player. A player's PVS is usually used to filter physical entities before transmitted to the client, though entities can define more complex filter rules in their virtual functions <span class="code2">UpdateTransmitState()</span> and <span class="code2">ShouldTransmit(…)</span>. Specifically, logical entities use these filters since they have no 'position' and are often interesting only for players in a certain team or players of a certain game class. An entity sets it's global transmission state in <span class="code2">UpdateTransmitState()</span> where it can choose one of the following states:</p>
+
+<table width="100%" class="definition">
+<tr>
+	<td><p class="code2">FL_EDICT_ALWAYS</p></td>
+	<td><p>always transmit this entity</p></td>
+</tr>
+<tr>
+	<td><p class="code2">FL_EDICT_DONTSEND </p></td>
+	<td><p>don't transmit this entity</p></td>
+</tr>
+<tr>
+	<td><p class="code2">FL_EDICT_PVSCHECK</p></td>
+	<td><p>always transmit entity, but cull against PVS</p></td>
+</tr>
+<tr>
+	<td><p class="code2">FL_EDICT_FULLCHECK</p></td>
+	<td><p>call ShouldTransmit(…) for every client update (expensive)</p></td>
+</tr>
+</table>
+
+<p>If an entity changes it's state so the transmission state would change too (e.g. becomes invisible etc), <span class="code2">UpdateTransmitState()</span> has to be called. In general you could mark all entities as <span class="code2">FL_EDICT_FULLCHECK</span> and place all transmission rules in <span class="code2">ShouldTransmit(…)</span>, but that would be very expensive since the engine whould have to call <span class="code2">ShouldTransmit(…)</span> for every entity for every client about 30 times a second (see <span class="code2">CServerGameEnts::CheckTransmit(…)</span>). There are better ways to waste your server's CPU power. So whenever possible choose one of the other transmission states. </p>
+
+<p>Still some entities have quite complex transmission rules (player entities, weapons etc) and calling <span class="code2">ShouldTransmit()</span>  is unavoidable. A derived implementation of <span class="code2">CBaseEntity::ShouldTransmit(const CCheckTransmitInfo *pInfo)</span> must return one of the transmission flags except <span class="code2">FL_EDICT_FULLCHECK</span> (that would be recursive) . In this case the transmission flags have the following meanings:</p>
+
+<table width="100%" class="definition">
+<tr>
+	<td><p class="code2">FL_EDICT_ALWAYS</p></td>
+	<td><p>transmit entity this time</p></td>
+</tr>
+<tr>
+	<td><p class="code2">FL_EDICT_DONTSEND</p></td>
+	<td><p>don't transmit entity this time</p></td>
+</tr>
+<tr>
+	<td><p class="code2">FL_EDICT_PVSCHECK</p></td>
+	<td><p>transmit entity this time, but cull against PVS</p></td>
+</tr>
+</table>
+
+<p>The passed argument structure <span class="code2">CCheckTransmitInfo</span> gives information about the receiving client, it's current PVS and what other entities are already marked for transmission.</p>
+
+<h2>Send & Receive Proxies</h2>
+
+<p>Send and receive proxies are callback functions linked to specific Send/ReceiveProps. If installed for an entity property, these callback functions are executed whenever it's being sent or received. Proxy functions are installed when declaring entity properties in SendTables or ReceiveTables. These proxy functions allow you to modify outgoing and incoming data so you can add custom encoder and decoder implementations. A receive proxy can also be used to detect changes on a entity property without changing the incoming data. But be aware that  a receive proxy is not always called if the property value really changes, for example when server is sending a full, not delta, compressed snapshot update. The following example strips the lower 2 bit of an integer before transmission, which saves bandwidth but causes a loss of data precision.</p>
+
+<p>Installing the server send proxy:</p>
+
+<pre class="code">
+void SendProxy_MyProxy( const SendProp *pProp, const void *pStruct, 
+	const void *pData, DVariant *pOut, int iElement, int objectID )
+{
+	// get original variable value
+	int value = *(int*)pData;
+
+	// prepare value for transmission, will lose precision
+	*((unsigned int*)&pOut->m_Int) = value >> 2;
+}
+
+IMPLEMENT_SERVERCLASS_ST(CMyClass, DT_MyClass)
+	SendPropInt( SENDINFO(m_iMyInt ), 4, SPROP_UNSIGNED, SendProxy_MyProxy ),
+	...
+END_SEND_TABLE()</pre>
+
+<p>Installing the client receive proxy:</p>
+
+<pre class="code">
+void RecvProxy_MyProxy( const CRecvProxyData *pData, void *pStruct, void *pOut )
+{
+	// get the transmitted value
+	int value =  *((unsigned long*)&pData->m_Value.m_Int);
+
+	// restore value and write to destination address
+	*((unsigned long*)pOut) = value << 2;
+}
+
+IMPLEMENT_CLIENTCLASS_DT(C_MyClass, DT_MyClass, CMyClass )
+	RecvPropInt( RECVINFO ( m_iMyInt ), 0, RecvProxy_MyProxy  ),
+	... 
+END_RECV_TABLE()</pre>
+
+<h2>Optimizing Bandwidth</h2>
+
+<p>Once the network variable and data tables are set up and all entities are working properly, the fun part of network coding begins: optimization. The source engine provides a set of tools to monitor and analyze network traffic. The goal of your optimizations is to lower the average bandwidth usage and avoid network traffic spikes (single, extremely large packets). </p>
+
+<p>A well-known tool is Netgraph, which can be enabled by executing "<span class="code2">net_graph 2</span>" in the developer console. Netgraph shows the most important networking data in a compact form in real-time.  Every incoming packet is displayed as color-coded line wandering from right to left, where the line hight represents packet size. The line colors represent different data groups as shown in this diagram:</p>
+
+<div align="center"><img src="net_graph.jpg" alt="" width="389" height="253" border="0" align="middle"></div>
+
+<br><br>
+
+<table width="100%" class="definition">
+<tr>
+	<td width="6%"><p><strong>fps:</strong></p></td>
+	<td width="94%"><p>current frames per seconds the screen is refreshing.</p></td>
+</tr>
+<tr>
+	<td><p><strong>ping:</strong></p></td>
+	<td><p>network packet travel time  between server and client in milliseconds.</p></td>
+</tr>
+<tr>
+	<td><p><strong>in:</strong></p></td>
+	<td><p>size of last received packet in bytes, average incoming kB/ second and average packets/second received.</p></td>
+</tr>
+<tr>
+	<td><p><strong>out:</strong></p></td>
+	<td><p>size of last send packet, average outgoing kB/second and average packets/second send.</p></td>
+</tr>
+</table>
+
+<p>The netgraph on screen position can be customized using the console variable "<span class="code2">net_graphheight pixels</span>" and "<span class="code2">net_graphpos 1|2|3</span>".</p>
+
+<p>Another visual tool to show entity networking data in real-time is "<span class="code2">cl_entityreport startindex</span>". When enabling this console variable, a cell will be shown for each networked entity, containing the entity index, class name and a traffic indicator. Depending on your screen resolution hundreds of entities and their activities can be displayed at the same time. The traffic indicator is a small bar showing the transferred bits arrived with the last packet. The red line above the bar shows recent peaks. The entity text is color-coded representing the current transmission status:</p>
+
+<div align="center"><img src="cl_entityreport.jpg" alt="" width="333" height="58" border="0"></div>
+
+<br><br>
+
+<table width="100%" class="definition">
+<tr>
+	<td><p><strong>none</strong></p></td>
+	<td><p>entity index never used/transmitted</p></td>
+</tr>
+<tr>
+	<td><p><strong>flashing</strong></p></td>
+	<td><p>entity PVS state change</p></td>
+</tr>
+<tr>
+	<td><p><strong>green</strong></p></td>
+	<td><p>entity in PVS, but not updated recently</p></td>
+</tr>
+<tr>
+	<td><p><strong>blue</strong></p></td>
+	<td><p>entity in PVS generating ongoing traffic</p></td>
+</tr>
+<tr>
+	<td><p><strong>red</strong></p></td>
+	<td><p>entity still exists outside PVS, but not updated anymore</p></td>
+</tr>
+</table>
+
+<p>Once you've identified a single entity constantly generating traffic or peaks you can watch that entity a bit closer using the console tool <span class="code2">"dtwatchent entityindex"</span>. This will generate console output with each received update showing all changed member variables. For each changed property the variable name, type, SendTable index, bits used for transmission and new value is listed.  Here an example output for the local player entity "<span class="code2">dtwatchent 1</span>":</p>
+
+<pre class="code">
+delta entity: 1
++ m_flSimulationTime, DPT_Int, index 0, bits 8, value 17
++ m_vecOrigin, DPT_Vector, index 1, bits 52, value (171.156,-83.656,0.063)
++ m_nTickBase, DPT_Int, index 7, bits 32, value 5018
++ m_vecVelocity[0], DPT_Float, index 8, bits 20, value 11.865
++ m_vecVelocity[1], DPT_Float, index 9, bits 20, value -50.936
+= 146 bits (19 bytes)</pre>
+
+<p>An even deeper analysis of all entity classes and average bandwidth usage of their properties is possible by using the Data Table Instrumentation (DTI). To enable DTI, the Source engine (client) must be started with a special "<span class="code2">-dti</span>" command line parameter, e.g "<span class="code2">hl2.exe -game mymod -dti</span>". Then DTI runs automatically in the background collecting data about all transmission activities. To gather a good sample of data, just connect to a game server of your mod and play for a couple of minutes. Then quit the game or run the console command "<span class="code2">dti_flush</span>" and the engine will write all collected data to files in your mod directory. The created files contain the data in a tabulator separated text format, which can be imported by data processing tools like MS Excel for further analysis. The most interesting file here is "<span class="code2">dti_client.txt</span>" where each data record contains the following fields:</p>
+
+<div align="center" class="code2">Entity class; Property Name; Decode Count; Total Bits; Average Bits; Total Index Bits; Average Index Bits</div>
+
+<p>A good way to search for most expensive entity properties is to sort data by "<span class="code2">Total Bits</span>" or "<span class="code2">Decode Count</span>".</p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

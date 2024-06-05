@@ -1,0 +1,276 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Alternative Multiplayer Physics</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Alternative Multiplayer Physics</h1>
+
+<p>This document describes an alternative multiplayer physics behavior for "prop_physics_multiplayer" objects. The basic idea is to remove
+direct collision between a player and moving physics objects and push players away from them based on their distance.
+Once a physics object has settled and isn't moving anymore, the push-away force is removed and the normal collision rules 
+are restored, so players can stand on physics objects. Players don't have a physics shadow anymore, which means they can't
+move objects just be touching them. They have to press USE to apply a pushing force.</p>
+
+<p>This code sample is not complete, sometimes you have to add new class function declarations or include "obstacle_pushaway.h" in some
+files. But all additional changes should be obvious. If the files game_shared\obstacle_pushaway.cpp/.h are missing, updated your Source
+SDK code base via Steam.</p>
+
+<p>Add to game_shared\obstacle_pushaway.h the following lines and include it in base_player_shared.cpp, c_sdk_player.cpp, sdk_player.cpp.</p>
+<pre class="code">
+extern ConVar sv_pushaway_force;
+extern ConVar sv_pushaway_max_force;
+
+void AvoidPushawayProps(  CBaseCombatCharacter *pPlayer, CUserCmd *pCmd );
+</pre>
+
+<p>Implement AvoidPushawayProps in game_shared\obstacle_pushaway.cpp and include file in build:</p>
+<pre class="code">
+void AvoidPushawayProps( CBaseCombatCharacter *pPlayer, CUserCmd *pCmd )
+	{
+		// Figure out what direction we're moving and the extents of the box we're going to sweep 
+		// against physics objects.
+		Vector currentdir;
+		Vector rightdir;
+		AngleVectors( pCmd->viewangles, &currentdir, &rightdir, NULL );
+	
+		CBaseEntity *props[512];
+	#ifdef CLIENT_DLL
+		int nEnts = GetPushawayEnts( pPlayer, props, ARRAYSIZE( props ), 0.0f, PARTITION_CLIENT_SOLID_EDICTS, NULL );
+	#else
+		int nEnts = GetPushawayEnts( pPlayer, props, ARRAYSIZE( props ), 0.0f, PARTITION_ENGINE_SOLID_EDICTS, NULL );
+	#endif
+	
+		for ( int i=0; i < nEnts; i++ )
+		{
+			// Don't respond to this entity on the client unless it has PHYSICS_MULTIPLAYER_FULL set.
+			IMultiplayerPhysics *pInterface = dynamic_cast&lt;IMultiplayerPhysics*&gt;( props[i] );
+			if ( pInterface && pInterface->GetMultiplayerPhysicsMode() != PHYSICS_MULTIPLAYER_SOLID )
+				continue;
+	
+			const float minMass = 10.0f; // minimum mass that can push a player back
+			const float maxMass = 30.0f; // cap at a decently large value
+			float mass = maxMass;
+			if ( pInterface )
+			{
+				mass = pInterface->GetMass();
+			}
+			mass = clamp( mass, minMass, maxMass );
+			
+			mass = max( mass, 0 );
+			mass /= maxMass; // bring into a 0..1 range
+	
+			// Push away from the collision point. The closer our center is to the collision point,
+			// the harder we push away.
+			Vector vPushAway = (pPlayer->WorldSpaceCenter() - props[i]->WorldSpaceCenter());
+			float flDist = VectorNormalize( vPushAway );
+			flDist = max( flDist, 1 );
+	
+			float flForce = sv_pushaway_player_force.GetFloat() / flDist * mass;
+			flForce = min( flForce, sv_pushaway_max_player_force.GetFloat() );
+			vPushAway *= flForce;
+	
+			pCmd->forwardmove += vPushAway.Dot( currentdir );
+			pCmd->sidemove    += vPushAway.Dot( rightdir );
+		}
+	}
+</pre>
+
+<p>Also in obstacle_pushaway.cpp remove these lines from function PerformObstaclePushaway:</p>
+<pre class="code">
+	#ifdef GAME_DLL
+			if ( pInterface->IsAsleep() && sv_turbophysics.GetBool() )
+				continue;
+	#endif
+</pre>
+
+<p> In CSDKGameRules add 2 new rules so players don't get stuck with object in COLLISION_GROUP_PUSHAWAY mode.</p>
+<pre class="code">
+bool CSDKGameRules::ShouldCollide( int collisionGroup0, int collisionGroup1 )
+{
+  ... // swap froups if necessary
+
+	if ( (collisionGroup0 == COLLISION_GROUP_PLAYER || collisionGroup0 == COLLISION_GROUP_PLAYER_MOVEMENT) &&
+		collisionGroup1 == COLLISION_GROUP_PUSHAWAY )
+	{
+		return false;
+	}
+
+	if ( collisionGroup0 == COLLISION_GROUP_DEBRIS && collisionGroup1 == COLLISION_GROUP_PUSHAWAY )
+	{
+		// let debris and multiplayer objects collide
+		return true;
+	}
+	
+	... // rest of ShouldCollide
+}
+</pre>
+
+<p>Use "prop_physics_multiplayer" in your maps and override their virtual function VPhysicsUpdate:</p>
+<pre class="code">
+void CPhysicsPropMultiplayer::VPhysicsUpdate( IPhysicsObject *pPhysics )
+{
+	BaseClass::VPhysicsUpdate( pPhysics );
+
+	if ( m_bAwake )
+		SetCollisionGroup( COLLISION_GROUP_PUSHAWAY );
+	else
+		SetCollisionGroup( COLLISION_GROUP_NONE );
+}	
+</pre>
+
+<p>Remove the physics shadows for players:</p>
+<pre class="code">
+void CBasePlayer::InitVCollision( void )
+{
+	return; // don't create a physics player shadow
+}
+
+void CBasePlayer::VPhysicsShadowUpdate( IPhysicsObject *pPhysics )
+{
+	return; // player doesn't have a physics shadow
+}
+</pre>
+
+<p>Add a new shared function to game_shared/baseplayer_shared.cpp:</p>
+<pre class="code">
+void CBasePlayer::AvoidPhysicsProps( CUserCmd *pCmd )
+	{
+		// Don't avoid if noclipping or in movetype none
+		switch ( GetMoveType() )
+		{
+		case MOVETYPE_NOCLIP:
+		case MOVETYPE_NONE:
+		case MOVETYPE_OBSERVER:
+			return;
+		default:
+			break;
+		}
+	
+		if ( GetObserverMode() != OBS_MODE_NONE || !IsAlive() )
+			return;
+	
+		AvoidPushawayProps( this, pCmd );
+	}
+</pre>
+
+<p>This function is called on the server in CSDKPlayerMove::SetupMove:</p>
+<pre class="code">
+void CSDKPlayerMove::SetupMove( CBasePlayer *player, CUserCmd *ucmd, IMoveHelper *pHelper, CMoveData *move )
+{
+	player->AvoidPhysicsProps( ucmd );
+	
+	...  // rest of function
+}
+</pre>
+
+<p>And on the client in CSDKPrediction::SetupMove:</p>
+<pre class="code">
+void CSDKPrediction::SetupMove( C_BasePlayer *player, CUserCmd *ucmd, IMoveHelper *pHelper, 
+	CMoveData *move )
+{
+	player->AvoidPhysicsProps( ucmd );
+	
+	// Call the default SetupMove code.
+	BaseClass::SetupMove( player, ucmd, pHelper, move );
+}
+</pre>
+
+
+
+<p></p>
+<pre class="code">
+</pre>
+
+<p>Also PushawayThink must be called every 0.05 seconds on both client and server. That's done in Think functions. Here code for the server:</p>
+<pre class="code">
+void CSDKPlayer::PushawayThink()
+{
+	// Push physics props out of our way.
+	PerformObstaclePushaway( this );
+	SetNextThink( gpGlobals->curtime + 0.05f, "PushawayThink" );
+}
+
+void CSDKPlayer::Spawn()
+{
+	...
+	
+ 	SetContextThink( &CSKDPlayer::PushawayThink, gpGlobals->curtime + 0.05f, "PushawayThink" );
+}
+</pre>
+
+<p>And the same call every 0.05 seconds on the client by overriding virtual function ClientThink:</p>
+<pre class="code">
+C_SDKPlayer::C_SDKPlayer()
+{
+	...
+	m_fNextThinkPushAway = 0.0f; // new float in C_SDKPlayer
+}
+
+void C_SDKPlayer::ClientThink()
+{
+	BaseClass::ClientThink();
+
+	if ( gpGlobals->curtime >= m_fNextThinkPushAway )
+	{
+		PerformObstaclePushaway( this );
+		m_fNextThinkPushAway =  gpGlobals->curtime + 0.05f;
+	}
+}
+</pre>
+
+
+<p>Finally, let the player push away objects using the USE key</p>
+<pre class="code">
+void CSDKPlayer::PlayerUse ( void )
+{
+	... // observer code
+
+	// push objects in turbo physics mode
+	if ( m_nButtons & IN_USE )
+	{
+		Vector forward, up;
+		EyeVectors( &forward, NULL, &up );
+
+		trace_t tr;
+		// Search for objects in a sphere (tests for entities that are not solid, yet still useable)
+		Vector searchCenter = EyePosition();
+
+		UTIL_TraceLine( searchCenter, searchCenter + forward * 96.0f, MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+
+		// try the hit entity if there is one, or the ground entity if there isn't.
+		CBaseEntity *entity = tr.m_pEnt;
+
+		if (entity && entity->VPhysicsGetObject() )
+		{
+			IPhysicsObject *pObj = entity->VPhysicsGetObject();
+
+			Vector vPushAway = (entity->WorldSpaceCenter() - WorldSpaceCenter());
+			vPushAway.z = 0;
+
+			float flDist = VectorNormalize( vPushAway );
+			flDist = max( flDist, 1 );
+
+			float flForce = sv_pushaway_force.GetFloat() / flDist;
+			flForce = min( flForce, sv_pushaway_max_force.GetFloat() );
+
+			pObj->ApplyForceOffset( vPushAway * flForce, WorldSpaceCenter() );
+		}
+	}
+	
+	... // rest of PlayerUse
+}
+</pre>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

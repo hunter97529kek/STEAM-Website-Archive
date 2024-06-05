@@ -1,0 +1,232 @@
+<html>
+<head>
+	<title>The Developer Console</title>
+	<link rel="stylesheet" type="text/css" href="../srcsdk.css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>The Developer Console: Command and Control</h1>
+
+<div align="center"><img src="developer_console_01.gif" alt="" width="371" height="333" border="0"></div>
+
+<p>This document explains how to write code that prints to the console, as well as how to execute and create console commands and variables. See the <a href="developer_console.html">Developer Console</a> for a basic description of the console features.</p>
+
+<h2>Printing to the console</h2>
+
+<p>Printing text to the console is done the same way in all modules, since the Tier0 debug layer provides these routines. The 3 most common functions are <span class="code2">Msg()</span>, <span class="code2">DevMsg()</span> and <span class="code2">Warning()</span> which all support formatted string output like <span class="code2">sprintf()a</span>:</p>
+
+<p class="code">
+DevMsg (char const* pMsg, ... )	- only in developer mode<br>
+Msg(char const* pMsg, ... )		- always, white<br>
+Warning(char const *pMsg, ... )	- always, red<br>
+</p>
+
+<p>For backward compatibility with HL1 source code you can still use Con_Printf() and Con_DPrintf().</p>
+
+<h2>Executing commands</h2>
+
+<p>The engine provides interface to server and client code to execute commands (strings) from code as if the user would have entered them. The server has to use the interface <span class="code2">IVEngineServer::ServerCommand()</span>:</p>
+
+<p class="code">engine->ServerCommand("changelevel de_dust");</p>
+
+<p>Client code has to use the interface <span class="code2">IVEngineClient</span> and can choose here between two functions, depending if the command should be executed on the client first or be sent directly to the server:</p>
+
+<p class="code">engine->ServerCmd( "say hello" );	// send command to server</p>
+
+<p>or</p>
+
+<p class="code">engine->ClientCmd( "say hello" );	// execute command on client</p>
+
+<h2>Adding New Commands & Variables</h2>
+
+<p>The developer console is a subsystem provided by the Source engine and is accessible for all other modules via a public interface <span class="code2">ICvar</span> ( see <span class="code2">\public\icvar.h</span>). This interface allows registering new commands and finding/iterating existing commands. This interface is available via the global cvar in game server/client code (cv in engine code). Console commands are implemented in <span class="code2">ConCommand</span> and console variables in <span class="code2">ConVar</span>, which both derive from the base class <span class="code2">ConCommandBase</span> (see <span class="code2">\public\convar.h</span>).</p>
+
+<p>Adding a new command or variable is fairly simple and the same code in both server and client (even engine) modules. The constructor of these classes automatically registers the command at the console system. This short example code adds a new command my_function and a new variable my_variable initialized to 42:</p>
+
+<pre class="code">
+#include &lt;convar.h&gt;
+ConVar my_variable( "my_variable", "42", FCVAR_ARCHIVE, "My favorite number" );	
+
+void MyFunction_f( void )
+{
+    Msg("This is my function\n");
+}
+
+ConCommand my_function( "my_function", MyFunction_f, "Shows a message.", FCVAR_CHEAT );
+</pre>
+
+<p>It is common use that the object name and the command name are the same and variables used only in a single source file are declared as static.</p>
+
+<h2>Using the class ConVar</h2> 
+
+<p>First let's take a look at the most used ConVar constructor:</p>
+
+<p class="code">
+ConVar( char const *pName,<br>
+&nbsp; char const *pDefaultValue,<br>
+&nbsp; int flags,<br>
+&nbsp;  char const *pHelpString )<br>
+</p>
+
+<p>The first argument <span class="code2">pName</span> is the variable name (no spaces), followed by <span class="code2">pDefaultValue</span>, which is always given as a string even for ConVars with numerical values. <span class="code2">Flags</span> specify special characteristics of the variable, all flag definitions start with <span class="code2">FCVAR_*</span>, more about these flags later. It's always good to provide a <span class="code2">pHelpString</span>, so users get an idea what this variable is about. ConVars are not bound to a certain type, their value can be an integer or a float or string and you may use it however you like. As long as you have the ConVar object itself or as a pointer, you can access and modify its values directly. All these examples are valid and have the same result:</p>
+
+<p class="code">
+if ( my_variable.GetInt() == 42 ) DoSomething();<br>
+if ( my_variable.GetFloat() == 42.0f ) DoSomething();<br>
+if ( strcmp(my_variable.GetString(), "42")==0 ) DoSomething();<br>
+</p>
+
+<p>To set the value of a ConVar you should use the SetValue() function, which also allows all types of data:</p>
+	
+<p class="code">
+my_variable.SetValue( 42 );<br>
+my_variable.SetValue( 42.0f );<br>
+my_variable.SetValue( "42" );<br>
+</p>
+
+<p>At any time you can revert a ConVar back to it's original default value by using the Revert() function. </p>
+
+<p>If a ConVar is created in a different module, the <span class="code2">ICvar</span> interface function <span class="code2">FindVar()</span> can be used to get a pointer to this object, if the variable name is known. This is an expensive search function and the pointer should be cached if reused often. Here is an example how to check the ConVar <span class="code2">sv_cheats</span> defined in the engine module:</p>
+
+<pre class="code">
+ConVar *pCheats  = cvar->FindVar( "sv_cheats" );<br>
+    if ( pCheats && pCheats->GetInt() == 1 ) AllowCheating();<br>
+</pre>
+
+<p>A range of valid values can be specified for numerical ConVars using a different constructor. Then a ConVar is automatically checked by the console system whenever changed manually. If the entered number is out of range, it's rounded to the next valid value. Setting valid range from 1 to 100:</p>
+
+<p class="code">ConVar my_variable( "my_variable", "42", 0, "helptext", true, 1, true, 100 );</p>
+
+<p>Sometimes you also want a notification when a users or another subsystem changes your ConVar value, therefore a callback function can be installed:</p>
+
+<pre class="code">
+static void OnChangeMyVariable ( ConVar *var, char const *pOldString )
+{
+    DevMsg( "ConVar %s was changed from %s to %s\n", var->GetName(), pOldString, var->GetString() );
+}
+
+ConVar my_variable( "my_variable", "42", 0, "My favorite number", OnChangeMyVariable );
+</pre>
+
+<h2>Using the class ConCommand</h2>
+
+<p>The <span class="code2">class</span> ConCommand is simpler than the ConVar and has just one constructor:</p>
+
+<pre class="code">
+ConCommand( char const *pName,
+    FnCommandCallback callback,
+    char const *pHelpString = 0,
+    int flags = 0,
+    FnCommandCompletionCallback completionFunc = 0 );
+</pre>
+
+<p>As in ConVar <span class="code2">pName</span> specifies the command name (no spaces!). <span class="code2">callback</span> is the function executed when a user runs this command, <span class="code2">pHelpString</span> and flags have the same function as in ConVar. ConCommands supports auto completion for the first parameter, which is usefully especially for commands that process files. For example, if you have a command <span class="code2">loadtext lt;textfilegt;</span> that expects a <span class="code2">.txt</span> file as input, the console scans for all available <span class="code2">.txt</span> files and allows the user to choose one from a list. If a valid <span class="code2">completionFunc</span> is passed, it will be called whenever the console system needs a list of available arguments.</p>
+
+<p>When the <span class="code2">callback</span> function is executed, the parameters entered in console are not passed as function arguments. The <span class="code2">callback</span> function has to query the engine how many arguments where given using the engine interface function <span class="code2">Cmd_Argc()</span>. Then you can look at single arguments using <span class="code2">Cmd_Argv(index)</span>, where index 1 is the first argument. The arguments are always returned as strings.</p>
+
+<pre class="code">
+void MySay_f ( void )
+{
+    if ( engine->Cmd_Argc() < 1 )
+    {
+        Msg(""Usage: my_say &lt;text&gt;\n");
+        return;
+    }
+
+    Msg("I say: %s\n", engine->Cmd_Argv(1) );
+}
+
+ConCommand my_say( "my_say", MySay_f, "say something", 0);
+</pre>
+
+<p>Here an example how to build a simple auto complete list. The partial parameter isn't used here; it contains the characters entered so far (includeing the command name itself) :</p>
+
+<pre class="code">
+static int MySayAutoComplete ( char const *partial, 
+char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] )
+{
+    strcpy( commands[0], "hello" );
+    strcpy( commands[1], "goodbye" );
+    return 2; // number of entries
+}
+
+ConCommand my_say( "my_say", MySay_f, "say something", 0, MySayAutoComplete);
+</pre>
+
+<h2>The FCVAR_ flags</h2>
+
+<p>The console command/variable flags can specify quite powerful characteristics and must be handled with care. These flags are usually set in the constructor but may be modified with <span class="code2">ConCommandBase::AddFlags()</span> (not used very often). It's not possible to change these flags other than in source code to avoid cheating. Some flags must be set manually, others are set automatically by then console system: </p>
+
+<span class="code2">FCVAR_LAUNCHER, FCVAR_GAMEDLL, FCVAR_CLIENTDLL, FCVAR_MATERIAL_SYSTEM, FCVAR_STUDIORENDER</span>
+
+<p class="definition">These flags are set by the registration process and specify the module, where the command was created (you don't need to set them). The following flags must be set manually:</p>
+
+
+<span class="code2">FCVAR_CHEAT</span>
+
+<p class="definition">Most commands and variables are for debugging proposes and not removed in release builds since they are useful 3rd party developers and map makers too. Unfortunately we cannot allow normal players to use these debugging tools since it's an unfair advantage over other players (cheating). A good rule is to add <span class="code2">FCVAR_CHEAT</span> basically to every new console command you add unless it's an explicit and legitimate options setting for players. Experience shows that even the most harmless looking debugging command can be misused as a cheat somehow.</p> 
+
+<p class="definition">The game server's setting of <span class="code2">sv_cheats</span> decides if cheats are enabled or not. If a client connects to a server where cheats are disabled (should be the default case), all client side console variables labeled as <span class="code2">FCVAR_CHEAT</span> are reverted to their default values and can't be changed as long as the client stays connected. Console commands marked as <span class="code2">FCVAR_CHEAT</span> can't be executed either. </p>
+
+
+<span class="code2">FCVAR_USERINFO</span>
+	
+<p class="definition">Some console variables contain client information the server needs to know about, like the player's name or his network settings. These variables must be flagged as <span class="code2">FCVAR_USERINFO</span>, so they get transmitted to the server and updated every time the user changes them. When the player changes on of these variables the engine notifies the server code via <span class="code2">ClientSettingsChanged()</span>. Then the game server can query the engine for specific client settings with <span class="code2">GetClientConVarValue()</span>.</p>
+
+
+<span class="code2">FCVAR_REPLICATED</span>
+	
+<p class="definition">Game server and client are using shared code where it's important that both sides run the exact some path using the same data (e.g. predicted movement/weapons, game rules). If this code uses console variables, they must match the same values on both sides. The flag <span class="code2">FCVAR_REPLICATED</span> ensures that by broadcasting these values to all clients. While connected, clients can't change these values and are force to use the server side values. </p>
+
+
+<span class="code2">FCVAR_ARCHIVE</span>
+	
+<p class="definition">Some console variables contain user specific settings we want to restore each time the game is started ( like <span class="code2">name</span> or <span class="code2">network_rate</span>). If a console variable is labeled as <span class="code2">FCVAR_ARCHIVE</span>, it is saved in the file <span class="code2">config.cfg</span> when the game shuts down and is reloaded with the next start. (Also the command <span class="code2">host_writeconfig</span> stores all <span class="code2">FCVAR_ARCHIVE</span> variables to a file).</p>
+
+
+<span class="code2">FCVAR_NOTIFY</span>
+
+<p class="definition">If a console variable is flagged as <span class="code2">FCVAR_NOTIFY</span>, a server sends a notification message to all clients whenever this variable is changed. This should be used for variables that change game play rules, which are important for all players (<span class="code2">mp_friendlyfire</span> etc).</p>
+
+
+<span class="code2">FCVAR_PROTECTED</span>
+
+<p class="definition">If console variables contain private information (passwords etc), we don't want them to be visible to other players. Then the <span class="code2">FCVAR_PROTECTED</span> flag should be set to label this information as confidential.</p>
+
+
+<span class="code2">FCVAR_SPONLY</span>
+	
+<p class="definition">Sometimes executing commands or changing variables may be valid only in single player mode, then label these commands as <span class="code2">FCVAR_SPONLY</span>.</p>
+
+
+<span class="code2">FCVAR_PRINTABLEONLY</span>
+	
+<p class="definition">Some important variables are logged or broadcasted (<span class="code2">gamerules</span> etc) and it is important that they contain only printable characters (no control chars etc).</p>
+
+
+<span class="code2">FCVAR_NEVER_AS_STRING</span>
+
+<p class="definition">The flag tells the engine never to print this variable as string since it contains control sequences.</p>
+
+
+
+<span class="code2">FCVAR_DEMO</span>
+
+<p class="definition">When starting recording a demo file, some console variables must explicitly added to the recording to ensure a correct playback.</p>
+
+
+<span class="code2">FCVAR_DONTRECORD</span>
+
+<p class="definition">This is the opposite of <span class="code2">FCVAR_DEMO</span>, some console commands shouldn't be recorded in demo files.</p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

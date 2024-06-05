@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Authoring a Model Entity</title>
+<link href="../../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+
+<h1> Authoring a Model Entity </h1>
+
+<p>After having created a logical entity in the previous example, we will now create an entity that can move, collide with other objects, and that has a visual component (in this case, a model). In this example we will create an entity that is displayed using a model, and make that entity randomly move around the world.</p>
+
+<h2>Create a .CPP file for the new entity</h2>
+
+<table cellspacing="8">
+	<tr valign="top">
+	<td>
+		<ul>
+			<li>Create a file named <span class="code2">sdk_modelentity.cpp</span>. The file should go under the <span class="code2">dlls</span> folder
+				under your source code folder. For example, if you installed the source code into <span class="code2">C:\MyMod\src</span>, then you would create
+				a file called <span class="code2">C:\MyMod\src\dlls\sdk_modelentity.cpp</span>.<br><br></li>
+			<li>Next, copy <a href="sdk_modelentity.html">this code</a> and paste it into this new file.<br><br></li>
+			<li>Last, add this file to your server.dll project. If you opened the <span class="code2">game_sdk.sln</span> solution, then you can right-click on the <span class="code2">hl</span> project in the Solution Explorer window and choose <strong>Add</strong>, then <strong>Add Existing Item</strong>.</li>
+		</ul>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="../add_existing_item.gif"></img></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Add the source file to the server.dll project by right-clicking.</td>
+		</tr>
+		</table>
+	</td>
+</table>
+
+</p>
+
+
+<h2>Walking Through The code</h2>
+
+<h3>Creating The Class Definition </h3>
+
+<p class="code">
+class CMyModelEntity : public CBaseAnimating<br>
+        {<br>
+        public:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DECLARE_CLASS( CMyModelEntity, CBaseAnimating );<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DECLARE_DATADESC();<br>
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void Spawn( void );<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void Precache( void );<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void MoveThink( void );<br>
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Input function<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void InputToggle( inputdata_t &amp;inputData );<br>
+        <br>
+        private:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_bActive;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_flNextChangeTime;<br>
+        };
+</p>
+
+<p>We descend our new entity from the <span class="code2">CBaseAnimating</span> class. This allows us to use models and animate. Also new to this entity is the <span class="code2">Spawn()</span> and <span class="code2">Precache()</span> function.</p>
+
+<h3>Defining The Data Description</h3>
+
+<p class="code">
+LINK_ENTITY_TO_CLASS( my_model_entity, CMyModelEntity );<br>
+      <br>
+        // Start of our data description for the class<br>
+        BEGIN_DATADESC( CMyModelEntity )<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // Save/restore our active state<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; DEFINE_FIELD( m_bActive, FIELD_BOOLEAN ),<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; DEFINE_FIELD( m_flNextChangeTime, FIELD_TIME ),<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // Links our input name from Hammer to our input member function<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; DEFINE_INPUTFUNC( FIELD_VOID, &quot;Toggle&quot;, InputToggle ),<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // Declare our think function<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; DEFINE_THINKFUNC( MoveThink ),<br>
+         <br>
+    END_DATADESC()
+</p>
+
+<p>Much like our logical entity, we must declare the variables used by the entity so that the engine knows their intention.</p>
+
+<p> It&rsquo;s important to note that the <span class="code2">MoveThink()</span> function must be declared as an entity think function in the entity&rsquo;s data description table using the <span class="code2">DEFINE_THINKFUNC</span> macro. See the  <a href="../DataDescriptionTable.htm">Data Description Table Document</a> document for more information. </p>
+<strong></strong>
+
+<h3>Creating The Precache() Function</h3>
+<p class="code">
+#define ENTITY_MODEL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;models/gibs/airboat_broken_engine.mdl&quot;<br>
+      <br>
+        void CMyModelEntity::Precache( void )<br>
+        {<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; PrecacheModel( ENTITY_MODEL );<br>
+    }
+</p>
+
+<p>The <span class="code2">Precache()</span> function is where all asset precaching must be done. For more information on this subject, see <a href="../PrecachingAssets.htm">Precaching Assets</a>. Here we also define the model we&rsquo;ll use to represent our entity in the world.</p>
+
+<p>In this example, we call <span class="code2">PrecacheModel()</span> to precache our model. Without this step the entity&rsquo;s model would not appear in the world and the engine would complain of a missed precache.</p>
+
+<h3>Creating The Spawn() Function </h3>
+
+<p class="code">
+void CMyModelEntity::Spawn( void )<BR>
+        {<BR>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Precache();<br>
+         <BR>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetModel( ENTITY_MODEL );<BR>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetSolid( SOLID_BBOX );<BR>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UTIL_SetSize( this, -Vector(20,20,20), Vector(20,20,20) );<br>
+         <BR>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_bActive = false;<BR>
+        }
+</p>
+
+<p>The <span class="code2">Spawn()</span> function is called after the entity is first created. This function can be thought of as the game&rsquo;s constructor method for the entity. In this function the entity can setup its initial state, including what model to use for itself, its method of movement and its solidity. It&rsquo;s important to note that the <span class="code2">Spawn()</span> function is called immediately after the allocation of the entity and that if this has occurred at the beginning of a map, there is no guarantee that other entities have been spawned yet. Therefore, any code which requires the entity to search or otherwise link itself to other named entities must do so in the <span class="code2">Activate()</span> function of the entity. <span class="code2">Activate() </span>is called when all entities have been spawned and had their <span class="code2">Spawn()</span> function called. Searching for entities before the<span class="code2"> Activate() </span>function will rely on the spawning order of the entities and is unreliable.</p>
+
+<p>In this example, we first call the <span class="code2">Precache()</span> function to be sure all of our assets are precached properly. After that, we use the <span class="code2">SetModel() </span>function to set our entity&rsquo;s model to the one we defined previously.</p>
+
+<p>Next, we set the solidity of the entity via the <span class="code2">SetSolid()</span> function. There are multiple possible solid types, defined as:</p>
+
+<table>
+  <tr>
+    <td><p><strong> SOLID_NOT </strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not solid.<br>      
+  <br>
+          <strong> SOLID_BSP </strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Uses the BSP tree to determine solidity (used for brush models) <br>
+           <br>
+           <strong> SOLID_BBOX </strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Uses an axis-aligned bounding box. <br>
+           <br>
+           <strong> SOLID_CUSTOM </strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Entity defines its own functions for testing collisions. <br>
+           <br>
+           <strong> SOLID_VPHYSICS </strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Uses the vcollide object for the entity to test collisions.</p></td>
+  </tr>
+</table>
+
+<p>For this example, we&rsquo;ll make the entity use a bounding box. The <span class="code2">UTIL_SetSize()</span> function allows us to set the size of that bounding box. Here we set it to a 40x40x40 cube.</p>
+
+<h3>Creating The MoveThink() Function </h3>
+<p>Entities have the ability to update internal state and make decisions via a <em>think </em>function, which will be called at a rate specified by the entity. Here we will create a think function that we will have called up to 20 times a second.  We will ll use this think function to randomly update our movement and direction in the world.</p>
+
+<p class="code">
+void CMyModelEntity::MoveThink( void )<br>
+        {<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // See if we should change direction again<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; if ( m_flNextChangeTime &lt; gpGlobals-&gt;curtime )<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; {<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Randomly take a new direction and speed<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Vector vecNewVelocity = RandomVector( -64.0f, 64.0f );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetAbsVelocity( vecNewVelocity );<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Randomly change it again within one to three seconds<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_flNextChangeTime = gpGlobals-&gt;curtime + random-&gt;RandomFloat(1.0f,3.0f);<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; }<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // Snap our facing to where we are heading<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; Vector velFacing = GetAbsVelocity();<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; QAngle angFacing;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; VectorAngles( velFacing, angFacing );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; SetAbsAngles( angFacing );<br>
+         <br>
+         &nbsp;&nbsp;&nbsp;&nbsp; // Think every 20Hz<br>
+         &nbsp;&nbsp;&nbsp;&nbsp; SetNextThink( gpGlobals-&gt;curtime + 0.05f );<br>
+        }
+</p>
+
+<p>While a lot of code is packed into this function, its outcome is fairly simple: once a random time interval has elapsed, the entity will choose a new, random direction and speed to travel at. It will also update its angles to face towards this direction of travel.</p>
+
+<p> The call to <span class="code2">SetNextThink()</span> is important in this function, because it tells the entity when next to think. Here it is set to think again 1/20th of a second in the future. Most entities will only need to think at a rate of 1/10th of a second, depending on their behaviors. It&rsquo;s important to note that failure to update the next think time of the entity will cause it to stop thinking (which is sometimes desired). </p>
+
+<h3>Create the ToggleInput() function </h3>
+<p>For this entity, we&rsquo;ll use an input to toggle its movement on and off. To do so, we declare the input function like any other. </p>
+
+<p class="code">
+void CMyModelEntity::InputToggle( inputdata_t &amp;inputData )<br>
+        {<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Toggle our active state<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( !m_bActive )<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Start thinking<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetThink( MoveThink );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetNextThink( gpGlobals-&gt;curtime + 0.05f );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Start flying<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetMoveType( MOVETYPE_FLY );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Set our next time for changing our speed and direction<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_flNextChangeTime = gpGlobals-&gt;curtime;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_bActive = true;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Stop thinking<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetThink( NULL );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Stop moving<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetAbsVelocity( vec3_origin );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetMoveType( MOVETYPE_NONE );<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_bActive = false;<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+        }
+</p>
+
+<p>To start the entity thinking, we use the <span class="code2">SetThink()</span> function in conjunction with the <span class="code2">SetNextThink() </span>function. This tells the entity to use our <span class="code2">MoveThink()</span> function and to call it 1/20th of a second in the future. It&rsquo;s important to note that an entity can have any number of think functions and use the <span class="code2">SetThink()</span> function to choose between them. Entities can even have multiple think functions running at the same time using the <span class="code2">SetContextThink()</span> covered in another document.</p>
+
+<p>We also set the entity&rsquo;s movement type to <span class="code2">MOVETYPE_FLY</span>. This allows the entity to move along a direction without gravity.</p>
+
+<p>In the second portion of this function we stop the entity from moving. The think function is set to <span class="code2">NULL</span> to stop all thinking. Its movement type is also set to <span class="code2">MOVETYPE_NONE</span> to keep it from moving.</p>
+
+<!--
+<h2>Compile And Run </h2>
+
+<p>Load the <span class="code2">sourcesdk_content\hl2\mapsrc\sdk_entity_model.vmf</span> map. &nbsp; You should see an engine floating in space ahead of you at the start. &nbsp; Step onto the platform directly ahead to start the entity moving. &nbsp; Step on the platform again to make it stop.</p>
+
+<p>Try changing the model used by the entity or changing the rate at which it thinks. &nbsp; You can also add different behavior to its <em>MoveThink()</em> function.</p>
+-->
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

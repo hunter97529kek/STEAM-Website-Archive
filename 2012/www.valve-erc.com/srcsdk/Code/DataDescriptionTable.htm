@@ -1,0 +1,209 @@
+<html>
+
+<head>
+	<title>Data Description Table</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Data Description Table</h1>
+
+<p>The <em>data description table</em> is a repository of definitions for a class&rsquo;s data and function members that allows the engine to link, save/restore and otherwise understand the intention of those members. Failure to define these members in the table can lead to unexpected results at runtime. </p>
+
+<p> Table elements are declared inside of a <span class="code2">BEGIN_DATADESC</span> and <span class="code2">END_DATADESC</span> code block. Any number of the following macros can be placed within the table as needed, like so: </p>
+<table class="code">
+  <tr>
+    <td>BEGIN_DATADESC( CMyClass )<br>
+      <br>
+        &nbsp;&nbsp; DEFINE_FIELD( . . . ) <br>
+        <br>
+    END_DATADESC()</td>
+  </tr>
+</table>
+<p> The following is a list of the most commonly used table element types. </p>
+<hr>
+<h3>DEFINE_FIELD</h3>
+<p>This macro definition is used for saving and loading in the engine. Any member variable properly defined in this macro will be saved and restored automatically. The macro is declared as: </p>
+<p class="code"> DEFINE_FIELD( <em>variableName</em>, <em>variableType</em> ) </p>
+<p> The <span class="code2">dataMemberType </span>parameter can be any of the following types: </p>
+<table class="table">
+  <tr>
+    <td width="21%" class="cell"><p class="code2">FIELD_VOID</p></td>
+    <td width="79%" class="cell"><p>No type or value (used for function parameters)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_FLOAT</p></td>
+    <td class="cell"><p>Any floating point value</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_STRING</p></td>
+    <td class="cell"><p>A string ID (return from ALLOC_STRING)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_VECTOR</p></td>
+    <td class="cell"><p>Any vector, QAngle, or AngularImpulse</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_QUATERNION</p></td>
+    <td class="cell"><p>A quaternion value</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_INTEGER</p></td>
+    <td class="cell"><p>Any integer or enum value</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_BOOLEAN</p></td>
+    <td class="cell"><p>Boolean value (represented as an integer)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_SHORT</p></td>
+    <td class="cell"><p>2 byte integer</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_CHARACTER</p></td>
+    <td class="cell"><p>One byte</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_COLOR32</p></td>
+    <td class="cell"><p>8-bit per channel [R,G,B,A] (32-bit color)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_EMBEDDED</p></td>
+    <td class="cell"><p>An embedded object with a data description, recursively traverse and embedded class/structure based on anadditional type description</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_CUSTOM</p></td>
+    <td class="cell"><p>A special type that contains function pointers to its read/write/parse functions</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_CLASSPTR</p></td>
+    <td class="cell"><p>CBaseEntity pointer</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_EHANDLE</p></td>
+    <td class="cell"><p>Entity handle</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_EDICT </p></td>
+    <td class="cell"><p>edict_t pointer</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_POSITION_VECTOR</p></td>
+    <td class="cell"><p>A world coordinate value, which is fixed up across level-transitions automatically</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_TIME</p></td>
+    <td class="cell"><p>A floating point time value, which is fixed up across level-transitions automatically</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_TICK</p></td>
+    <td class="cell"><p>An integer tick count, which is fixed up similarly to FIELD_TIME</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_MODELNAME</p></td>
+    <td class="cell"><p>Engine string that is a model name (Must be precached)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_SOUNDNAME</p></td>
+    <td class="cell"><p>Engine string that is a sound name (Must be precached)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_INPUT</p></td>
+    <td class="cell"><p>A list of inputted data fields, all derived from CMultiInputVar</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_FUNCTION</p></td>
+    <td class="cell"><p>A class function pointer (Think, Use, etc.)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_VMATRIX </p></td>
+    <td class="cell"><p>A VMatrix (Note: output coordinates are NOT worldspace)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_VMATRIX_WORLDSPACE</p></td>
+    <td class="cell"><p>A VMatrix that maps some localspace to worldspace (translation is fixed up on level-transitions)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_MATRIX3X4_WORLDSPACE</p></td>
+    <td class="cell"><p>matrix3x4_t that maps some localspace to worldspace (translation is fixed up on level-transitions)</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_INTERVAL</p></td>
+    <td class="cell"><p>A start and range floating point interval ( e.g., 3.2->3.6 == 3.2 and 0.4 )</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_MODELINDEX</p></td>
+    <td class="cell"><p>A model index</p></td>
+  </tr>
+  <tr>
+    <td class="cell"><p class="code2">FIELD_MATERIALINDEX</p></td>
+    <td class="cell"><p>A material index (using the material precache string table)</p></td>
+  </tr>
+</table>
+<br><hr>
+<h3>DEFINE_KEYFIELD</h3>
+<p>This macro works in the same manner as <span class="code2">DEFINE_FIELD</span> with regards to saving and restoring data members. It extends this functionality by also defining a reference name for the data member which links it to the keyvalue identifier defined in the FGD entry for an entity class. Once this is properly declared, the data member will be initialized to the value defined in the map upon that entity&rsquo;s creation. </p>
+<p class="code"> DEFINE_KEYFIELD( <em>variableName</em>, <em>variableType, &ldquo;keyvalueName&rdquo;</em> ) </p>
+<p> As an example, the following definition would link the <span class="code2">m_bEnabled</span> data member to the &rdquo;<em>enabled&rdquo;</em> keyvalue identifier in Hammer. </p>
+<p class="code"> DEFINE_KEYFIELD( m_bEnabled, FIELD_BOOLEAN, &ldquo;enabled&rdquo; ) </p>
+<p><strong> Note: </strong>The keyvalue&rsquo;s identifying name is case insensitive. </p>
+<hr>
+<h3>DEFINE_OUTPUT</h3>
+<p>This macro is used to link an output event to a named identifier used by Hammer.  It is defined as:</p>
+<p class="code"> DEFINE_OUTPUT( <em>outputVariable, outputName</em> ) </p>
+<p><strong> Note: </strong>The <span class="code2">outputEventVariable</span> in this case must be of type <span class="code2">COuputEvent</span>. </p>
+<hr>
+<h3>DEFINE_INPUTFUNC</h3>
+<p>This macro is used to link named inputs from Hammer to functions in the engine. This also defines the type of parameter being passed in to the function from the Entity I/O system. The macro is defined as:</p>
+<p class="code"> DEFINE_INPUTFUNC( <em>parameterType, &ldquo;inputName&rdquo;, InputFunction</em> ) </p>
+<p>The <span class="code2">parameterType</span> can be any of the following <em>FIELD_</em> types:</p>
+<p class="code2"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIELD_VOID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIELD_INTEGER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIELD_FLOAT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIELD_STRING<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIELD_VECTOR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIELD_COLOR32<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIELD_BOOLEAN<br></p>
+<hr>
+<h3>DEFINE_INPUT</h3>
+<p> This macro is a shorthand version of <span class="code2">DEFINE_INPUTFUNC</span>. It automatically sets the described data member to the parameter passed in from the <span class="code2">Input()</span> function. This bypasses the need to create an input function whose sole purpose is to set a data member to a passed value. The macro is declared as: </p>
+<p class="code"> DEFINE_INPUT( <em>variableName, variableType, &ldquo;keyvalueName&rdquo;</em> ) </p>
+<hr>
+<h3>DEFINE_ARRAY<br>
+DEFINE_AUTO_ARRAY</h3>
+<p>As their names suggest, these macros deal with saving and restoring array values. The number of elements in the array must be declared when using <span class="code2">DEFINE_ARRAY</span>, whereas <span class="code2">DEFINE_AUTO_ARRAY</span> will cause the code to automatically determine the size of the array at runtime. </p>
+<p>The macros are declared as:</p>
+<p class="code">DEFINE_ARRAY( <em>variable, variableType, numElements</em> )</p>
+<p class="code">DEFINE_AUTO_ARRAY( <em>variable</em>, <em>variableType</em> )</p>
+<hr>
+<h3>DEFINE_CUSTOM_FIELD</h3>
+<p>This macro allows custom interpretation of a variable with regards to how it is saved and restored. By passing in the reference to a handler class, the user is able to handle serialization of the data entirely.</p>
+<p>The handler class must descend from the <span class="code2">CClassPtrSaveRestoreOps</span> class; it uses the <span class="code2">Save()</span> and <span class="code2">Restore()</span> functions for serialization.</p>
+<p>For more information, see uses of <span class="code2">CClassPtrSaveRestoreOps</span> within the code base.</p>
+<hr>
+<h3>DEFINE_THINKFUNC</h3>
+<p>Entities using a <span class="code2">Think()</span> function must declare that function via this macro declaration. </p>
+<p>Think functions must be of the type:</p>
+<p class="code"> typedef void (*ThinkFunc)( void); </p>
+<hr>
+<h3>DEFINE_USEFUNC</h3>
+<p>Entities using a <span class="code2">Use()</span> function must declare that function via this macro declaration.</p>
+<p>Use functions must be of the type:</p>
+<p class="code">typedef void (*UseFunc)( <br>
+&nbsp;&nbsp;&nbsp;&nbsp;  CBaseEntity *pActivator,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CBaseEntity *pCaller, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;USE_TYPE useType, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float value <br>
+);</p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

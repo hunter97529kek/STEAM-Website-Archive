@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>c_env_sparkler.cpp</title>
+<link href="../../../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="content">
+<pre>
+//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ========
+//
+// Purpose: A simple test entity for creating special effects
+//
+//=============================================================================
+
+#include "cbase.h"
+#include "c_te_effect_dispatch.h"
+#include "particles_simple.h"
+
+//-----------------------------------------------------------------------------
+// Purpose: Callback to create a sparkle effect on the client
+// Input  : &data - information about the effect
+//-----------------------------------------------------------------------------
+void SparkleCallback( const CEffectData &data )
+{
+	// Create a simple particle emitter
+	CSmartPtr<CSimpleEmitter> pSparkleEmitter = CSimpleEmitter::Create( "Sparkle" );
+
+	if ( pSparkleEmitter == NULL )
+		return;
+
+	// Make local versions of our passed in data
+	Vector	origin = data.m_vOrigin;
+	float	scale = data.m_flScale;
+
+	// Set our sort origin to make the system cull properly
+	pSparkleEmitter->SetSortOrigin( origin );
+
+	// Find the material handle we wish to use for these particles
+	PMaterialHandle hMaterial = pSparkleEmitter->GetPMaterial( "effects/yellowflare" );
+
+	SimpleParticle *pParticle;
+
+	// Make a group of particles in the world
+	for ( int i = 0; i < 64; i++ )
+	{
+		// Create a particle
+		pParticle = pSparkleEmitter->AddSimpleParticle( hMaterial, origin );
+
+		if ( pParticle == NULL )
+			return;
+
+		// Set our sizes
+		pParticle->m_uchStartSize = (unsigned char) scale;
+		pParticle->m_uchEndSize = 0;
+
+		// Set our roll
+		pParticle->m_flRoll = random->RandomFloat( 0, 2*M_PI );
+		pParticle->m_flRollDelta = random->RandomFloat( -DEG2RAD( 180 ), DEG2RAD( 180 ) );
+
+		// Set our color
+		pParticle->m_uchColor[0] = 255;	// Red
+		pParticle->m_uchColor[1] = 255;	// Green
+		pParticle->m_uchColor[2] = 255;	// Blue
+
+		// Set our alpha
+		pParticle->m_uchStartAlpha = 0;
+		pParticle->m_uchEndAlpha = 255;
+		
+		// Create a random vector
+		Vector velocity = RandomVector( -1.0f, 1.0f );
+		VectorNormalize( velocity );
+
+		// Find a random speed for the particle
+		float speed = random->RandomFloat( 4.0f, 8.0f ) * scale;
+
+		// Build and set the velocity of the particle
+		pParticle->m_vecVelocity = velocity * speed;
+
+		// Declare our lifetime
+		pParticle->m_flDieTime = 1.0f;
+	}
+}
+
+// This links our server-side call to a client-side function
+DECLARE_CLIENT_EFFECT( "Sparkle", SparkleCallback );
+</pre>
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

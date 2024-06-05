@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Authoring a Logical Entity</title>
+<link href="../../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+
+<h1>Authoring a Logical Entity</h1>
+
+<p>To begin, we&rsquo;ll create a logical entity to perform a simple bit of work for us. This entity will store a value and increment that value every time it receives an <em>input</em> from another entity. Once the counter has reached a value we&rsquo;ll define, the entity will fire an <em>output</em> to allow it to alert other entities of the condition.</p>
+
+<h2>Create a .CPP file for the new entity</h2>
+
+<table cellspacing="8">
+	<tr valign="top">
+	<td>
+		<ul>
+			<li>Create a file named <span class="code2">sdk_logicalentity.cpp</span>. The file should go under the <span class="code2">dlls</span> folder under your source code folder. For example, if you installed the source code into <span class="code2">C:\MyMod\src</span>, then you would create a file called <span class="code2">C:\MyMod\src\dlls\sdk_logicalentity.cpp</span>.<br><br></li>
+			<li>Next, copy <a href="sdk_logicalentity.html">this code</a> and paste it into this new file.<br><br></li>
+		<li>Last, add this file to your server.dll project. If you opened the <span class="code2">game_sdk.sln</span> solution, then you can right-click on the <span class="code2">hl</span> project in the Solution Explorer window and choose <strong>Add</strong>, then <strong>Add Existing Item</strong>.</li>
+		</ul>
+	</td>
+	<td>
+		<table class="tableCaption" cellpadding="0">
+			<tr>
+				<td><img src="../add_existing_item.gif"></img></td>
+			</tr>
+			<tr>
+				<td class="tdCaption">Add the source file to the server.dll project by right-clicking.</td>
+			</tr>
+		</table>
+	</td>
+</table>
+
+<h2>Walking Through The code</h2>
+
+<h3><strong>Class Definition</strong></h3>
+
+<p class="code">
+    class CMyLogicalEntity : public CLogicalEntity<br>
+        {<br>
+        public:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DECLARE_CLASS( CMyLogicalEntity, CLogicalEntity );<br>
+        };
+</p>
+<p>We descend our new entity from the <span class="code2">CLogicalEntity</span> class. This class is a server-side only entity and will not transmit data to the client. We also use the helper macro <span class="code2">DECLARE_CLASS</span> to assist in some behind the scenes bookkeeping. By declaring the relationship between <span class="code2">CMyLogicalEntity</span> and <span class="code2">CLogicalEntity</span> we are able to use the <span class="code2">BaseClass</span> type within this class. This will be useful later for calling up to the <span class="code2">CLogicalEntity </span>class we&rsquo;re descended from.<br>
+</p>
+
+<h3><strong>Linking the class to an entity name </strong></h3>
+
+<p>Next we&rsquo;ll link the <span class="code2">CMyLogicalEntity</span> class to an actual entity <span class="code2">classname</span> that the game engine can reference. </p>
+<p class="code">
+    LINK_ENTITY_TO_CLASS( my_logical_entity, CMyLogicalEntity );
+</p>
+<p>Here our class <span class="code2">CMyLogicalEntity</span> declares its <em>classname</em> as &quot;<span class="code2">my_logical_entity</span>&quot;. This is the name that Hammer will use to refer to the entity type in the editor and is also how other entities will search and find our entity type. The <span class="code2">classname</span> varies from the <span class="code2">targetname</span> of the entity<em>,</em> which is a string that labels an individual or group of entities. The <span class="code2">classname</span> refers to all entities of a type, while the <span class="code2">targetname</span> can span multiple different types of entities (i.e. You may have an entity with a classname of <span class="code2">env_splash</span> belonging to a group of entities, all with the <span class="code2">targetname </span>of <span class="code2">splash_group</span><em>)</em>.</p>
+
+<h3>Adding member variables </strong></h3>
+
+<p class="code">
+int &nbsp;&nbsp;&nbsp; m_nThreshold; &nbsp;// Count at which to fire our output<br>
+int &nbsp;&nbsp;&nbsp; m_nCounter; &nbsp;&nbsp; // Internal counter
+</p>
+<p>Here we declare two integer values, to be used later.<strong></strong></p>
+
+<h3>Declaring a data description for the entity</h3>
+
+<p class="code">
+    <em>&nbsp;. . . </em><br>
+      <br>
+        <em>public: </em><br>
+        <em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DECLARE_CLASS( CMyLogicalEntity, CBaseEntity ); </em><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>DECLARE_DATADESC(); </strong><br>
+        <br>
+        &nbsp;. . .<br>
+        <br>
+        <em>LINK_ENTITY_TO_CLASS( my_logical_entity, CMyLogicalEntity ); </em><br>
+        <strong>BEGIN_DATADESC( CMyLogicalEntity ) </strong><br>
+        <strong></strong><br>
+        <strong>DEFINE_FIELD( m_nCounter, FIELD_INTEGER ), </strong><br>
+        <strong>DEFINE_KEYFIELD( m_nThreshold, FIELD_INTEGER, &quot;threshold&quot; ), </strong><br>
+        <strong></strong><br>
+        <strong>END_DATADESC()</strong>
+</p>
+<p>The <span class="code2">DECLARE_DATADESC</span> macro must be included to let the compiler know that we&rsquo;ll be adding a <em>data description table </em>later in the class implementation. The data description holds various definitions for the data members and special functions for this class. In this case, <span class="code2">m_nCounter</span> is defined for save/load functionality, and <span class="code2">m_nThreshold</span> is defined to tell the game to use the value named &quot;<span class="code2">threshold</span>&quot; to link this member variable to the entity keyvalue from Hammer. See the <a href="../DataDescriptionTable.htm">Data Description Table Document</a> for more information.</p>
+
+<h3>Creating the output event</h3>
+
+<p class="code">
+    COutputEvent &nbsp; m_OnThreshold;<br>
+        DEFINE_OUTPUT( m_OnThreshold, &quot;OnThreshold&quot; ),
+</p>
+<p>This outputevent will be triggered when we meet the defined threshold. For more information on outputs, see <a href="../../Levels/entityio.html">Entity Input and Outputs</a>.<strong></strong></p>
+
+<h3>Creating the input function</h3>
+
+<p class="code">
+    void InputTick( inputdata_t &amp;inputData );<br>
+      <br>
+        void CMyLogicalEntity::InputTick( inputdata_t &amp;inputData )<br>
+        {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Increment our counter<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_nCounter++;<br>
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // See if we've met or crossed our threshold value<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( m_nCounter &gt;= m_nThreshold )<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Fire an output event<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_OnThreshold.FireOutput( inputData.pActivator, this );<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Reset our counter<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_nCounter = 0;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+        }
+</p>
+<p> This function simply increments a counter and fires an output when that counter reaches or exceeds a certain threshold value, as specified in the entity inside of Hammer. The function takes no parameters from Hammer.</p>
+
+<h2>Create The FGD Entry</h2>
+
+<p>To use the entity within Hammer, we&rsquo;ll need to create an entry in our FGD file. Hammer will use this data to interpret the various keyvalues and functions the entity is exposing. 
+See the <a href="../../Hammer/html/FGD_format.html">FGD Format document</a> for more information about FGD files.
+
+<br><br>If you haven't created a custom .FGD file for your mod,
+you may want to do it at this point. To do this, create an empty file with a .FGD extension anywhere on your hard drive (putting it under your mod's folder is a good idea).
+Then paste the code below into it. Go into
+Hammer and choose Tools->Options and add the .FGD file in the <span class="code2">Game Data files</span> section. The Game Configurations dialog is
+described in <a href="../../Hammer/html/Options_Game_Config.html">this document</a>.
+
+<br><br>In this case we 
+declare the &quot;<em>threshold&quot;</em> value we have linked to the <span class="code2">m_nThreshold</span> data member, the input 
+function <span class="code2">Tick</span> and the <span class="code2">OnThreshold</span> output function.</p>
+
+<p class="code">
+    @PointClass base(Targetname) = my_logical_entity : &quot;Tutorial logical entity.&quot;<br>
+        [<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; threshold(integer) : &quot;Threshold&quot; : 1 : &quot;Threshold value.&quot;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; input Tick(void) : &quot;Adds one tick to the entity's count.&quot;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output OnThreshold(void) : &quot;Threshold was hit.&quot;<br>
+        ]
+</p>
+
+<!--
+<h2>Compile and run</h2>
+
+<p>Compile the code and run the <span class="code2">>sourcesdk_content\hl2\mapsrc\sdk_entity_logical.vmf</span> map. Step on the platform in front of you when the map starts, step off of it, then step onto it again. A light will come on. Repeat the steps and the light will turn off again. Although this functionality can be duplicated much more easily using entities like <span class="code2">logic_counter</span>, this should give you a starting point for making logical entities.</p>
+-->
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

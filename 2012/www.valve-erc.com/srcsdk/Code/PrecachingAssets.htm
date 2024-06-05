@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Precaching Assets</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Precaching Assets</h1>
+<p>To provide a smooth loading of assets for a typical game session, it is important that the engine do as much work as possible to load those assets before the session begins. &nbsp; By doing this, the player&rsquo;s experience is not disturbed by interruptions as the engine tries to cache assets in the middle of a session, often causing &ldquo;hitching&rdquo; or delays in rendering. &nbsp; To do this, entities must declare and precache the assets they intend to use before the session starts. &nbsp; There are multiple utility functions in place to achieve this.</p>
+<h2>Precache()</h2>
+<p>The <span class="code2">Precache()</span> function is available to all descendants of the <span class="code2">CBaseEntity</span> class and must be called in the <span class="code2">Spawn()</span> function of each entity. &nbsp; All assets used by the entity (models, sounds, VCD, decals) must be declared in this function to be used. &nbsp; Assets may not be precached outside of this function. &nbsp; </p>
+<p>Assets are precached using the following functions:</p>
+<table bgcolor="#CCCCCC" width="85%" cellspacing=16>
+<tr><td>
+<h2>PrecacheModel()</h2>
+<p>Used to precache a model. </p>
+<p class="code2">int CBaseEntity::PrecacheModel( <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const char *name <br>
+)</p>
+<p><strong> Parameters </strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>name </em>
+  <br>
+<em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </em> Filename of the model to load </p>
+<p><strong> Return Value<br>
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong> Reference index for the model. </p>
+</td></tr></table>
+<br>
+<br>
+<table bgcolor="#CCCCCC" width="85%" cellspacing=16>
+<tr><td>
+<h2> PrecacheScriptSound() </h2>
+<p>Used to precache a sound script as declared in a sound script file. </p>
+<p class="code2">void CBaseEntity::PrecacheScriptSound( <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const char *soundname <br>
+)</p>
+<p><strong> Parameters </strong></p>
+<p><em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;soundname </em><br>
+<em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </em> Name of sound script to precache. </p>
+<p><strong>Remarks </strong></p>
+<p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sound script must be declared in the sound script manifest document. <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </strong></p>
+<p><strong>Return Value</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None.</p>
+</td></tr></table>
+<br>
+<br>
+<table bgcolor="#CCCCCC" width="85%" cellspacing=16>
+<tr><td>
+<h2>PrecacheInstancedScene()</h2>
+<p> Used to precache a VCD file. </p>
+<p class="code2">void PrecacheInstancedScene( <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char const *pszScene <br>
+) </p>
+<p><strong> Parameters </strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>pszScene </em><br>
+  <em> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</em>Filename of the VCD to precache. 
+<p><strong>Return Value </strong></p>
+<p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None.</p>
+</td>
+</tr></table>
+<br>
+<br>
+<table bgcolor="#CCCCCC" width="85%" cellspacing=16>
+<tr><td>
+<h2>UTIL_PrecacheOther()</h2>
+<p>Utility function that will call the <span class="code2">Precache()</span> function for an entity that will be referenced or created during the lifetime of the calling entity. &nbsp; This is often used for weapons that will create a child entity (like a grenade) dynamically during the course of a session.</p>
+<p class="code2">void UTIL_PrecacheOther( <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const char *szClassname, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const char *modelName <br>
+) </p>
+<p><strong>Parameters </strong></p>
+<p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>szClassname</em> <br>
+  &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entity classname to precache assets for. </p>
+<p><em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modelName<br>
+</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Model name to use for this entity. </p>
+<p><strong>Return Value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>None.</p>
+</td>
+</tr></table>
+<br>
+<br>
+<table bgcolor="#CCCCCC" width="85%" cellspacing=16>
+<tr><td>
+<h2>UTIL_PrecacheDecal()</h2>
+<p> Used to precache a decal. </p>
+<p class="code2">int UTIL_PrecacheDecal( <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const char *name, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool preload <br>
+) </p>
+<p><strong> Parameters </strong></p>
+<p><strong>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong><em>name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</em>Name of the decal to precache. </p>
+<p><em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preload<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</em>Whether or not to preload this decal. </p>
+<p><strong>Return Value </strong></p>
+<p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reference index for the decal model.</p>
+</td>
+</tr></table>
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

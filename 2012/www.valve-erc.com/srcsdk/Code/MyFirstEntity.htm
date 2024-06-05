@@ -1,0 +1,40 @@
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>My First Entity</title>
+	<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1> My First Entity</h1>
+
+<p>One of the easiest ways to begin your MOD is by creating new entities inside the Source engine. Entities make up the objects in the world: NPCs, weapons, tin cans, or triggers; they&rsquo;re the means by which we add life and interaction into the static geometry of the world.</p>
+<p>Entities fall into three general categories: logical, model, and brush.</p>
+
+<h2>Logical</h2>
+
+<p>These entities are the simplest of entities, because they have no position in the world, no visual component, and only exist to service input from the game map and make decisions based on the state of the world. Logical entities do not move and they do not have a model, they simply receive inputs and send outputs depending on their exact utility. An example would be a <em>logic_counter</em> entity that stores a value that can be added to or subtracted from. Other entities in the map can access the entity via inputs or get information from it via outputs. The entity&rsquo;s position is irrelevant in this case, which is the major factor in declaring an entity <em>logical</em>.</p>
+
+<h2>Model</h2>
+
+<p>Model entities are what we would most typically think of entities as being: they have a visual component, they can move around the map and often they are interactive. NPCs are an example of this sort of entity.</p>
+<h2> Brush</h2>
+
+<p>These entities are constructed in Hammer out of <em>brushes</em> (See the <a href="../Hammer/index.html">Hammer Editor Documentation</a> for more information). Brush entities are most often <em>triggers</em>: volumes in space that fire outputs when certain other entities (like the player) enter or exit them. These can also be moving entities, like doors and platforms.</p>
+
+<p>Using these three major types of entities, we can express almost all the flora and fauna of the Source universe.</p>
+
+<p>To learn how to create these entities, see the <a href="Logical/LogicEntity.htm">Logical Entity</a>, <a href="Model/ModelEntity.htm">Model Entity</a>, and <a href="Brush/BrushEntity.htm">Brush Entity</a> documents.</p>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>
