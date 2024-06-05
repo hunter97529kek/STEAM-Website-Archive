@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>The GameInfo.txt File Structure</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Source Demo Tools</h1>
+
+<p>The Source Engine provides a set of tools to record a game to a demo file, playback a recorded game and edit a demo file. These functions are provided via console commands or GUI tools like the Demo Playback window, Demo Editor and Demo Smoother. </p>
+
+<h2>Basic recording and playback</h2>
+
+<p>To record a game, type in console <span class="code2">record &quot;name&quot;</span>, while the file name shouldn't have any special characters or spaces. The demo file (.dem extension) is saved in your current game director, e.g. <span class="code2">\hl2\name.dem</span>. You can start recording anytime within a running game and stop recording with the <span class="code2">stop</span> command. If a changelevel occurs while recording, the current demo file will be close and a new demo file name_2 (name_3, name_4, etc.) is created. To playback a previously recorded game, type <span class="code2">playdemo &quot;name&quot;</span>. If you want to use demo playback for system benchmarking use <span class="code2">timedemo &quot;name&quot;</span>. Timedemo plays a demo as fast as possible and shows performance stats after the playback is finished (total drawn frames, seconds needed for playback, average frames per second and variability).
+</p>
+
+<h2>Demo Player</h2>
+
+<p>Anytime while playing back a demo file, the Demo Playback window can be brought up by pressing <strong>Shift-F2</strong> or the <span class="code2">demoui</span> command. The Demo Playback window allows to pause and resume, change playback speed or move your camera viewpoint. </p>
+
+<img src="images/demo_player.jpg" alt="" width="324" height="242" hspace="16" vspace="0" border="0" align="middle">
+
+<p>To load a new demo file hit the "Load..." button and choose a file from disc. The current loaded demo file name will be shown right beside the "Load..." button. The current and total playtime is shown right below. Using the slider on the 
+right, you can adjust the playback speed between slow-motion and fast-forward (0% to 600%). Under the overall progress bar are the playback control buttons like the toggle button "Play", "Pause", "Resume", step forward "&gt;", go to start "|&lt;", go to end "&gt;|" (some features aren't working yet, like step back "&lt;", fast backward "&lt;&lt;")</p>
+
+<p>Internally recorded demo files use time stamps called ticks to mark single frames within the playback. Like time the current and total ticks are displayed left of the "Goto:" button. You can jump to a specific tick within the demo by entering the target tick in text input field and press the "Goto:" button. 
+</p>
+
+<p>To change the camera's viewpoint, switch to "Camera drive mode" by pressing the "Drive..." toggle button. The button will stay in the pressed-down state as long as the "Drive Mode" is active. To navigate the camera, move the mouse out to the viewport, keep the left mouse button pressed and move around using the W,A,S,D keys. You can move up and down with Z and X, and slow down with the SHIFT key. When the playback is paused, this is a really useful to make screenshot (use <span class="code2">r_drawviewmodel 0</span> and <span class="code2">cl_drawhud 0</span> to cleanup the screen). Press the "Drive..." button again to switch back to the normal demo view.</p>
+
+<h2>Demo Editor</h2>
+
+<p>To open the Demo Editor GUI, press the "Edit..." button in the Demo Playback window. The Demo Editor allows you to add and execute a set of commands during demo playback. These demo commands can display text, fade in/out, change the FOV or run any other console command. The Demo Editor can not change the camera view, use the Demo Smoother to do that. The demo commands are not saved within the demo file itself, but in a extra text file named demoname.vdm. These .VDM text files are loaded and executed each time a demo file with the same name is played. </p>
+
+<img src="images/demo_editor.jpg" alt="" width="449" height="306" border="0" align="middle">
+
+<p>To add a new command, hit the "New->" button and choose a demo command you want to add, for example <strong>PlayCommands</strong> to execute a console command. Each demo command has a user given name and point of time (clock or tick) to be executed. If you added a new PlayCommands entry, choose a new name ("My command"), set "Start on" to "TimeUseTick", enter a valid tick and enter the console command to be executed, e.g. "echo This is my command". Then hit "OK" and a new demo command will be added to the command list. Existing commands can be changed by pressing "Edit..." or removed with "Delete". Once the demo command list is complete, you can save it to the demoname.vdm file by hitting "Save".</p>
+
+<p>The following list gives an overview about the available demo commands:</p>
+
+<table class="table">
+<tr>
+	<td class="cell"><p><strong>SkipAhead</strong></p></td>
+	<td class="cell"><p>Skips demo playback ahead to a specified tick and resumes playback.</p></td>
+</tr>
+<tr>
+	<td class="cell"><p><strong>StopPlayback</strong></p></td>
+	<td class="cell"><p>Stops demo playback immediately.</p></td>
+</tr>
+<tr>
+	<td class="cell"><p><strong>PlayCommands</strong></p></td>
+	<td class="cell"><p>Executes a console command.</p></td>
+</tr>
+<tr>
+	<td class="cell"><p><strong>ScreenFadeStart</strong></p></td>
+	<td class="cell"><p>Fade screen in/out.</p></td>
+</tr>
+<tr>
+	<td class="cell"><p><strong>TextMessageStart</strong></p></td>
+	<td class="cell"><p>Shows a simple text message.</p></td>
+</tr>
+<tr>
+	<td class="cell"><p><strong>PlayCDTrackStart</strong></p></td>
+	<td class="cell"><p>Starts playing a CD track.</p></td>
+</tr>
+<tr>
+	<td class="cell"><p><strong>PlaySoundStart</strong></p></td>
+	<td class="cell"><p>Plays a .WAV or .MP3 sound file.</p></td>
+</tr>
+<tr>
+	<td class="cell"><p><strong>Pause</strong></p></td>
+	<td class="cell"><p>Pauses playback for given seconds.</p></td>
+</tr>
+<tr>
+	<td class="cell"><p><strong>ChangePlaybackRate</strong></p></td>
+	<td class="cell"><p>Changes the playback speed.</p></td>
+</tr>
+<tr>
+	<td class="cell"><p><strong>ZoomFov</strong></p></td>
+	<td class="cell"><p>Adds a zoom in/out effect.</p></td>
+</tr>
+</table>
+
+
+<h2>Demo Smoother</h2>
+
+<p>The Demo Smoother is the most complex of all demo tools and allows to override the camera view in demo files. This can be used to smooth out the recorded view or create completely new camera paths. To open the Demo Smoother, hit the "Smooth..." button in the Demo Playback window. </p>
+
+<img src="images/demo_smoother.jpg" alt="" width="448" height="311" border="0" align="middle">
+
+<p>The first thing to do is to pause the playback and load the existing view data from the current demo file by hitting "Reload". Check the "Show All" checkbox to see the complete camera path in your demo file (drawn white). All the time when working with the Demo Smoother, you can still go into "Camera drive mode" and move around the map. If you're not in "Camera Drive mode", you can check the "Back off" checkbox to move the camera backward a bit so you can see some of the path of the camera. </p>
+
+<p>To work with the smoother, you need to have an active selection. To select an part of the current camera track for modification, fill in the "Start Tick" and "End Tick" fields and press "Select". This tick range is now your active selection and the selected samples are now shown in yellow. Click the Show Original button and the camera will follow the path of the selected samples.  Notice that we are "backed off" due to the back off button being checked, that's just for the preview.  Unclick the back off button for now. Click the lock camera check box and then hold the mouse down on the "Drive Camera" button and you use the WASD keys and mouselook movement to move the camera around. Hit "S" and move back from the current viewpoint. </p>
+
+<img src="images/demo_smoother2.jpg" alt="" width="797" height="597" border="0" align="middle">
+
+<p>From this view, the blue box with the red direction line is the current preview position. If you have lock camera clicked and you press the "&lt;&lt;" or "&gt;&gt;" buttons you will move this marker one frame forward or backward. If you don't have the lock camera button checked, then when you press the "&lt;&lt;" or "&gt;&gt;" buttons your view will snap to the new camera position. The white samples at the start and end show you the next few samples just outside your selection range. Clicking the "Process->" button will bring up the menu of currently supported processing types.</p>
+
+<h3>Smooth selection angles</h3>
+
+<p>Clicking this averages the view angles over a window of about 10 samples, thereby removing some of the high frequency noise from the camera. The smoothed camera directions are shown as purple samples near each yellow sample line. You can preview the processed positions by clicking the "Show processed" button (make sure you turn off "lock camera" if you want to actually see from the camera position, otherwise you'll just see the blue box/red line move across your selection).</p>
+
+<p>Note that the speed scale slider from the "Demo Playback" UI will influence the Show Original/Show Processed (and Drive Camera) speed in the Demo Smoother UI. Okay, that's pure angle smoothing by just averaging the angles over a small window. To undo this change you can just click the "Undo" button.</p>
+
+<h3>Smooth selection origin</h3>
+
+<p>This is similar to the above, except the window is applied to the origin samples.  Clicking this button can be used to remove a bit of high frequency positional jitter. The smoothed camera path is colored yellowish, which deviates from the gray original path.  This is the new smoothed path on which the camera will track. Of course, you can apply both angle and origin smoothing to the selection, etc.</p>
+
+<h3>Linear Interp Angles</h3>
+
+<p>What this tool does it take only the very first sample in the selection range and the very last sample in the range, and then linearly interpolates the view direction smoothly across the entire range. </p>
+
+<h3>Linear Interp Origin</h3>
+
+<p>Similar to the above, you can linearly interpolate the origin from the start to end sample. As you will see, the camera position follows a direct path from the start to end position, but the original view pitch/roll/yaw data is preserved.  You can choose "Linear Interp Angles" if you want to smooth out the angles over this selection as well. </p>
+
+<img src="images/demo_smoother3.jpg" alt="" width="800" height="599" border="0" align="middle">
+
+<h3>Spline Angles and Spline Origin</h3>
+
+<p>The spline functionality, in general, requires you to mark certain samples as "Key Frames" for creating the spline.  By default, the first and last samples are automatically included as "anchor" key frames, but you'll want to add at least one if not multiple additional key frames.</p>
+
+<p>The best way to do this is to think of the original samples as a time reference and use the << and >> buttons to move the blue cursor to the sample at the time you want to mark as a key frame.  Once you've done that, you need to unlock the camera if it's locked and then press "Set View" to put your eyes into the current sample point.</p>
+
+<p>You can now move that sample point by clicking "Drive Camera" and moving with the keyboard and mouse, etc.  Once you have the sample positioned and oriented (just using the camera) as you like, press the "Make Key" button.  If you now back the camera up a bit more you'll see a green box which shows the current point as a key. </p>
+
+<h3>Smoothing out the Edges</h3>
+
+<p>The final component of the smoother is useful for dealing with the edges left after post processing a .dem file selection. For instance, chose the last 5 frames to smooth out the right edge at the end of a sample ( type 5 in the Edge Frames box and selected Smooth Right from the Edge-> menu). As you can see in the inset, the processed/purple line is more smoothly integrated with the first non-selected white direction line. You need to use at least 3 edge frames and then select which edges(s) to smooth from the Edge-> menu.</p>
+
+
+
+
+
+<h2>Demo Console Commands</h2>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_debug &lt;0|1&gt;</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Shows additional demo debug info</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_fastforwardstartspeed &lt;factor&gt;</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Go this fast when starting to hold FF button.</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_fastforwardramptime &lt;seconds&gt;</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">How many seconds it takes to get to full FF speed.</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_fastforwardfinalspeed &lt;factor&gt;</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Final playback speed when holding the FF button.</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_interpolateview &lt;0|1&gt;</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Enables/disabled view interpolation between demo ticks</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_quitafterplayback &lt;0|1&gt;</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Quits game after demo playback</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_recordcommands &lt;0|1&gt;</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Record commands typed at console into .dem files</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_pause [seconds]</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Pauses demo playback, seconds optional</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_pause [seconds]</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Pauses demo playback, seconds optional</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_resume</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Resumes demo playback</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_togglepause</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Toggles demo pause/playback </p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_gototick &lt;tick&gt; [relative] [pause]</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Skips to a tick in demo. If the relative parameter is 1 the tick is an offset to the current tick. If the pause parameter is 1, playback while be paused when tick is reached</p>
+	</tr>
+</table>
+
+<table width="100%" cellpadding="8"> 
+	<tr class="code">
+	<td>demo_timescale &lt;scale&gt;</td>
+	</tr>
+	<tr class="codeLite">
+	<td><p class="definition">Set the demo playback speed as a factor, 1.0 is normal playback</p>
+	</tr>
+</table>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<html>
+<HEAD>
+        <title>Manually Copying Existing SDK Content</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Manually Copying Existing SDK Content</h1>
+
+<p>For some reason, if you would rather migrate your \sourcesdk files manually instead of using the <a href="content_migrate.html#AutoCopyContent">automatic batch file</a>, this guide will show you which files should be copied to the appropriate directory in the <a href="content_directory_structure.html">new file structure</a>.</p>
+
+<p>This procedure uses <strong>Counter-Strike: Source </strong> as a sample configuration. For other games/MODs, substitute the appropriate names and/or directories, as described in at the <a href="#OtherGames">end of this document</a>.</p>
+<ol>
+	<li><a href="#ManualCopySource">Copy content sources to the  content subdirectory</a></li>
+	<li><a href="#ManualCopyContent">Copy compiled content  to the game directory</a></li>
+	<li><a href="#OtherGames">Copy Content files for your other games</a></li>
+</ol>
+
+<p><a name="ManualCopySource" id="ManualCopySource"></a>
+<hr noshade size="2">
+
+<h2>Copy content sources to the  content subdirectory</h2>
+
+<p>First you need to copy any Source SDK  content sources files from <span class="code2">\sourcesdk</span> directory to the corresponding directory in <span class="code2">\sourcesdk_content</span>.</p>
+
+<p><strong>Note: </strong>While copying<strong>, </strong>you <strong>should not replace existing files </strong>in the <span class="code2">\sourcsdk_content</span> directory. These are the Source SDK samples -- replacing these files may prevent getting updated versions of the samples.</p>
+
+<ol>
+<li>Move any <strong>custom materials sources </strong>inside:<br><br>
+
+    <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk\cstrike_sample_content\materialsrc </span><br><br>
+	
+    to<br><br>
+	
+    <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk_content\cstrike\materialsrc </span><br>
+<br>
+</li>
+<li>Move any <strong>custom model sources</strong> inside:<br><br>
+    
+   <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk\cstrike_sample_content\model_sources </span><br><br>
+	
+    to<br><br>
+	
+    <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk_content\cstrike\modelsrc </span><br><br>
+</li>
+<li>Move any <strong>custom .VMF files</strong> inside:<br><br>
+
+    <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk\cstrike_sample_content\maps</span><br><br>
+	
+    to<br><br>
+	
+<span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk_content\cstrike\mapsrc</span></li>
+</ol>
+
+<p><a name="ManualCopyContent" id="ManualCopyContent"></a>
+<hr noshade size="2">
+
+<h2>Copy compiled content  to the game directory</h2>
+
+<p>Now we need to copy the compiled game content from the <span class="code2">\sourcesdk</span> to the corresponding directory in <span class="code2">\counter-strike source</span>:</p>
+<ol>
+<li>Move any <strong>custom material files</strong> in:<br>
+<br>
+
+    <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk\cstrike_sample_content\materials</span><br>
+<br>
+	
+    to<br><br>
+	
+    <span class="code2">\Steam\SteamApps\<em>username</em>\counter-strike source\cstrike\materials</span><br>
+<br>
+</li>
+<li>Move any <strong>custom model files</strong> inside:<br><br>
+    
+   <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk\cstrike_sample_content\models</span><br>
+<br>
+	
+    to<br><br>
+	
+    <span class="code2">\Steam\SteamApps\<em>username</em>\counter-strike source\cstrike\models</span><br>
+<br>
+</li>
+<li>Move any <strong>.BSP files</strong> inside:<br><br>
+
+    <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk\cstrike_sample_content\maps</span><br><br>
+	
+    to<br><br>
+	
+<span class="code2">\Steam\SteamApps\<em>username</em>\counter-strike source\cstrike\maps</span></li>
+</ol>
+
+<a name="OtherGames" id="OtherGames"></a>
+<hr noshade size="2">
+
+<h2>Configure your other games</h2>
+
+<p>You can follow the same instructions for other games or MODs to update their game configurations.</p>
+
+<p>For <strong>Half-Life 2: Deathmatch</strong>:</p>
+
+<ul>
+	<li>Substitute<span class="code2">\</span><span class="code2">half-life 2 deathmatch </span>for <span class="code2">\</span><span class="code2">counter-strike source</span></li>
+	<li>Substitute <span class="code2"><em></em>\</span><span class="code2">halflife 2 deathmatch\hl2mp</span> for <span class="code2"><em></em>\</span><span class="code2">counter-strike source\cstrike</span></li>
+	<li>Substitute <span class="code2">\hl2mp_sample_content</span> for <span class="code2">\cstrike_sample_content</span></li>
+</ul>
+
+<p>For <strong>Half-Life 2</strong>:</p>
+<ul>
+	<li>Substitute<span class="code2">\</span><span class="code2">half-life 2 </span>for <span class="code2">\</span><span class="code2">counter-strike source</span></li>
+	<li>Substitute <span class="code2"><em></em>\</span><span class="code2">halflife 2\hl2</span> for <span class="code2"><em></em>\</span><span class="code2">counter-strike source\cstrike</span></li>
+	<li>Substitute <span class="code2">\sdkcontent</span> for <span class="code2">\cstrike_sample_content</span></li>
+</ul>
+
+<hr noshade size="2">
+
+<h2>Continuing with the directory migration </h2>
+<p>When you've finished copying files for all your game configurations, continue with the instructions by resetting with <a href="content_migrate.html#ResetGameConfig">Resetting your game configuration</a>.</p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

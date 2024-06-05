@@ -1,0 +1,149 @@
+<html>
+<HEAD>
+        <title>The Source SDK Directory Structure</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>The Source SDK Files and Directory Structure </h1>
+
+<p>With the latest SDK release, the default directory structure will be changed to remove the restriction of having to save your game content into the <span class="code2">\sourcesdk</span> directory tree. This document explains how the Source SDK directory structure is will be set up.</p>
+
+<ol>
+	<li><a href="#SourceDirectories">The  directory structure explained</a></li>
+	<li><a href="#Examples">Examples of using the directory structure</a></li>
+	<li><a href="#CopyContent">Copy  existing content  and SDK samples sources</a></li>
+</ol>
+
+<a name="SourceDirectories" id="SourceDirectories"></a>
+<hr noshade size="2">
+
+<h2>The directory structure explained </h2>
+<p>The SDK directory structure is now set up so that <em>game content</em> directories are separated from <em>game sources</em> directories.</p>
+<blockquote>
+<p><em>Game content</em> files are the actual files necessary to run the game &#8212; textures, maps, models, etc.</p>
+<p><em>Game  sources</em> are the files that are used to <em>create</em> that game content (the &quot;source&quot; of the game content). </p>
+</blockquote>
+
+<p>This table explains some of the different <em>game content</em> and <em>game  source</em> file types in the SDK:</p>
+
+<table width="90%" class="table" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="15%" class="cell"><p><strong>File type </strong></p></td>
+		<td width="42%" class="cell"><p><strong>Description</strong></p></td>
+		<td class="cell" width="43%"><p><strong> Location</strong></p></td>
+	</tr>
+	<tr>
+	  <td class="cell"><p class="code2">.VMF</p></td>
+	  <td class="cell"><p>Map  source files.</p></td>
+	  <td class="cell"><p class="code2">sourcesdk_content\&lt;game name&gt;\mapsrc</p></td>
+	</tr>
+	<tr>
+      <td width="15%" class="cell"><p class="code2">.TGA .TXT </p></td>
+      <td class="cell"><p> Texture  source files.</p></td>
+	  <td class="cell"><p><span class="code2">sourcesdk_content\&lt;game name&gt;\materialsrc</span></p></td>
+    </tr>
+	<tr>
+      <td class="cell"><p class="code2">.SCN .SMD .QC</p></td>
+      <td class="cell"><p> Model  source files. </p></td>
+	  <td class="cell"><p><span class="code2">sourcesdk_content\&lt;game name&gt;\modelsrc</span></p></td>
+    </tr>
+	<tr>
+      <td class="cell"><p class="code2">.BSP</p></td>
+      <td class="cell"><p> Map content files &#8212;  compiled game maps.</p></td>
+	  <td class="cell"><p class="code2">&lt;game name&gt;\maps</p></td>
+    </tr>
+
+	<tr>
+      <td class="cell"><p><span class="code2">.VMT</span> <span class="code2">.VTF </span></p></td>
+      <td class="cell"><p> Texture content files &#8212; compiled game textures. </p></td>
+	  <td class="cell"><p><span class="code2">&lt;game name&gt;\materials</span></p></td>
+    </tr>
+	<tr>
+      <td class="cell"><p class="code2">.MDL .VTX</p></td>
+      <td class="cell"><p> Model content files &#8212; compiled game models/props. </p></td>
+	  <td class="cell"><p><span class="code2">&lt;game name&gt;\models</span></p></td>
+    </tr>
+</table>
+
+<p>The following image shows the default locations for these files and folders:</p>
+
+<p><img src="images/sdk_content_folders.jpg" width="542" height="531"></p>
+
+<table width="90%" class="table" cellpadding="0" cellspacing="0">
+	<tr>
+      <td class="cell" width="27%" valign="top"><p><strong>Steam Install Directory </strong></p></td>
+<td class="cell" width="73%"><p>The location where you've installed Steam. </p></td>
+    </tr>
+
+	<tr>
+      <td class="cell" width="27%" valign="top"><p><strong>Game Content</strong></p></td>
+      <td class="cell" width="73%"><p> The game content is here, with all the files necessary to run each game under each game directory. </p></td>
+    </tr>
+
+	<tr>
+      <td class="cell" width="27%" valign="top"><p><strong>SDK Tools</strong></p></td>
+<td class="cell" width="73%"><p> The location of  the applications necessary to create and compile SDK content.</p></td>
+    </tr>
+	<tr>
+      <td class="cell" width="27%" valign="top"><p><strong>Content Sources Directories </strong></p></td>
+<td class="cell" width="73%"><p> Directories for each of the types of game content sources are here, with a set of directories for each game you want to create content for.<br>
+<strong>SDK sample content is also stored here</strong>. </p></td>
+    </tr>
+</table>
+<br>
+
+<a name="Examples"></a>
+<hr noshade size="2">
+<h2>Examples of using this SDK directory structure</h2>
+
+
+<p>Here are some practical examples of how this structure is used: </p>
+
+<h3>Creating a level for Counter-Strike: Source:</h3>
+<ol>
+<li>Launch the <strong>Hammer</strong> level editor, which is launched from the <strong>SDK Tools Directory</strong>.</li>
+<li>Save the map as a .VMF into the <span class="code2">cstrike\mapsrc</span> directory, which is under <strong>Content Sources.</strong></li>
+<li>Compile the map inside Hammer. The map is compiled as a .BSP and automatically placed in the <span class="code2">cstrike\maps</span> <strong>Game Content</strong> directory. </li>
+</ol>
+
+<h3>Creating a texture for Half-Life 2: Deathmatch:</h3>
+<ol>
+<li>Create a texture in an image editing application, and save it as a .TGA in the <span class="code2">hl2mp\materialsrc </span>directory, which is under <strong>Content Sources</strong>.</li>
+<li>Compile the texture with <span class="code2">Vtex.exe</span>, which is in the <strong>SDK Tools Directory</strong>.</li>
+<li>The texture is compiled as a .VTF and automatically placed in the <span class="code2">hl2mp\materials </span><strong>Game Content</strong> directory. </li>
+<li>Create the .VMT material file with a text editor, and save it in the <span class="code2">hl2mp\materials </span><strong>Game Content</strong> directory.</li>
+</ol>
+
+<h3>Creating a model for Half-Life 2:</h3>
+<ol>
+<li>Create a model in Softimage|XSI EXP, and export it as an .SMD in the <span class="code2">hl2\modelsrc</span> directory, which is under <strong>Content Sources.</strong></li>
+<li>Create the .QC model definition file with a text editor, and save it in the  <span class="code2">hl2\modelsrc</span> directory, which is under <strong>Content Sources.</strong></li>
+<li>Compile the model with <span class="code2">Studiomdl.exe</span>, which is in the <strong>SDK Tools Directory</strong>.</li>
+<li>The model is compiled as a .MDL and automatically placed in the <span class="code2">hl2\models </span><strong>Game Content</strong> directory. </li>
+</ol>
+
+<p>For in-depth descriptions of these procedures, see the appropriate section of the <a href="../index.html">Source SDK Documentation</a>.</p>
+<a name="CopyContent" id="CopyContent"></a>
+<hr noshade size="2">
+
+<h2>Copy existing SDK  content to the new directory structure </h2>
+
+<p>If you already have SDK content you've created under the old <span class="code2">\sourcesdk</span> directory structure before this update, you may wish to move it to this new setup. To copy the files to the new locations, follow the instructions in this document, <a href="content_migrate.html">Migrating SDK Content to the new SDK Directory structure</a>.</p>
+
+<p>If you wish you can leave you files in the previous location, but you should be aware that it is possible that you may not be able to take full advantage of content added in future SDK updates.</p>
+
+<p><strong>IMPORTANT: </strong>If you <strong>did not</strong> add any content (maps, models, textures) while the content was saved under <span class="code2">\sourcesdk</span>, you do not need to follow these instructions. Basically, if you've never added content before the directory structure changeover, your Source SDK configuration should already be set up correctly.</p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

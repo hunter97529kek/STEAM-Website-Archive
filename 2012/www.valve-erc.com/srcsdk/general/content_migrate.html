@@ -1,0 +1,83 @@
+<html>
+<HEAD>
+        <title>Migrating SDK Content</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Migrating SDK Content to the new SDK directory structure </h1>
+
+<p>With the latest SDK release, the directory structure was changed to remove the restriction of having to save your game content into the <span class="code2">\sourcesdk</span> directory tree. This guide instructs you how to move the contents of the old <span class="code2">\sourcesdk </span>directory to the new structure.</p>
+
+<p>For a detailed description of the new Source SDK directory layout, see <a href="content_directory_structure.html">The Source SDK Files and Directory Structure</a>.</p>
+
+<p><strong>If you have not added  any of your own content sources (maps, models, levels), you do not need to follow these instructions.</strong></p>
+<p><strong>Warning: </strong>These assume you already had a working configuration under the <span class="code2">\sourcesdk</span> directory tree. If that is not the case, see the <a href="../faq.html">Source SDK FAQ</a> for information on how to get a valid working configuration. Manually editing a non-working configuration using these instructions can cause even more problems and may require re-installing the SDK to repair!</p>
+
+<ol>
+	<li><a href="#AutoCopyContent">Use the batch script to migrate  existing SDK content</a></li>
+	<li><a href="#ResetGameConfig">Resetting your game configuration</a></li>
+	<li><a href="#TestConfig">Testing your new configuration</a></li>
+</ol>
+
+<a name="AutoCopyContent" id="AutoCopyContent"></a>
+<hr noshade size="2">
+<h2>Use the batch script to migrate existing SDK content</h2>
+
+<p>A command-prompt batch script file has been created to aid you in moving your files in the old <span class="code2">\sourcesdk </span>directories to the new game and content source directories. This needs to be done so that maps and models you've created will be in the correct directory when you use the Source SDK tools. </p>
+
+<p>For some reason, if you would rather copy the files yourself, see the next section, <a href="content_migrate_manually.html">Manually copying existing SDK content</a>.</p>
+
+<p>If you wish to see the contents of this batch file before you download and run it, look <a href="content_migrate_script.html" target="_blank">here</a>. </p>
+<p>To use the batch script file to copy your SDK game content: </p>
+<ol>
+<li><font color="#FF0000">Restart Steam and launch the <strong>Source SDK</strong> from the Steam launcher to make sure you have the latest updates. </font><br><br></li>
+<li>Close the <strong>Source SDK Launcher</strong> and exit <strong>Steam</strong>.<br><br></li>
+<li>Right-click <a href="copy_sdk_content.bat">this link</a> and choose <strong>Save Target As...</strong> to download the batch file.<br><br></li>
+<li>Navigate to your <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk\</span> directory and click <strong>Save</strong>.<br><br></li>
+<li>Open an explorer window and navigate to the <span class="code2">\Steam\SteamApps\<em>username</em>\sourcesdk\</span> directory.<br><br></li>
+<li>Double-click the file <span class="code2">copy_sdk_content.bat</span>.<br><br></li>
+<li>Wait for the batch file to finish copying the files. This may take several minutes. </li>
+</ol>
+
+<p>Next, the game configuration needs to be reset to point to these new locations. </p>
+<a name="ResetGameConfig"></a>
+<hr noshade size="2">
+
+<h2>Resetting your game configuration</h2>
+<p>Now that you've copied the necessary files, you must update your  game configuration to use the new directory structure. This simply consists of resetting your game configuration and having the Source SDK rebuild it automatically.</p>
+
+
+<p>If you <strong>HAVE</strong> <strong>NOT</strong> created a MOD through the "<strong>Create A Mod</strong>" wizard:</p>
+<ol>
+<li>Open the <strong>SDK  Launcher</strong> application from the Steam <strong>Play Games </strong>panel.<br><br></li>
+<li>Choose &quot;<strong>Reset Game Configurations</strong>&quot; from the SDK Launcher.<br><br></li>
+<li>Click &quot;<strong>Reset</strong>&quot; to reset you game configurations to the defaults.<br><br></li>
+</ol>
+
+<p>If you <strong>HAVE</strong> created a MOD through the "<strong>Create A Mod</strong>" wizard, see the following page on <a href="retain_custom_config.html">Retaining a Custom MOD Game Configuration</a>.</p>
+
+<a name="TestConfig" id="TestConfig"></a>
+<hr noshade size="2">
+<h2>Testing your configuration</h2>
+
+<p>Now that the game configuration is reset, you can test your changes:
+<p>
+
+<ol>
+	<li>Select a game as the <strong>Current Game </strong>in the <strong>Source SDK Launcher</strong>.<br><br></li>
+	<li>Launch <strong>Hammer Level Editor</strong> to test your configuration.</li>
+</ol>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

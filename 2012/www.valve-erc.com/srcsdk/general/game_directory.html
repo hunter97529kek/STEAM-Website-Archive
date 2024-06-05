@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>The SDK Development Environment</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="content">
+<h1>Source SDK Development Environment: The Game Directory </h1>
+
+<p>Setting up a proper game development environment is critically important when making MODs and content for the Source Engine. The most important aspect of the game environment is determining  the location of the <em>game directory</em>. This document explains what the <em>game directory</em> is, and how it is used.</p>
+
+<h2>What is the game directory?</h2>
+<p>The <em>game directory</em> is the folder that the tools refer to when they are looking for a game's content. For example, the Hammer Editor needs to know where it can find your materials so it can display them. <span class="code2">Studiomdl</span> will compile a model, but it needs to know where to place the compiled model files. <span class="code2">Vrad.exe</span> will light a map, but it needs to know where to find prop models so it can load them and determine how they block light. None of the SDK tools will run unless they can find your <em>game directory</em>.</p>
+
+<table width="100%" cellpadding="4">
+  <tr >
+  <td valign="top" colspan="100%"><p>Examples of the <em>game directory</em> for the core Source games:</p></td>
+  </tr>
+  <tr>
+    <td width="200"><p>Half-Life 2 </p></td>
+  <td width="654" class="code2">C:\Program Files\Valve\Steam\SteamApps\username\half-life 2\hl2</td>
+  </tr>
+  <tr>
+    <td><p>Counter-Strike: Source </p></td>
+  <td class="code2">C:\Program Files\Valve\Steam\SteamApps\username\counter-strike source\cstrike</td>
+  </tr>
+  <tr>
+    <td><p>Half-Life 2: Deathmatch</p></td>
+  <td class="code2">C:\Program Files\Valve\Steam\SteamApps\username\half-life 2 deathmatch\hl2mp</td>
+  </tr>
+</table>
+</p>
+
+<p>In the following examples, we're going to refer to the <em>game directory</em> as <span class="code2">C:\Program Files\Valve\Steam\SteamApps\SourceMods\MyMod\Blasters</span>. This would be the case if you selected <strong>Create a Mod</strong>  in the SDK launcher, entered <span class="code2">C:\Program Files\Valve\Steam\SteamApps\SourceMods\MyMod</span> as the directory, and entered <span class="code2">Blasters</span> as the mod name.</p>
+
+<p>One way to determine the <em>game directory</em> of your game is to look for a file called <span class="code2">GameInfo.txt</span>. If you find the <span class="code2">GameInfo.txt</span> file, then the directory it sits in is the <em>game directory</em>. In the example above, if you had created <span class="code2">C:\Program Files\Valve\Steam\SteamApps\SourceMods\MyMod\Blasters</span>, there would be a file on your hard drive called <span class="code2">C:\Program Files\Valve\Steam\SteamApps\SourceMods\MyMod\Blasters\GameInfo.txt</span>. Once you've found the game directory, you need to tell the SDK tools where that directory is.</p>
+<p>For information on how <span class="code2">GameInfo.txt</span> can be created for your own MOD, and how the contents are used, see <a href="gameinfo.html">GameInfo.txt File Structure</a>.</p>
+
+<h2><a name="SetGameDir"></a>Setting the current game directory</h2>
+
+<p>The <em>active game directory</em> is set so that all the tools know how to find the game content without having the specify it each time. The <strong>Current Game </strong>drop-down list on the Source SDK Launcher is the primary way to set the <em>active game directory</em>. </p>
+
+<h3>Using the Source SDK Launcher to set the game directory</h3>
+
+<p>To set the active game directory with the Source SDK Launcher:</p>
+
+<ol>
+<li>Double-click <strong>Source SDK</strong> from the Steam <strong>Play Games</strong> Menu.</li>
+<li>Next you must choose the correct <strong>Current Game</strong> from the Source SDK Launcher.</li>
+<li>Now launch one of the SDK tools, such as the <strong>Hammer Editor</strong>, by double-clicking it.</li>
+</ol>
+	
+<table>
+<tr>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/game_config_set.gif" width="865" height="540"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Set the active game directory from the Source SDK Launcher. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table>
+
+<h3>Using VConfig to set the game directory</h3>
+
+<p>The <strong>VConfig</strong> application can also be used to set the active game directory. It provides a similar function to setting the <strong>Current Game</strong> in the <strong>SDK Launcher</strong>.</p>
+
+<p>The <span class="code2">vconfig.exe </span>application is found in the <span class="code2">\sourcesdk\bin</span> directory.</p>
+
+<p>For example, if you installed Steam at <span class="code2">C:\Program Files\Valve\Steam</span>, <strong>VConfig</strong> would be found here: </p>
+
+<p class="code">C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\sourcesdk\bin\vconfig.exe</p>
+
+<p>To set you active game directory with VConfig:</p>
+
+<ol>
+<li>Double-click the <span class="code2">vconfig.exe</span> application.</li>
+<li>Next you must choose the correct <strong>Current Game</strong> from the drop-down list.</li>
+<li>Click <strong>OK</strong>.</li>
+<li>Now launch one of the SDK tools, such as the <strong>Hammer Editor</strong>, by double-clicking it.</li>
+</ol>
+	
+<table>
+<tr>
+	<td >
+	<table class="tableCaption" cellpadding="0">
+		<tr>
+			<td><img src="images/game_vconfig_1.jpg" width="380" height="100"></td>
+		</tr>
+		<tr>
+			<td class="tdCaption">Set the active game directory using VConfig. </td>
+		</tr>
+	</table>
+	</td>
+</tr>
+</table>
+<p>Alternately, you can specify the game directory you wish to use without launching VConfig and choosing from the menu. To do this, simply run VConfig with the command-line parameter <span class="code2">-game [<em>directory</em>]</span>. This can be especially useful for setting the game directory in a batch file or other automated process. </p>
+<p>For example, the following command would set the game directory to the default Half-Life 2 install path without having to actually launch VConfig:</p>
+<p class="code">vconfig -game &quot;C:\Program Files\Valve\Steam\SteamApps\<em>username</em>\half-life 2&quot; </p>
+<h2>  <a name="CommandLine"></a>Specifying the game directory  on the command line</h2>
+<p>An alternative method to set the current game directory is to directly specify the  directory location on the command line when running each SDK tool. All of the SDK tools support the <span class="code2">-game &lt;directory&gt;</span> <em>command line parameter</em>. The advantage to specifying the game directory on the command line is that you are being explicit about where your game's content is to be found. </p>
+<p>Here are some examples of running tools where you specify the game directory explicitly:</p>
+
+  <p class="code">%sourcesdk%\bin\studiomdl -game C:\Program Files\Valve\Steam\SteamApps\SourceMods\MyMod\Blasters mymodel.qc</p>
+  <p class="code">%sourcesdk%\bin\vrad -game C:\Program Files\Valve\Steam\SteamApps\SourceMods\MyMod\Blasters mymap</p>
+  <p class="code">%sourcesdk%\bin\hammer -game C:\Program Files\Valve\Steam\SteamApps\SourceMods\MyMod\Blasters </p>
+  
+  <p><strong>Note</strong>: If you have spaces in your game directory path, you <strong>must</strong> use quotation marks around the game directory path:</p>
+  <p class="code">%sourcesdk%\bin\hammer -game &quot;C:\Program Files\Valve\Steam\SteamApps\username\counter-strike source\cstrike&quot;</p>
+  <p class="code">%sourcesdk%\bin\vrad -game &quot;C:\Program Files\Valve\Steam\SteamApps\username\counter-strike source\cstrike&quot; MyCstrikeMap</p>
+
+<p>Using the <span class="code2">-game</span> command-line parameter to specify the current game directory gives you the advantage of being able to work on multiple games or MODs at once, and change you configurations for each. This can be easily done by making shortcuts to tools such as vtex with the -game parameter built-into the shortcut. When doing this, make sure to add quotes around the game directory path, if the path contains spaces. </p>
+
+<table class="tableCaption" cellpadding="0">
+	<tr>
+		<td><img src="images/game_shortcut.jpg"></td>
+	</tr>
+	<tr>
+		<td class="tdCaption">Creating a tool shortcut with the -game parameter to specify the game directory.</td>
+	</tr>
+</table>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

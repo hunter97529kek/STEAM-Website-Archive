@@ -1,0 +1,52 @@
+<html>
+<HEAD>
+        <title>Retaining a Custom MOD Game Configuration</title>
+<link href="../srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<h1>Retaining a Custom MOD Game Configuration</h1>
+
+<p>If you wish to reset your game configuration, but you've created your own MOD using the &quot;<strong>Create a MOD</strong>&quot; wizard, follow these steps to merge your custom configuration with the default configurations.</p>
+
+<p><strong>Note:</strong> This step is only necessary if you wish to retain the game configurations for a MOD you have created.</p>
+
+<p>The Source SDK game configurations are now stored in the <span class="code2">gameconfig.txt</span> file. Previously, configurations were stored in <span class="code2">gamecfg.ini</span>. If you had an existing gamecfg.ini file, the settings have been converted to <span class="code2">GameConfig.txt</span> and the old file renamed to <span class="code2">gamecfg.ini.old</span>.</p>
+
+<h2>Resetting your game configuration</h2>
+
+<ol>
+	<li>Open the <strong>SDK Steam Launcher</strong> to make sure you have the latest updates.<br><br></li>
+	<li>Open the <span class="code2">&lt;Steam Install Directory&gt;/SteamApps/<em>username</em>/sourcesdk/bin</span>" directory in an explorer window. <br><br></li>
+	<li>Rename the <span class="code2">&quot;GameConfig.txt&quot;</span> to <span class="code2">&quot;GameConfig_old.txt</span>.&quot;<br>
+<br></li>
+	<li>Choose &quot;<strong>Reset Game Configurations</strong>&quot; from the SDK Launcher.<br><br></li>
+	<li>Open <span class="code2">GameConfig_old.txt</span> in a text editor, such as notepad.<br><br></li>
+	<li>Find the configuration block for your custom game in <span class="code2">GameConfig_old.txt</span>.<br><br></li>
+	<li>Highlight the configuration block for your custom game. Make sure to select the proper { and } characters for the selected configuration block. <br>
+	<br>
+		<img src="images/notepad_gameconfig.jpg" width="630" height="424"><br><br></li>
+	<li>choose <strong>Copy</strong> from the <strong>Edit Menu</strong>.<br><br></li>
+	<li>Open <span class="code2">GameConfig.txt</span>.<br><br></li>
+	<li>Place your cursor after one of the default configuration blocks and choose <strong>Paste</strong> from the <strong>Edit Menu. </strong><br><br></li>
+	<li>Save the file.<br><br></li>
+	<li>Click on <strong>Current Game</strong> in the <strong>SDK Launcher</strong> to make sure your MOD configuration appears. <br><br></li>
+	<li>Repeat steps 5 through 12 for each custom configuration you may have, if any. </li>
+</ol>
+
+<p>If your configuration doesn't appear in the <strong>Current Game</strong> list, you probably pasted the configuration block into an invalid location in <span class="code2">GameConfig.txt</span>. Re-open <span class="code2">GameConfig.txt</span> and check to make sure your configuration is properly placed within the { and } characters. Look at the default configurations as a guide to where to properly place the configuration block. </p>
+
+<p>Return to <a href="content_migrate.html#TestConfig">Migrating SDK Content to the new SDK Directory structure</a>. </p>
+
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>

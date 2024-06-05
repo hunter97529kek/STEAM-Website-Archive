@@ -1,0 +1,572 @@
+<html>
+<head>
+	<title>Source SDK FAQ</title>
+	<link href="srcsdk.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="content">
+
+<a name="top"></a>
+<h1>Source SDK Frequently Asked Questions </h1>
+
+<p>This section contains information to help solve some common problems experienced by SDK users.</p>
+
+<h2><a name="faqSDKTroubleIndex"></a>General SDK Troubleshooting </h2>
+<ul>
+	<li><a href="#faqGettingHelp">Where can I go for more help?</a></li>
+	<li><a href="#faqRestConfig">How do I reset the Source SDK Game Configuration?</a></li>
+	<li><a href="#faqRunGameAfterReset">I reset my Game Configuration, but I get an configuration error when I try to run Hammer.</a></li>
+	<li><a href="#faqEmptyConfig">My game configurations menu In Hammer and the SDK application is empty.</a></li>
+	<li><a href="#faqReinstall">How do I re-install the entire Source SDK installation?</a></li>
+	<li><a href="#faqRemoveOldConfig">How do I remove old games from my &quot;Current Game&quot; menu?</a></li>
+    <li><a href="#faqResourcesCrash">After working in the SDK for a little while, my machine runs out of resources and crashes! </a></li>
+	<li><a href="#faqCacheNeedsRepair">How do I fix the  &quot;Cache Needs Repair&quot; error?</a></li>
+	<li><a href="#faqCacheNeedsDecryption">How do I fix the  &quot;Cache Needs Decryption&quot; error?</a></li>
+	<li><a href="#faqSteamDLL">I get an error &quot;Can't find steam.dll relative to executable path &lt;steam path&gt;&quot;.</a></li>
+	<li><a href="#faqGeneralProbs">I'm experiencing constant, strange problems not covered elsewhere in this FAQ.</a></li>
+</ul>
+
+<h2><a name="faqGenInfoIndex"></a>General SDK Information</h2>
+<ul>
+	<li><a href="#faqDirStructure">How are the Source SDK files and directories structured?</a></li>
+	<li><a href="#faqGameDir">What's is meant by Game Directory?</a></li>
+	<li><a href="#faqGameInfo">How can I make my own GameInfo.txt?</a></li>
+	<li><a href="#convertINI">Gamecfg.ini conversion information</a></li>
+	<li><a href="#faqNoBackgroundMaps">How do I launch the game without loading the 3D background maps?</a></li>
+	<li><a href="#faqGameParams">What are some game parameters I can launch the game with?</a></li>
+</ul>
+
+<h2><a name="faqHammerConfigIndex"></a>Hammer Configuration and Compiling</h2>
+<ul>
+	<li><a href="#faqHammerBadConfig">My Hammer Configuration does not work correctly. What do I do?</a></li>
+	<li><a href="#faqHammerManualConfig">How do I manually configure the Hammer Editor?</a></li>
+	<li><a href="#faqProcessWindow">How do I copy the contents of the compile Process Window?</a></li>
+	<li><a href="#faqAdditionalGameParams">What is the &quot;Additional game parameters&quot; field for?</a></li>
+	<li><a href="#faqMultiplayerMap">My multiplayer map isn't appearing in the multiplayer map list.</a></li>
+	<li><a href="#faqMapNotThere">I compiled my map with Hammer, but when I run the game from the Steam menu, the map is not there.</a></li>
+	<li><a href="#faqNoModelInGame">I added some prop models in Hammer, but they don't appear in the game!</a></li>
+	<li><a href="#faqWrongPropType">When I compile, I get "Error! static_prop using model &lt;modelname&gt;, which must be used on a dynamic entity."</a></li>
+	<li><a href="#faqCSTeamsFull">When I load my Counter-Strike: Source map, it says "Both Teams are Full".</a></li>
+	<li><a href="#faqModelsMissingMats">Models I place in Hammer are rendered with a black and purple checkerboard in-game.</a></li>
+	<li><a href="#faqLeaks">Hammer reports &quot;leaked!&quot; when I compile. How do I fix it?</a></li>
+	<li><a href="#faqMemoryLeak">I get a message "Memory leak: mempool blocks left in memory: &lt;number&gt;" when I compile.</a></li>
+	<li><a href="#faqLAN">When I run my multiplayer map in the game, people join my server!</a></li>
+	<li><a href="#faq4Views">How do I get back to having 4 views - the 3D, top, front, and side views?</a></li>
+</ul>
+
+<h2><a name="faqLevelFeaturesIndex"></a>Level Editing Features</h2>
+<ul>
+	<li><a href="#faqSkyboxes">How do I correctly make a skybox?</a></li>
+	<li><a href="#faqAddFog">How do I add fog to my level?</a></li>
+	<li><a href="#faqCustomSoundscapes">Can I make a custom soundscape for my level?</a></li>
+	<li><a href="#faqSharedMaterials">How do I use Half-Life 2 model or material in a Counter-Strike: Source map?</a></li>
+</ul>
+
+<h2><a name="faqFacePoserIndex"></a>FacePoser</h2>
+<ul>
+	<li><a href="#faqFP_SAPI51">I get an error &quot;SAPI 5.1 Unable to create recognizer context".</a></li>
+</ul>
+
+<h2><a name="faqProgrammingIndex"></a>Programming</h2>
+<ul>
+	<li><a href="#faqCompiler1">What compiler do I need to build the SDK code?</a></li>
+	<li><a href="#faqCompiler2">Can I use Microsoft Visual Studio 6.0 with the SDK?</a></li>
+	<li><a href="#faqRunModSpaces">When I use run_mod.bat, I can't run the game if my path has spaces.</a></li>
+	<li><a href="#faqModMissingEnts">Missing certain Half-Life 2 entities in Hammer.</a></li>
+</ul>
+
+
+<hr noshade align="center" WIDTH="100%" size="2">
+
+<h2><a name="faqSDKTrouble"></a>General SDK Troubleshooting </h2>
+<h3><a name="faqGettingHelp" id="faqGettingHelp"></a><a href="#top"></a>Where can I go for more help?</h3>
+
+<blockquote>
+<p>Read the <a href="prerelease_notes.html">SDK Release Notes</a> for the information about the current Source SDK release. </p>
+<p>The <a href="http://collective.valve-erc.com/index.php?area=forums">VERC Collective Forums</a> are a great way to help get answers to problems you encounter. </p>
+<p>When posting on the support forums, the following pieces of information can be useful:</p>
+
+<ul>
+	<li>
+	What operating system you're using.<br>
+	<li>What video card you're using (and in the case of multiple video cards, all&nbsp;of the video cards you're using).<br>
+	<li>Which video drivers you're using.<br>
+	<li>Anytime compiling or running a map is involved in the problem, provide the complete contents of the Hammer Editor compile Process Window in your message.
+</ul>
+
+<p>This information isn't always required, but it can really speed up the problem resolution when all information is available.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqRestConfig"></a>How do I reset the Source SDK Game Configuration?</h3>
+<blockquote>
+<p> If you're experiencing problems with the Hammer game configuration or SDK Launcher game configuration not behaving correctly, you can follow this procedure to reset the game configurations to the default state.</p>
+
+<p>If you <strong>HAVE</strong> <strong>NOT</strong> created a MOD through the "<strong>Create A Mod</strong>" wizard:</p>
+<ol>
+<li>Shut down any Source SDK Tools, such as <strong>Hammer</strong> or <strong>FacePoser</strong>.</li>
+<li>Open the <strong>SDK  Launcher</strong> application from the Steam <strong>Play Games </strong>panel.</li>
+<li>Choose &quot;<strong>Reset Game Configurations</strong>&quot; from the SDK Launcher.</li>
+<li>Click &quot;<strong>Reset</strong>&quot; to reset you game configurations to the defaults.</li>
+</ol>
+
+<p>If you <strong>HAVE</strong> created a MOD through the "<strong>Create A Mod</strong>" wizard, see the following page on <a href="general/reset_custom_config.html">Resetting a Custom MOD Game Configuration</a>.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqRunGameAfterReset"></a>I reset my Game Configuration, but I get an configuration error when I try to run Hammer.</h3>
+<blockquote>
+<p>If you reset your game configuration using the &quot;Reset Game Configurations&quot; button on the SDK Launcher, and you get an error message &quot;The game configuration information for the game you're trying to edit is invalid or missing&quot;, you need to launch the game at least once before editing content. After running the game, launching Hammer should work correctly. </p>
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqEmptyConfig" id="faqEmptyConfig"></a>My game configurations menu In Hammer and the SDK application is empty.</h3>
+<blockquote>
+<p>Some users are experiencing a problem where they are unable to select a game configuration in Hammer or from the SDK launcher application because there are no entries to choose from.&nbsp; To correct this problem follow the procedure to <a href="#faqRestConfig">reset the Source SDK Game Configuration</a>.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqReinstall"></a>How do I re-install the  Source SDK tools?</h3>
+
+<blockquote>
+<p>If all else fails, it may be necessary to re-install the SDK tools.  It is advisable that you make a copy of your entire "<span class="code2"><em>..\</em>SteamApps\<em>username</em>\sourcesdk</span>" directory before following this procedure. After you've reinstalled the SDK, you have a backup in case there is some content in your <span class="code2">sourcesdk</span> directory that you may wish to restore. </p>
+
+<p><STRONG>Note:</STRONG> Your <span class="code2">GameConfig.txt</span> file will be lost in this process, meaning any game configurations for custom MODs you have created will be lost as well. If you wish to retain these configurations, please backup the <span class="code2">GameConfig.txt</span> and follow the instructions in <a href="#faqRestConfig">How do I reset the Source SDK Game Configuration?</a>". You can ignore this step if you have no custom MODs installed.</p>
+
+<ol>
+<li>Shutdown Steam by choosing <strong>Exit</strong> from the Steam task bar icon menu. </li>
+<li> Delete the "<span class="code2"><em>&lt;Steam Install Directory&gt;\</em>SteamApps\<em>username</em>\sourcesdk</span>" directory, where the SDK resides. </li>
+<li>Delete the sourcesdk.gcf file from&nbsp;the "<span class="code2">SteamApps</span>"&nbsp;directory</li>
+<li> Restart Steam and launch the SDK application.</li>
+</ol>
+
+<p>Steam will automatically re-install all the necessary files. </p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqRemoveOldConfig"></a>How do I remove old games from my &quot;Current Game&quot; menu?</h3>
+
+<blockquote>
+<p>If you have created a MOD from the &quot;Create a Mod&quot; wizard, and would like to remove it from your game configurations menu:</p>
+
+<ol>
+<li>Load the Hammer Editor from the Source SDK Launcher.</li>
+
+<li>Choose <strong>Options</strong> from the <strong>Tools</strong> menu.</li>
+<li>Switch to the <strong>Game Configurations</strong> tab.</li>
+<li>Click the <strong>Edit</strong> button next to the <strong>Configuration:</strong> drop down list. </li>
+<li>For each configuration you wish to remove, select the configuration, then click the <strong>Remove</strong> button.</li>
+<li>Press <strong>OK</strong> to confirm your choices, and <strong>OK</strong> in the <strong>Options </strong>dialog. </li>
+<li>Close both Hammer and the Source SDK Launcher.</li>
+<li>Restart the Source SDK Launcher, and those configurations will be gone from the drop-down list.</li>
+</ol>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqResourcesCrash" id="faqResourcesCrash"></a>After working in the SDK for a little while, my machine runs out of resources and crashes!</h3>
+<blockquote>
+<p>Editing levels with the Hammer editor can take a large amount of system resources, especially when browsing large amounts of models and textures. Increasing the amount of system memory (RAM) can improve performance, but crashes are often a sign of some type of hardware issue (bad memory, hard drive, power supply, etc.).</p>
+
+<p>To avoid running out of resources on systems with insufficient RAM, avoid scrolling through the entire texture browser, as this will load large amounts of materials. You can also close and re-open the Hammer editor to free up resources. You may not be able to work on larger-scale maps on a system with low resources.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqCacheNeedsRepair"></a>How do I fix the &quot;Cache Needs Repair&quot; error?</h3>
+<blockquote>
+<p>This error occurs when certain game cache files have encountered an internal problem (usually after a crash while running a game). </p>
+<p>To repair the cache file:</p>
+<ol>
+	<li>Shutdown Steam by choosing <STRONG>Exit</STRONG> from the Steam task bar icon menu.</li>
+	<li>Restart Steam. </li>
+	<li>Run <strong>Half-Life 2</strong> from the Steam Play Games window.</li>
+	<li>If the problem is not resolved, repeat these steps running <strong>Counter-Strike: Source</strong> and <strong>Half-Life 2: Deathmatch</strong>.</li>
+</ol>
+<p>Running these applications causes them to validate and repair any cache problems they may have.</p>
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqCacheNeedsDecryption"></a>How do I fix the &quot;Cache Needs Decryption&quot; error?</h3>
+<blockquote>
+<p>This error occurs when you try to run the SDK without having ever launched Half-Life 2.</p>
+<p>To fix this error:</p>
+<ol>
+	<li>Run <strong>Half-Life 2</strong> from Steam's Play Games window.</li>
+	<li>Run the <strong>Source SDK</strong> from Steam's Play Games window.</li>
+	<li>If the problem is not resolved, repeat these steps running <strong>Counter-Strike: Source</strong> and <strong>Half-Life 2: Deathmatch</strong>.</li>
+</ol>
+
+<p>Running these applications causes them to validate and repair any cache problems they may have.</p>
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqSteamDLL"></a>I get an error &quot;Can't find steam.dll relative to executable path &lt;steam path&gt;&quot;</h3>
+<blockquote>
+<p>This is caused by moving or deleting files in the Steam directory, or the Steam directory itself. If you cannot fix it by replacing the files that you've moved or deleting, you can first try <a href="#faqReinstall">re-installing the Source SDK</a>. Next, you can try deleting the <span class="code2">ClientRegistry.blob</span> file and restart Steam. If that does not work, Steam itself must be <a href="http://steampowered.custhelp.com/cgi-bin/steampowered.cfg/php/enduser/std_adp.php?p_faqid=144">installed from scratch</a>.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqGeneralProbs"></a>I'm experiencing constant, strange problems not covered elsewhere in this FAQ.</h3>
+<blockquote>
+<p>First, you should use the resources listed in the <a href="#faqGettingHelp">Where can I go for more help?</a> section.</p>
+<p>If you still cannot solve your issue, you may wish to try re-installing the Source SDK, as described <a href="#faqReinstall">here</a>. </p>
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<hr noshade align=center width="100%" size="2">
+
+<h2><a name="faqGenInfo"></a>General SDK Information</h2>
+
+
+<h3><a name="faqDirStructure"></a>How are the Source SDK files and directories structured?</h3>
+<blockquote>
+<p>Read <a href="general/content_directory_structure.html">The Source SDK Files and Directory Structure</a> for information. </p>
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqGameDir"></a>What's is meant by Game Directory?</h3>
+<blockquote>
+<p>Read <a href="general/game_directory.html">Source SDK Development Environment: The Game Directory</a> for information. </p>
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqGameInfo"></a>How can I make my own GameInfo.txt?</h3>
+<blockquote>
+<p>Read <a href="general/gameinfo.html">The GameInfo.txt File Structure</a> for information. </p>
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="convertINI" id="convertINI"></a>Gamecfg.ini conversion information</h3>
+<blockquote>
+<p>With the latest release, the file that contains the SDK game configuration information has changed to a new format. Previously, all game configuration data was stored in the <span class="code2">gamecfg.ini</span> file. This data is now stored in <span class="code2">GameConfig.txt</span>. Both of the these files can be found in the <span class="code2">SteamApps\sourcesdk\bin</span> directory.</p>
+<p>When launching the new SDK update, your configuration  stored in <span class="code2">gamecfg.ini</span> was automatically converted and stored in the new format, <span class="code2">GameConfig.txt</span>. Then your <span class="code2">gamecfg.ini</span> was renamed to <span class="code2">gamecfg.ini.old</span>, as it is no longer used or needed. </p>
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqNoBackgroundMaps" id="faqNoBackgroundMaps"></a>How do I launch the game without loading the 3D background maps?</h3>
+
+<blockquote>
+<p>Add <span class="code2"> -console</span> to a game shortcut and it won't load background maps.</p>
+<p>You can also add this to the <strong>"Additional game parameters</strong>" in the Hammer <strong>Run Map</strong> dialog.</p>
+<p>One last place you can add it is in the Steam <strong>Play Games</strong> window: Right-click on a game, and Choose Properties. Then click the <strong>Launch Options</strong> button and add <span class="code2">-console</span> to the text field.</p>
+
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqGameParams" id="faqGameParams"></a>What are  game parameters that can be used to launch the game? </h3>
+<blockquote>
+<p>When launching the game engine, there are a number of command-line options that can be used to change the engine environment.</p>
+
+<p>Some useful game parameters:</p>
+
+<table>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">-dev</p></td>
+		<td width="81%"><p>Launches the game in developer mode. Useful debugging and console information is shown.</p></td>
+	</tr>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">-console</p></td>
+		<td width="81%"><p>Launches the game directly to the <a href="console/developer_console.html">developer console</a>, and does not show the 3D background map.</p></td>
+	</tr>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">-sw</p></td>
+		<td width="81%"><p>Starts the game in windowed mode. </p></td>
+	</tr>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">-fullscreen</p></td>
+		<td width="81%"><p>Starts the game in fullscreen mode. </p></td>
+	</tr>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">-w &lt;size&gt; </p></td>
+		<td width="81%"><p>Sets the screen width to <span class="code2">&lt;size&gt;</span> in pixels, i.e.<span class="code2">-w 1024</span> </p></td>
+	</tr>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">-h &lt;size&gt; </p></td>
+		<td width="81%"><p>Sets the screen height to <span class="code2">&lt;size&gt;</span> in pixels, i.e.<span class="code2">-h 768 </span></p></td>
+	</tr>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">-condebug</p></td>
+		<td width="81%"><p>Logs the contents of the developer console to <span class="code2">&lt;game directory&gt;\console.log</span> </p></td>
+	</tr>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">+sv_lan 1</p></td>
+		<td width="81%"><p>Launches the game in LAN mode. Useful to stop players from joining your game from the Internet.</p></td>
+	</tr>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">+map &lt;mapname&gt;</p></td>
+		<td width="81%"><p>Launches the game, then loads the  map called <span class="code2">&lt;mapname&gt;.bsp</span></p></td>
+	</tr>
+	<tr>
+		<td width="19%" valign="top"><p class="code2">-applaunch &lt;AppID&gt;</p></td>
+		<td width="81%"><p>Launches the game with using the specified <span class="code2">SteamAppID</span></p></td>
+	</tr>
+</table>
+
+<p>Parameters using the &quot;<span class="code2">+</span>&quot; symbol are developer <a href="console/developer_console.html">console commands</a> that are executed after the engine is launched. </p>
+<p>For example, some typical settings:</p>
+<p><span class="code">Steam.exe -applaunch 280 -dev -console -sw +sv_lan 1 +map MyMap&nbsp;</span></p>
+<p>This would start  a Half-Life 2: Deathmatch game in developer mode, activate the <a href="console/developer_console.html">developer console</a>, in windowed mode, and in LAN multiplayer mode, then load <span class="code2">MyMap.bsp</span>.</p>
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<hr noshade align=center width="100%" size="2">
+
+<h2><a name="faqHammerConfig"></a>Hammer Configuration and Compiling</h2>
+
+<h3><a name="faqHammerBadConfig"></a>My Hammer Configuration does not work correctly. What do I do?</h3>
+<blockquote>
+<p>If the Hammer configuration is not working correctly, you can first try to <a href="#faqRestConfig">reset the Source SDK Game Configuration</a>.</p>
+<p>If you are still unsuccessful, you can also <a href="#faqReinstall">reinstall the Source SDK</a>.</p>
+
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqHammerManualConfig"></a>How do I manually configure the Valve Hammer Editor?</h3>
+
+<blockquote>
+<p>The Hammer Editor should automatically be configured to edit levels for the core Source Engine games you have installed. This information is given for completeness, but it is strong recommended that you follow <a href="#faqHammerBadConfig">these steps</a> to fix a non-working game configuration. </p>
+<p>For information on manually configuring the Hammer game configuration,  refer to the <a href="Hammer/html/Manually_Config_Hammer.html">Hammer Manual Configuration</a>.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqAdditionalGameParams"></a>What is the &quot;Additional game parameters&quot; field for?</h3>
+
+<blockquote>
+<p>Parameters entered into this field let you specify some <a href="#faqGameParams">game parameters</a> which define how the game will be run.</p>
+
+<p>For example, some typical settings:</p>
+
+<p><span class="code">-dev -console -sw +sv_lan 1&nbsp;</span></p>
+<p>This would start your game in developer mode, activate the <a href="console/developer_console.html">developer console</a>, in windowed mode, and in LAN multiplayer mode.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqMultiplayerMap" id="faqMultiplayerMap"></a>My multiplayer map isn't appearing in the multiplayer map list.</h3>
+
+<blockquote>
+<p>For a level to appear in the Half-Life 2: Deathmatch map list, it must have an <span class="code2">info_player_deathmatch</span> in it.</p>
+<p>The <span class="code2">info_player_deathmatch</span> entity creates a player spawn point for multiplayer games. When a player spawns in a level (either because he is just entering the level, or he has just died and is respawning) his location will be picked randomly from all of the available <span class="code2">info_player_deathmatch</span> spawn points.</p>
+
+<p>Its a good idea to include a large number of these spawn points to prevent predictable spawning.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqProcessWindow"></a>How do I copy the contents of the Hammer compile Process Window?</h3>
+<blockquote>
+<p>After you click <strong>OK</strong> in the <strong>Run Map...</strong> dialog, Hammer will display the <strong>Compile Process Window</strong>, showing the progress of your compile. When the compile is complete, press the <strong>Copy to Clipboard</strong> button at the bottom of the window, and you can now paste it into a email or forum post window. </p>
+
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqMapNotThere" id="faqMapNotThere"></a>I compiled my map with Hammer, but when I run the game from the Steam menu, the map is not there.</h3>
+<blockquote>
+<p>This problem can occur if you run the game from the Steam <strong>Play Games</strong> window instead of letting Hammer run the map at the end of the map compile. See <a href="Hammer/html/Running_Compiled_Maps.html">Running Compiled Maps</a> to work around this issue. Migrating your configuration to the <a href="general/content_directory_structure.html">new directory structure</a> will also fix this problem. </p>
+
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqNoModelInGame" id="faqNoModelInGame"></a>I added some prop models in Hammer, but they don't appear in the game!</h3>
+<blockquote>
+
+<p>This can occur in two different circumstances:</p>
+
+<p>First, make sure you haven't accidentally altered the fade distances of the model so that it is immediately fading out without rendering. Open the <strong>Object Properties</strong> dialog for the prop entity, and look at the <strong>Start Fade Dist</strong> and <strong>End Fade Dist</strong> keyvalues. These values control the distance at which a prop will fade out, to help control performance. To set a prop to never fade out, set the <strong>Start Fade Dist</strong> to &quot;-1&quot; and the <strong>End Fade Dist</strong> to &quot;0&quot;. These values can also be set by the concentric circle helpers surrounding the prop entity in the 2D windows.</p>
+
+<p>Another possibility is that the wrong prop type is chosen for the model you're using. If you use a <span class="code2">prop_static</span> entity, and then specify a model that has physics properties (which should be a <span class="code2">prop_physics</span>), the engine will delete the model. To fix this problem, either switch the entity to <span class="code2">prop_physics</span>, or change the model to one that does not have physics properties. See <a href="Levels/prop_types.html">Overview of Prop Types</a> for more information on the different types of prop entities. </p>
+
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqWrongPropType" id="faqWrongPropType"></a>When I compile, I get &quot;Error! static_prop using model &lt;modelname&gt;, which must be used on a dynamic entity.&quot;</h3>
+<blockquote>
+<p>The wrong prop type is chosen for the model you're using. If you use a <span class="code2">prop_static</span> entity, and then specify a model that has physics properties (which should be a <span class="code2">prop_physics</span>), the engine will delete the model. To fix this problem, either switch the entity to <span class="code2">prop_physics</span>, or change the model to one that does not have physics properties. See <a href="Levels/prop_types.html">Overview of Prop Types</a> for more information on the different types of prop entities. </p>
+
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqCSTeamsFull" id="faqCSTeamsFull"></a>When I load my Counter-Strike: Source map, it says &quot;Both Teams are Full&quot;.</h3>
+<blockquote>
+		<p>You need to have both <span class="code2">info_player_counterterrorist</span> and <span class="code2">info_player_terrorist</span> entities in the map, or the game will not be set up correctly. See <a href="Levels/counter-strike_source_maps.html">Making Counter-Strike: Source Maps</a> for information on the necessary entities.</p>
+
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqModelsMissingMats" id="faqModelsMissingMats"></a>Models I place in Hammer are rendered with a black and purple checkerboard in-game. </h3>
+<blockquote>
+	<p>If these are models that shipped with the Source SDK, and not your own custom models, it is likely a problem with your game configuration. See <a href="#faqHammerBadConfig">My Hammer Configuration does not work correctly. What do I do?</a> for more information.</p>
+
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faq4Views" id="faq4Views"></a>How do I get back to having 4 views - the 3D, top, front, and side views?</h3>
+
+<blockquote>
+<p>Select <a href="Hammer/html/Options.html">Options</a> from the <strong>Tools</strong> menu. Click on the <strong>General</strong> tab. Under <strong>Window Setup</strong> where it says <strong>Use independent window configurations</strong>, make sure there is <em>not</em> a check next to that option, then close and restart Hammer.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqLeaks"></a>Hammer reports &quot;leaked!&quot; when I compile. How do I fix it?</h3>
+
+<blockquote>
+<p>For information on this, please refer to the tutorial entitled <a href="Levels/leaks.html">Leaks Explained</a>.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqMemoryLeak"></a>I get a message &quot;Memory leak: mempool blocks left in memory: &lt;number&gt; &quot; when I compile.</h3>
+
+<blockquote>
+<p>This message is  harmless, you can safely ignore it. Not that this has nothing to do with <a href="#faqLeaks">level leaks</a>. </p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqLAN" id="faqLAN"></a>When I run my multiplayer map in the game, people join my server!</h3>
+
+<blockquote>
+<p>When running the game, add <span class="code2">+sv_lan 1</span> to the options when running the game. See <a href="#faqAdditionalGameParams">What is the &quot;Additional game parameters&quot; field for?</a></p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<hr noshade align=center width="100%" size="2">
+
+<h2><a name="faqLevelFeatures"></a>Level Editing Features</h2>
+
+<h3><a name="faqSkyboxes" id="faqSkyboxes"></a>How do I correctly make a skybox? </h3>
+<blockquote>
+<p>The first thing you need to know is that there are two types of skyboxes in the Source Engine. One type of skybox is the &quot;traditional&quot; <em>2D skybox</em> that consists of a textured cubic map. Think of a giant cube that surrounds the level, and the skybox textures are applied to the inside faces of the cube. That's a 2D skybox. The textures of the 2D skybox usually consist of clouds and the sun, and other distant details. The 2D skybox for a level is set in the <a href="Hammer/html/Menu_Map.html">Map Properties</a> dialog of Hammer. </p>
+
+<p>The <em>3D skybox</em> is a new type of skybox in the Source Engine. The 3D skybox is extra area constructed by the level designer that is outside the bounds of the gameplay portion of the map. Players of the map can never get into the 3D skybox area, and the 3D skybox is designed to make the area around the map seem much larger than it actually is. Maps <em>do not require</em> a 3D skybox to be created &#8212; it is a purely optional visual addition to the map. See <a href="Levels/3d_skyboxes.html">Making 3D Skyboxes</a> for information about how to create a 3D skybox. </p>
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqAddFog" id="faqAddFog"></a>How do I add distance fog to my level? </h3>
+<blockquote>
+	<p>Add a <span class="code2">env_fog_controller</span> <a href="Hammer/html/Creating_Entities.html">point entity</a> to your level. For basic fog, you need to set the <strong>Fog Enable</strong> to &quot;Yes&quot;, change the <strong>Primary Fog Color</strong> to the color of the fog you wish. Set the <strong>Fog Start</strong> and <strong>Fog End</strong> values to a distance in world units for how far away the fog will render. The <strong>Fog Start</strong> distance is how far away the fog will appear from the player, and <strong>Fog End</strong> is the distance the for will appear totally opaque. </p>
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqCustomSoundscapes" id="faqCustomSoundscapes"></a>Can I make a custom soundscape for my level? </h3>
+<blockquote>
+	<p> Unless you're creating your own MOD, you can't create custom soundscapes for an individual level. The list of soundscape are determined by the file <span class="code2">&lt;game directory&gt;\scripts\soundscapes.txt</span>, of which there is only one per game. See <a href="Sound/soundscapes.html">Soundscapes</a> for more information.</p>
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<h3><a name="faqSharedMaterials" id="faqSharedMaterials"></a>How do I use  a Counter-Strike: Source model or material in a Half-Life 2: Deathmatch map?</h3>
+<blockquote>
+	
+<p>That is not possible if you wish to run on all player's machines that are running Half-Life 2: Deathmatch. This is because there is no guarantee that the person downloading your map has both installed Counter-Strike: Source and HL2DM installed. We do not require you to have Counter-Strike: Source installed to run Half-Life 2: Deathmatch, for example. The reverse is also true. Therefore, a player running your map that didn't have Counter-Strike installed would get an error because they didn't have the required model or material.</p>
+
+<p><a href="#top">(top)</a></p>
+
+</blockquote>
+
+<hr noshade align=center width="100%" size="2">
+
+<h2><a name="faqFacePoser"></a>FacePoser</h2>
+
+<h3><a name="faqFP_SAPI51"></a>I get an error &quot;SAPI 5.1 Unable to create recognizer context".</h3>
+
+<blockquote>
+<p>If you get this error when you click <strong>Redo Extraction</strong> in <strong>FacePoser</strong>, it means you need to install the <strong>Microsoft Speech SDK</strong>, which can be found here: </p>
+
+<p><A title="Download Microsoft Speech SDK" href="http://www.microsoft.com/speech/download/old/sapi5.asp">http://www.microsoft.com/speech/download/old/sapi5.asp</a>.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+
+<hr noshade align=center width="100%" size="2">
+
+<h2><a name="faqProgramming" id="faqProgramming"></a>Programming</h2>
+
+<h3><a name="faqCompiler1"></a>What compiler do I need to build the SDK code?</h3>
+
+<blockquote>
+<p>The SDK is set up to be compiled with <strong>Microsoft Visual C++ .NET 2003 v7.1</strong>.</p>
+
+<p><A title=http://msdn.microsoft.com/howtobuy/visualc/default.aspx 
+href="http://msdn.microsoft.com/howtobuy/visualc/default.aspx">http://msdn.microsoft.com/howtobuy/visualc/default.aspx</a>.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqCompiler2"></a>Can I use Microsoft Visual Studio 6.0 with the SDK?</h3>
+
+<blockquote>
+<p>It is recommended that you upgrade to Visual C++ .NET 2003 v7.1 to build the SDK projects.&nbsp; However, there is a tool to convert the VC++ v7.x solution and project files to VC++ v6.x projects and workspaces. It can be found at <A title=http://www.codeproject.com/tools/prjconverter.asp 
+href="http://www.codeproject.com/tools/prjconverter.asp">http://www.codeproject.com/tools/prjconverter.asp</a>.</p>
+
+<p>You <strong>must</strong> install the Service Pack 5 update and Processor Pack update to properly compile the files:<br>
+<A title=http://msdn.microsoft.com/vstudio/downloads/updates/sp/vs6/sp5/default.aspx 
+href="http://msdn.microsoft.com/vstudio/downloads/updates/sp/vs6/sp5/default.aspx">http://msdn.microsoft.com/vstudio/downloads/updates/sp/vs6/sp5/default.aspx</a><br>
+<A title=http://msdn.microsoft.com/vstudio/downloads/tools/ppack/download.aspx 
+href="http://msdn.microsoft.com/vstudio/downloads/tools/ppack/download.aspx">http://msdn.microsoft.com/vstudio/downloads/tools/ppack/download.aspx</a>
+</p>
+
+<p><strong>Important:</strong> The Service Pack 5 update must be installed before the Processor Pack for the updates to work properly!</p>
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3> <a name="faqRunModSpaces"></a>When I use run_mod.bat, I can't run the game if my path has spaces</h3>
+
+<blockquote>
+<p>The most common cause for this error is having spaces in the MOD's game directory (i.e. <span class="code2">c:\My Mod\</span>).  This problem will be resolved in a future update.  Until then, it is recommended you alter your directories to exclude this formatting.</p>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<h3><a name="faqModMissingEnts" id="faqModMissingEnts"></a>Missing certain Half-Life 2 entities in Hammer.</h3>
+
+<blockquote>
+<p>A known bug causes the &quot;Create a Mod&quot; wizard to set up Hammer to load <span class="code2">base.fgd</span> instead of <span class="code2">halflife2.fgd</span>. This issue will be resolved in a future SDK update.</p>
+
+<p>To work around this problem:</p>
+
+<ol>
+<li>In Hammer, choose <strong>Options</strong> under the <strong>Tools</strong> menu.</li>
+<li>Select your mod's configuration in the <strong>Configurations</strong> combo box.</li>
+<li>Click the <strong>Remove</strong> button next to the <strong>Game Data Files</strong> list. This will remove the unwanted <span class="code2">base.fgd</span> file.</li>
+<li> Click the <strong>Add</strong> button next to the <strong>Game Data Files</strong> list and choose <span class="code2">halflife2.fgd</span>.</li>
+</ol>
+
+<p><a href="#top">(top)</a></p>
+</blockquote>
+
+<br>
+<hr noshade size="1px">
+<p><span style="font-size: xx-small; font-family:Arial, Helvetica, sans-serif">
+&copy; 2004 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Hammer and Counter-Strike: Condition Zero are trademarks and/or registered trademarks of Valve Corporation.&nbsp;&nbsp;Microsoft and Visual Studio are trademarks and/or registered trademarks of Microsoft Corporation.&nbsp; All other trademarks are property of their respective owners.&nbsp;</span></p>
+
+</div>
+</body>
+</html>
